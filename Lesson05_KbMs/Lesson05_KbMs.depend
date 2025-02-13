@@ -1,0 +1,46 @@
+# depslib dependency file v1.0
+1739234357 source:c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1738803439 c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+
+1738630553 c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\include\_lightsetting.h
+	<_common.h>
+
+1738801032 c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+
+1738024879 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1738801832 c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\include\_model.h
+	<_common.h>
+
+1739235558 source:c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\src\_inputs.cpp
+	"_inputs.h"
+
+1738803003 c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\include\_inputs.h
+	<_model.h>
+
+1738630410 source:c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1738801698 source:c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\src\_model.cpp
+	"_model.h"
+
+1739234026 source:c:\users\heinr\onedrive\desktop\csci178\lesson05_kbms\src\_scene.cpp
+	"_scene.h"
+

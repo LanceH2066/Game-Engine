@@ -1,0 +1,34 @@
+# depslib dependency file v1.0
+1738630592 source:c:\users\heinr\onedrive\desktop\csci178\lesson03_lighting\main.cpp
+	<windows.h>
+	<_common.h>
+	<_scene.h>
+
+1738198751 c:\users\heinr\onedrive\desktop\csci178\lesson03_lighting\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+
+1738024879 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1738198786 c:\users\heinr\onedrive\desktop\csci178\lesson03_lighting\include\_scene.h
+	<_common.h>
+
+1738630410 source:c:\users\heinr\onedrive\desktop\csci178\lesson03_lighting\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1738630553 c:\users\heinr\onedrive\desktop\csci178\lesson03_lighting\include\_lightsetting.h
+	<_common.h>
+
+1738631336 source:c:\users\heinr\onedrive\desktop\csci178\lesson03_lighting\src\_scene.cpp
+	"_scene.h"
+	<_lightSetting.h>
+

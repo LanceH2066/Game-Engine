@@ -1,0 +1,56 @@
+# depslib dependency file v1.0
+1739234357 source:c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1739407539 c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+
+1738630553 c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\include\_lightsetting.h
+	<_common.h>
+
+1739405906 c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+
+1738024879 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1739407622 c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\include\_model.h
+	<_common.h>
+	<_textureLoader.h>
+
+1738803003 c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\include\_inputs.h
+	<_model.h>
+
+1739235558 source:c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\src\_inputs.cpp
+	"_inputs.h"
+
+1738630410 source:c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1739409166 source:c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\src\_model.cpp
+	"_model.h"
+
+1739409191 source:c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\src\_scene.cpp
+	"_scene.h"
+
+1739408337 source:c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1739406417 c:\users\heinr\onedrive\desktop\csci178\lesson06_txtl\include\_textureloader.h
+	<_common.h>
+	<SOIL.h>
+
+1668642808 c:\users\heinr\onedrive\desktop\csci178\common\include\soil.h
+
