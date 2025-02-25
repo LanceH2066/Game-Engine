@@ -3,7 +3,9 @@
 _lightSetting *myLight = new _lightSetting();
 _model *myModel = new _model();
 _inputs *input = new _inputs();
-_parallax *prlx = new _parallax();
+_parallax *prlx1 = new _parallax();
+_parallax *prlx2 = new _parallax();
+_parallax *prlx3 = new _parallax();
 
 _scene::_scene()
 {
@@ -27,12 +29,19 @@ GLint _scene::initGL()
     glEnable(GL_COLOR_MATERIAL);
     myLight->setLight(GL_LIGHT0);
 
+    // For 3 layer Parallax
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     dim.x = GetSystemMetrics(SM_CXSCREEN);
     dim.y = GetSystemMetrics(SM_CYSCREEN);
 
 
     myModel->initModel("images/skin.jpg");
-    prlx->initParallax("images/Parallax.jpg");
+    prlx1->initParallax("images/sky.png", 0.005, true, false);
+    prlx2->initParallax("images/mountains.png", 0.005, false, true);
+    prlx3->initParallax("images/clouds.png", 0.025, false,true);
+
     return true;
 }
 
@@ -41,12 +50,14 @@ void _scene::drawScene()
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); // Clear Bits
     glLoadIdentity();                                 // Identity Matrix
 
-    myModel->drawModel();
+    //myModel->drawModel();
 
     glPushMatrix();
         glDisable(GL_LIGHTING);
-        glScalef(13.0,13.0,1);
-        prlx->drawBackground(dim.x,dim.y);
+        glScalef(12.5,12.5,1);
+        prlx1->drawBackground(dim.x,dim.y);
+        prlx2->drawBackground(dim.x,dim.y);
+        prlx3->drawBackground(dim.x,dim.y);
         glEnable(GL_LIGHTING);
     glPopMatrix();
 }
@@ -73,7 +84,10 @@ int _scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_KEYDOWN:
             input->wParam = wParam;
             input->keyPressed(myModel);
-            input->keyPressedPRLX(prlx);
+            input->keyPressedPRLX(prlx1);
+            input->keyPressedPRLX(prlx2);
+            input->keyPressedPRLX(prlx3);
+
             break;
         case WM_KEYUP:
             break;

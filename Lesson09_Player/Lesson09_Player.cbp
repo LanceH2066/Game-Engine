@@ -45,6 +45,12 @@
 			<Add library="gdi32" />
 			<Add directory="C:/Users/heinr/OneDrive/Desktop/CSCI178/common/lib" />
 		</Linker>
+		<Unit filename="images/Parallax.jpg" />
+		<Unit filename="images/Sprites/ATTACK 1.png" />
+		<Unit filename="images/Sprites/HURT.png" />
+		<Unit filename="images/Sprites/IDLE.png" />
+		<Unit filename="images/Sprites/RUN.png" />
+		<Unit filename="images/skin.jpg" />
 		<Unit filename="include/_common.h" />
 		<Unit filename="include/_inputs.h" />
 		<Unit filename="include/_lightSetting.h" />

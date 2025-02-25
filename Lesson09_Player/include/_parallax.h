@@ -15,11 +15,13 @@ class _parallax
         _timer *tmr = new _timer();
 
         void drawBackground(float,float);   // pass width and height
-        void initParallax(char*);           // File Name
+        void initParallax(char*,float,bool,bool);           // File Name
         void scroll(string);     // Auto move, direction, speed
+        void autoScroll();
 
         float xMax, xMin, yMax, yMin;       // Texture coordinates
         float speed;
+        bool upDown, leftRight;
 
     protected:
 

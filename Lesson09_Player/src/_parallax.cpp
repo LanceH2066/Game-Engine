@@ -1,5 +1,4 @@
 #include "_parallax.h"
-
 _parallax::_parallax()
 {
     xMax = 1.0;
@@ -7,6 +6,7 @@ _parallax::_parallax()
     yMax = 1.0;
     yMin = 0.0;
     speed = 0.005;
+    upDown = leftRight = true;
 }
 
 _parallax::~_parallax()
@@ -16,7 +16,6 @@ _parallax::~_parallax()
 
 void _parallax::drawBackground(float width, float height)
 {
-    glColor3f(1.0,1.0,1.0);
     background->textureBinder();
 
     glBegin(GL_POLYGON);
@@ -34,8 +33,11 @@ void _parallax::drawBackground(float width, float height)
     glEnd();
 }
 
-void _parallax::initParallax(char* fileName)
+void _parallax::initParallax(char* fileName, float speed, bool upDown, bool leftRight)
 {
+    this->speed = speed;
+    this->upDown = upDown;
+    this->leftRight = leftRight;
     background->loadTexture(fileName);
 }
 
@@ -44,25 +46,45 @@ void _parallax::scroll(string direction)
 
         if(tmr->getTicks()>3)
         {
-            if(direction=="up")
+            if(direction=="up" && upDown==true)
             {
                 yMin -= speed;
                 yMax -= speed;
             }
-            if(direction=="down")
+            if(direction=="down" && upDown==true)
             {
                 yMin += speed;
                 yMax += speed;
             }
-            if(direction=="left")
+            if(direction=="left" && leftRight==true)
             {
                 xMin -= speed;
                 xMax -= speed;
             }
-            if(direction=="right")
+            if(direction=="right" && leftRight==true)
             {
                 xMin += speed;
                 xMax += speed;
+            }
+        }
+        tmr->reset();
+
+}
+
+void _parallax::autoScroll()
+{
+
+        if(tmr->getTicks()>3)
+        {
+            if(upDown==true)
+            {
+                yMin += speed;
+                yMax += speed;
+            }
+            if(leftRight==true)
+            {
+                xMin -= speed;
+                xMax -= speed;
             }
         }
         tmr->reset();

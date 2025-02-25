@@ -1,0 +1,78 @@
+# depslib dependency file v1.0
+1740009901 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1740012438 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+	<_parallax.h>
+
+1738630553 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_lightsetting.h
+	<_common.h>
+
+1740443090 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+	<time.h>
+
+1738024879 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1740009900 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_model.h
+	<_common.h>
+	<_textureLoader.h>
+
+1739406417 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_textureloader.h
+	<_common.h>
+	<SOIL.h>
+
+1668642808 c:\users\heinr\onedrive\desktop\csci178\common\include\soil.h
+
+1740444067 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_inputs.h
+	<_model.h>
+	<_parallax.h>
+
+1740508988 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_parallax.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+
+1740443145 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_timer.h
+	<_common.h>
+
+1740509029 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_inputs.cpp
+	"_inputs.h"
+
+1738630410 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1740009901 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_model.cpp
+	"_model.h"
+
+1740509054 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_parallax.cpp
+	"_parallax.h"
+
+1740445941 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_player.cpp
+	"_player.h"
+
+1740445941 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_player.h
+
+1740508700 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_scene.cpp
+	"_scene.h"
+
+1739408337 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1740443348 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_timer.cpp
+	"_timer.h"
+

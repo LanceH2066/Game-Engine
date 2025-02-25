@@ -51,6 +51,9 @@ void _inputs::keyPressedPRLX(_parallax* PRLX)
     case VK_DOWN:
         PRLX->scroll("down");
         break;
+    case VK_SPACE:
+        PRLX->autoScroll();
+        break;
     }
 }
 
