@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Lesson07_PRLX" />
+		<Option title="Lesson09_Player" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/Lesson07_PRLX" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/Lesson09_Player" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="C:/Users/heinr/OneDrive/Desktop/CSCI178/common/bin" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -18,7 +18,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/Lesson07_PRLX" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/Lesson09_Player" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="C:/Users/heinr/OneDrive/Desktop/CSCI178/common/bin" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
@@ -37,7 +37,7 @@
 			<Add directory="C:/Users/heinr/OneDrive/Desktop/CSCI178/common/include" />
 		</Compiler>
 		<Linker>
-			<Add library="../common/SOIL/lib/libSOIL.a" />
+			<Add library="../common/lib/libSOIL.a" />
 			<Add library="glut32" />
 			<Add library="opengl32" />
 			<Add library="glu32" />
@@ -50,6 +50,7 @@
 		<Unit filename="include/_lightSetting.h" />
 		<Unit filename="include/_model.h" />
 		<Unit filename="include/_parallax.h" />
+		<Unit filename="include/_player.h" />
 		<Unit filename="include/_scene.h" />
 		<Unit filename="include/_textureLoader.h" />
 		<Unit filename="include/_timer.h" />
@@ -58,11 +59,10 @@
 		<Unit filename="src/_lightSetting.cpp" />
 		<Unit filename="src/_model.cpp" />
 		<Unit filename="src/_parallax.cpp" />
+		<Unit filename="src/_player.cpp" />
 		<Unit filename="src/_scene.cpp" />
 		<Unit filename="src/_textureLoader.cpp" />
 		<Unit filename="src/_timer.cpp" />
-		<Extensions>
-			<lib_finder disable_auto="1" />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

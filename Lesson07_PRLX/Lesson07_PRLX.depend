@@ -12,7 +12,7 @@
 1738630553 c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\include\_lightsetting.h
 	<_common.h>
 
-1740009900 c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\include\_common.h
+1740443090 c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\include\_common.h
 	<windows.h>
 	<iostream>
 	<stdlib.h>
@@ -20,6 +20,7 @@
 	<GL/glut.h>
 	<time.h>
 	<math.h>
+	<time.h>
 
 1738024879 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
 	<windows.h>
@@ -37,10 +38,11 @@
 
 1668642808 c:\users\heinr\onedrive\desktop\csci178\common\include\soil.h
 
-1740009900 c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\include\_inputs.h
+1740444067 c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\include\_inputs.h
 	<_model.h>
+	<_parallax.h>
 
-1740009901 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_inputs.cpp
+1740444417 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_inputs.cpp
 	"_inputs.h"
 
 1738630410 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_lightsetting.cpp
@@ -49,16 +51,23 @@
 1740009901 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_model.cpp
 	"_model.h"
 
-1740014189 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_parallax.cpp
+1740444438 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_parallax.cpp
 	"_parallax.h"
 
-1740011221 c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\include\_parallax.h
+1740444338 c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\include\_parallax.h
 	<_common.h>
 	<_textureLoader.h>
+	<_timer.h>
 
-1740014166 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_scene.cpp
+1740444490 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_scene.cpp
 	"_scene.h"
 
 1739408337 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_textureloader.cpp
 	"_textureLoader.h"
+
+1740443145 c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\include\_timer.h
+	<_common.h>
+
+1740443348 source:c:\users\heinr\onedrive\desktop\csci178\lesson07_prlx\src\_timer.cpp
+	"_timer.h"
 
