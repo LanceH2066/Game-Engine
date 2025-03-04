@@ -6,6 +6,7 @@
 #include<_inputs.h>
 #include<_parallax.h>
 #include<_player.h>
+#include<_enemy.h>
 
 class _scene
 {

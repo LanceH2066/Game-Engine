@@ -3,16 +3,17 @@
 	<windows.h>
 	<_scene.h>
 
-1740012438 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_scene.h
+1740617429 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_scene.h
 	<_lightSetting.h>
 	<_model.h>
 	<_inputs.h>
 	<_parallax.h>
+	<_player.h>
 
 1738630553 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_lightsetting.h
 	<_common.h>
 
-1740443090 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_common.h
+1740678983 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_common.h
 	<windows.h>
 	<iostream>
 	<stdlib.h>
@@ -21,6 +22,7 @@
 	<time.h>
 	<math.h>
 	<time.h>
+	<map>
 
 1738024879 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
 	<windows.h>
@@ -38,7 +40,7 @@
 
 1668642808 c:\users\heinr\onedrive\desktop\csci178\common\include\soil.h
 
-1740444067 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_inputs.h
+1740681895 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_inputs.h
 	<_model.h>
 	<_parallax.h>
 
@@ -50,7 +52,7 @@
 1740443145 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_timer.h
 	<_common.h>
 
-1740509029 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_inputs.cpp
+1740681891 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_inputs.cpp
 	"_inputs.h"
 
 1738630410 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_lightsetting.cpp
@@ -62,12 +64,15 @@
 1740509054 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_parallax.cpp
 	"_parallax.h"
 
-1740445941 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_player.cpp
+1740681871 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_player.cpp
 	"_player.h"
 
-1740445941 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_player.h
+1741046923 c:\users\heinr\onedrive\desktop\csci178\lesson09_player\include\_player.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
 
-1740508700 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_scene.cpp
+1740681881 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_scene.cpp
 	"_scene.h"
 
 1739408337 source:c:\users\heinr\onedrive\desktop\csci178\lesson09_player\src\_textureloader.cpp

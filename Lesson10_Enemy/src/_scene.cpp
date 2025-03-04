@@ -7,6 +7,7 @@ _parallax *prlx1 = new _parallax();
 _parallax *prlx2 = new _parallax();
 _parallax *prlx3 = new _parallax();
 _player *player = new _player();
+_enemy *enemy = new _enemy();
 
 _scene::_scene()
 {
@@ -44,7 +45,7 @@ GLint _scene::initGL()
     prlx3->initParallax("images/clouds.png", 0.025, false,true);
 
     player->initPlayer(10,1,"images/Sprites/IDLE.png","images/Sprites/RUN.png","images/Sprites/ATTACK.png");
-
+    enemy->initEnemy(7,2,"images/Sprites/mon.png");
     return true;
 }
 
@@ -68,6 +69,13 @@ void _scene::drawScene()
         glDisable(GL_LIGHTING);
         player->drawPlayer();
         player->playerActions();
+        glEnable(GL_LIGHTING);
+    glPopMatrix();
+
+    glPushMatrix();
+        glDisable(GL_LIGHTING);
+        enemy->drawEnemy();
+        enemy->enemyActions();
         glEnable(GL_LIGHTING);
     glPopMatrix();
 }
