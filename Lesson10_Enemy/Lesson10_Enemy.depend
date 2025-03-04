@@ -90,3 +90,94 @@
 1740443348 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_timer.cpp
 	"_timer.h"
 
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+	<_parallax.h>
+	<_player.h>
+	<_enemy.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_lightsetting.h
+	<_common.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+	<time.h>
+	<map>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_model.h
+	<_common.h>
+	<_textureLoader.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_textureloader.h
+	<_common.h>
+	<SOIL.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_inputs.h
+	<_model.h>
+	<_parallax.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_parallax.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_timer.h
+	<_common.h>
+
+1741117951 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_player.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\include\_enemy.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_enemy.cpp
+	"_enemy.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_inputs.cpp
+	"_inputs.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_model.cpp
+	"_model.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_parallax.cpp
+	"_parallax.h"
+
+1741117915 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_player.cpp
+	"_player.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_scene.cpp
+	"_scene.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\src\_timer.cpp
+	"_timer.h"
+
+1739414632 c:\users\lance heinrich\desktop\csci 178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1739414632 c:\users\lance heinrich\desktop\csci 178\common\include\soil.h
+

@@ -1,0 +1,92 @@
+# depslib dependency file v1.0
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+	<_parallax.h>
+	<_player.h>
+	<_enemy.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_lightsetting.h
+	<_common.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+	<time.h>
+	<map>
+
+1739414632 c:\users\lance heinrich\desktop\csci 178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_model.h
+	<_common.h>
+	<_textureLoader.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_textureloader.h
+	<_common.h>
+	<SOIL.h>
+
+1739414632 c:\users\lance heinrich\desktop\csci 178\common\include\soil.h
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_inputs.h
+	<_model.h>
+	<_parallax.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_parallax.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_timer.h
+	<_common.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_player.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1741115327 c:\users\lance heinrich\desktop\csci 178\homework1parallax\include\_enemy.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_enemy.cpp
+	"_enemy.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_inputs.cpp
+	"_inputs.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_model.cpp
+	"_model.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_parallax.cpp
+	"_parallax.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_player.cpp
+	"_player.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1741115327 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_timer.cpp
+	"_timer.h"
+
+1741117402 source:c:\users\lance heinrich\desktop\csci 178\homework1parallax\src\_scene.cpp
+	"_scene.h"
+
