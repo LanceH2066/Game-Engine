@@ -7,7 +7,7 @@ _parallax *prlx1 = new _parallax();
 _parallax *prlx2 = new _parallax();
 _parallax *prlx3 = new _parallax();
 _player *player = new _player();
-_enemy *enemy = new _enemy();
+_enemy enemies[20];
 
 _scene::_scene()
 {
@@ -40,12 +40,21 @@ GLint _scene::initGL()
 
 
     myModel->initModel("images/skin.jpg");
-    prlx1->initParallax("images/sky.png", 0.005, true, false);
-    prlx2->initParallax("images/mountains.png", 0.005, false, true);
-    prlx3->initParallax("images/clouds.png", 0.025, false,true);
+    prlx1->initParallax("images/forestBG.png", 0.005, false, true);
+    //prlx2->initParallax("images/mountains.png", 0.005, false, true);
+    //prlx3->initParallax("images/clouds.png", 0.025, false,true);
 
     player->initPlayer(10,1,"images/Sprites/IDLE.png","images/Sprites/RUN.png","images/Sprites/ATTACK.png");
-    enemy->initEnemy(7,2,"images/Sprites/mon.png");
+
+    enemies[0].initEnemy("images/Sprites/mon.png");
+
+    for(int i =0; i < 20; i++)
+    {
+        vec3 randPos = {(float)rand()/(float)(RAND_MAX)*5-2.5,-0.3,-2};
+        enemies[i].position = randPos;
+        enemies[i].speed = (float)((rand()%8)+1.0)/100.0;
+    }
+
     return true;
 }
 
@@ -60,8 +69,8 @@ void _scene::drawScene()
         glDisable(GL_LIGHTING);
         glScalef(12.5,12.5,1);
         prlx1->drawBackground(dim.x,dim.y);
-        prlx2->drawBackground(dim.x,dim.y);
-        prlx3->drawBackground(dim.x,dim.y);
+        //prlx2->drawBackground(dim.x,dim.y);
+        //prlx3->drawBackground(dim.x,dim.y);
         glEnable(GL_LIGHTING);
     glPopMatrix();
 
@@ -74,8 +83,11 @@ void _scene::drawScene()
 
     glPushMatrix();
         glDisable(GL_LIGHTING);
-        enemy->drawEnemy();
-        enemy->enemyActions();
+        for(int i =0; i < 20; i++)
+        {
+            enemies[i].drawEnemy(enemies[0].enemyTextureLoader->tex);
+            enemies[i].enemyActions();
+        }
         glEnable(GL_LIGHTING);
     glPopMatrix();
 }
@@ -103,8 +115,8 @@ int _scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input->wParam = wParam;
             input->keyPressed(myModel);
             input->keyPressedPRLX(prlx1);
-            input->keyPressedPRLX(prlx2);
-            input->keyPressedPRLX(prlx3);
+            //input->keyPressedPRLX(prlx2);
+            //input->keyPressedPRLX(prlx3);
 
             break;
         case WM_KEYUP:

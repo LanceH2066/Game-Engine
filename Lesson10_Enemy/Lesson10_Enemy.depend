@@ -53,15 +53,15 @@
 1740443145 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_timer.h
 	<_common.h>
 
-1741046923 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_player.h
+1741136803 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_player.h
 	<_common.h>
 	<_timer.h>
 	<_textureLoader.h>
 
-1741050582 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_enemy.cpp
+1741222773 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_enemy.cpp
 	"_enemy.h"
 
-1741048567 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_enemy.h
+1741222779 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_enemy.h
 	<_common.h>
 	<_timer.h>
 	<_textureLoader.h>
@@ -78,10 +78,10 @@
 1740509054 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_parallax.cpp
 	"_parallax.h"
 
-1741049339 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_player.cpp
+1741136803 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_player.cpp
 	"_player.h"
 
-1741050125 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_scene.cpp
+1741222743 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_scene.cpp
 	"_scene.h"
 
 1739408337 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_textureloader.cpp

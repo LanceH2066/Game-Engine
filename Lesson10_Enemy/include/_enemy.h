@@ -30,9 +30,9 @@ class _enemy
         bool isAlive;
 
         // Methods
-        void initEnemy(int xFrames, int yFrames, char* fileName);
-        void drawEnemy();
-        void placeEnemy();
+        void initEnemy(char* fileName);
+        void drawEnemy(GLuint);
+        void placeEnemy(vec3);
         void enemyActions();
 
 

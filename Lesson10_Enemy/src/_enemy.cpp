@@ -6,35 +6,37 @@ _enemy::_enemy()
     scale = {0.25,0.25};
     rotation = {0,0,0};
     actionTrigger = 0;
-    speed = 0.1f;
+    speed = 0.05f;
     isAlive = true;
-}
 
-_enemy::~_enemy()
-{
-
-}
-void _enemy::initEnemy(int xFrames, int yFrames, char* fileName)
-{
-    framesX=xFrames;
-    framesY=yFrames;
+    framesX=7;
+    framesY=2;
 
     xMin = 0;
     xMax = 1.0/(float)framesX;
     yMax = 1.0/(float)framesY;
     yMin = yMax-(1.0/framesY);
 
+}
+
+_enemy::~_enemy()
+{
+
+}
+void _enemy::initEnemy(char* fileName)
+{
     enemyTextureLoader->loadTexture(fileName);
 }
 
-void _enemy::drawEnemy()
+void _enemy::drawEnemy(GLuint tex)
 {
     if(isAlive)
     {
         glPushMatrix();
 
             glColor3f(1.0,1.0,1.0);
-            enemyTextureLoader->textureBinder();
+            //enemyTextureLoader->textureBinder();
+            glBindTexture(GL_TEXTURE_2D, tex);
 
             glTranslatef(position.x,position.y,position.z);
             glRotatef(rotation.x,1,0,0);
@@ -62,9 +64,9 @@ void _enemy::drawEnemy()
     }
 }
 
-void _enemy::placeEnemy()
+void _enemy::placeEnemy(vec3 pos)
 {
-
+    position = pos;
 }
 
 void _enemy::enemyActions()
