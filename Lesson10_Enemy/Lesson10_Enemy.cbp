@@ -51,6 +51,7 @@
 		<Unit filename="images/Sprites/RUN.png" />
 		<Unit filename="images/Sprites/mon.png" />
 		<Unit filename="images/clouds.png" />
+		<Unit filename="images/forestBG.png" />
 		<Unit filename="images/mountains.png" />
 		<Unit filename="images/skin.jpg" />
 		<Unit filename="images/sky.png" />
