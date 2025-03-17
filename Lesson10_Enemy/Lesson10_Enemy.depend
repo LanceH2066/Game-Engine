@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1740009901 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\main.cpp
+1740013501 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\main.cpp
 	<windows.h>
 	<_scene.h>
 
-1741049352 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_scene.h
+1741052952 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_scene.h
 	<_lightSetting.h>
 	<_model.h>
 	<_inputs.h>
@@ -11,10 +11,10 @@
 	<_player.h>
 	<_enemy.h>
 
-1738630553 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_lightsetting.h
+1738634153 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_lightsetting.h
 	<_common.h>
 
-1740678983 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_common.h
+1740682583 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_common.h
 	<windows.h>
 	<iostream>
 	<stdlib.h>
@@ -25,69 +25,69 @@
 	<time.h>
 	<map>
 
-1738024879 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
+1738028479 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
 	<windows.h>
 	<stdlib.h>
 	<GL/gl.h>
 	<GL/glu.h>
 
-1740009900 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_model.h
+1740013500 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_model.h
 	<_common.h>
 	<_textureLoader.h>
 
-1739406417 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_textureloader.h
+1739410017 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_textureloader.h
 	<_common.h>
 	<SOIL.h>
 
-1668642808 c:\users\heinr\onedrive\desktop\csci178\common\include\soil.h
+1668646408 c:\users\heinr\onedrive\desktop\csci178\common\include\soil.h
 
-1740681895 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_inputs.h
+1740685495 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_inputs.h
 	<_model.h>
 	<_parallax.h>
 
-1740508988 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_parallax.h
+1740512588 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_parallax.h
 	<_common.h>
 	<_textureLoader.h>
 	<_timer.h>
 
-1740443145 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_timer.h
+1740446745 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_timer.h
 	<_common.h>
 
-1741136803 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_player.h
+1741140403 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_player.h
 	<_common.h>
 	<_timer.h>
 	<_textureLoader.h>
 
-1741222773 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_enemy.cpp
+1741226373 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_enemy.cpp
 	"_enemy.h"
 
-1741222779 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_enemy.h
+1741226379 c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\include\_enemy.h
 	<_common.h>
 	<_timer.h>
 	<_textureLoader.h>
 
-1740681891 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_inputs.cpp
+1740685491 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_inputs.cpp
 	"_inputs.h"
 
-1738630410 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_lightsetting.cpp
+1738634010 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_lightsetting.cpp
 	"_lightSetting.h"
 
-1740009901 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_model.cpp
+1740013501 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_model.cpp
 	"_model.h"
 
-1740509054 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_parallax.cpp
+1740512654 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_parallax.cpp
 	"_parallax.h"
 
-1741136803 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_player.cpp
+1741140403 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_player.cpp
 	"_player.h"
 
-1741223618 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_scene.cpp
+1741227218 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_scene.cpp
 	"_scene.h"
 
-1739408337 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_textureloader.cpp
+1739411937 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_textureloader.cpp
 	"_textureLoader.h"
 
-1740443348 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_timer.cpp
+1740446948 source:c:\users\heinr\onedrive\desktop\csci178\lesson10_enemy\src\_timer.cpp
 	"_timer.h"
 
 1741115327 source:c:\users\lance heinrich\desktop\csci 178\lesson10_enemy\main.cpp

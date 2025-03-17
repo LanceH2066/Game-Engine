@@ -1,0 +1,99 @@
+# depslib dependency file v1.0
+1740013501 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1741650491 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+	<_parallax.h>
+	<_player.h>
+	<_enemy.h>
+	<_collision.h>
+
+1738634153 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_lightsetting.h
+	<_common.h>
+
+1741822922 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+	<time.h>
+	<map>
+
+1738028479 c:\users\heinr\onedrive\desktop\csci178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1740013500 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_model.h
+	<_common.h>
+	<_textureLoader.h>
+
+1739410017 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_textureloader.h
+	<_common.h>
+	<SOIL.h>
+
+1668646408 c:\users\heinr\onedrive\desktop\csci178\common\include\soil.h
+
+1740685495 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_inputs.h
+	<_model.h>
+	<_parallax.h>
+
+1740512588 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_parallax.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+
+1740446745 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_timer.h
+	<_common.h>
+
+1741140403 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_player.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1741822779 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_enemy.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1741824107 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_enemy.cpp
+	"_enemy.h"
+
+1740685491 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_inputs.cpp
+	"_inputs.h"
+
+1738634010 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1740013501 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_model.cpp
+	"_model.h"
+
+1740512654 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_parallax.cpp
+	"_parallax.h"
+
+1741821546 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_player.cpp
+	"_player.h"
+
+1741824258 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_scene.cpp
+	"_scene.h"
+
+1739411937 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1740446948 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_timer.cpp
+	"_timer.h"
+
+1741649740 c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\include\_collision.h
+	<_common.h>
+
+1741651420 source:c:\users\heinr\onedrive\desktop\csci178\lesson11_collision\src\_collision.cpp
+	"_collision.h"
+
