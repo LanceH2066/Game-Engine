@@ -1,0 +1,100 @@
+# depslib dependency file v1.0
+1742235684 source:c:\users\lance heinrich\desktop\csci 178\homework #2\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+	<_parallax.h>
+	<_player.h>
+	<_enemy.h>
+	<_collision.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_lightsetting.h
+	<_common.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+	<time.h>
+	<map>
+
+1739418232 c:\users\lance heinrich\desktop\csci 178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_model.h
+	<_common.h>
+	<_textureLoader.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_textureloader.h
+	<_common.h>
+	<SOIL.h>
+
+1739418232 c:\users\lance heinrich\desktop\csci 178\common\include\soil.h
+
+1742244567 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_inputs.h
+	<_model.h>
+	<_parallax.h>
+	<_player.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_parallax.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_timer.h
+	<_common.h>
+
+1742245693 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_player.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_enemy.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1742235684 c:\users\lance heinrich\desktop\csci 178\homework #2\include\_collision.h
+	<_common.h>
+
+1742235684 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_collision.cpp
+	"_collision.h"
+
+1742235684 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_enemy.cpp
+	"_enemy.h"
+
+1742245081 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_inputs.cpp
+	"_inputs.h"
+
+1742235684 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1742235684 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_model.cpp
+	"_model.h"
+
+1742235684 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_parallax.cpp
+	"_parallax.h"
+
+1742245949 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_player.cpp
+	"_player.h"
+
+1742244578 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_scene.cpp
+	"_scene.h"
+
+1742235684 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1742235684 source:c:\users\lance heinrich\desktop\csci 178\homework #2\src\_timer.cpp
+	"_timer.h"
+
