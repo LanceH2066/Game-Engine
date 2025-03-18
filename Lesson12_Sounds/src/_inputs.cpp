@@ -51,9 +51,6 @@ void _inputs::keyPressedPRLX(_parallax* PRLX)
     case VK_DOWN:
         PRLX->scroll("down");
         break;
-    case VK_SPACE:
-        PRLX->autoScroll();
-        break;
     }
 }
 
@@ -90,6 +87,18 @@ void _inputs::keyPressedPlayer(_player* player)
             player->actionTrigger = player->RUN;
             player->playerActions();
         }
+        break;
+    }
+}
+void _inputs::keyPressedSounds(_sounds* sounds, char* fileName)
+{
+    switch(wParam)
+    {
+    case VK_LEFT:
+        sounds->playSounds(fileName);
+        break;
+    case VK_RIGHT:
+        sounds->playSounds(fileName);
         break;
     }
 }

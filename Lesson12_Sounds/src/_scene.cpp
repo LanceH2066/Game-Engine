@@ -7,6 +7,7 @@ _parallax *prlx1 = new _parallax();
 _player *player = new _player();
 _enemy enemies[20];
 _collision *collision = new _collision();
+_sounds *sounds = new _sounds();
 
 _scene::_scene()
 {
@@ -49,6 +50,9 @@ GLint _scene::initGL()
         enemies[i].position = randPos;
         enemies[i].speed = (float)((rand()%8)+1.0)/100.0;
     }
+
+    sounds->initSounds();
+    sounds->playMusic("sounds/music.mp3");
 
     return true;
 }
@@ -121,6 +125,7 @@ int _scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input->keyPressed(myModel);
             input->keyPressedPRLX(prlx1);
             input->keyPressedPlayer(player);
+            input->keyPressedSounds(sounds,"sounds/stepdirt_1.wav");
             break;
         case WM_KEYUP:
             input->keyUpPlayer(player);

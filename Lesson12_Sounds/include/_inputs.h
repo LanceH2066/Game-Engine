@@ -4,6 +4,7 @@
 #include<_model.h>
 #include<_parallax.h>
 #include<_player.h>
+#include<_sounds.h>
 
 class _inputs
 {
@@ -14,6 +15,7 @@ class _inputs
         void keyPressed(_model *);  // Handling given model by key strokes
         void keyPressedPRLX(_parallax*);
         void keyPressedPlayer(_player*);
+        void keyPressedSounds(_sounds*,char*);
         void keyUpPlayer(_player* player);
         void keyUP();
 
