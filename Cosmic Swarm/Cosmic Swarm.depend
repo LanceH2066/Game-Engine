@@ -1,0 +1,112 @@
+# depslib dependency file v1.0
+1742450569 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1742499554 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_bullet.cpp
+	"_Bullet.h"
+
+1742505672 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_collision.cpp
+	"_collision.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_enemy.cpp
+	"_enemy.h"
+
+1742510017 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_inputs.cpp
+	"_inputs.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_model.cpp
+	"_model.h"
+
+1742508684 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_parallax.cpp
+	"_parallax.h"
+
+1742508630 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_player.cpp
+	"_player.h"
+
+1742510043 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_scene.cpp
+	"_scene.h"
+
+1742510450 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_sounds.cpp
+	"_sounds.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_timer.cpp
+	"_timer.h"
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+	<_parallax.h>
+	<_player.h>
+	<_enemy.h>
+	<_collision.h>
+	<_sounds.h>
+	<_Bullet.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_lightsetting.h
+	<_common.h>
+
+1742508062 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+	<string>
+	<time.h>
+	<map>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_model.h
+	<_common.h>
+	<_textureLoader.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_textureloader.h
+	<_common.h>
+	<SOIL.h>
+
+1742509945 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_inputs.h
+	<_model.h>
+	<_parallax.h>
+	<_player.h>
+	<_sounds.h>
+
+1742506976 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_parallax.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_timer.h
+	<_common.h>
+
+1742505972 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_player.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+	<_collision.h>
+
+1742509761 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_sounds.h
+	<SNDS/irrKlang.h>
+	<_common.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_enemy.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1742505198 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_collision.h
+	<_common.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_bullet.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+

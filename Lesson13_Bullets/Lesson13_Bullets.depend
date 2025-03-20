@@ -213,3 +213,217 @@
 1742252739 source:c:\users\heinr\onedrive\desktop\csci178\lesson13_bullets\src\_timer.cpp
 	"_timer.h"
 
+1742450569 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\main.cpp
+	<windows.h>
+	<_scene.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_scene.h
+	<_lightSetting.h>
+	<_model.h>
+	<_inputs.h>
+	<_parallax.h>
+	<_player.h>
+	<_enemy.h>
+	<_collision.h>
+	<_sounds.h>
+	<_Bullet.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_lightsetting.h
+	<_common.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_common.h
+	<windows.h>
+	<iostream>
+	<stdlib.h>
+	<gl/gl.h>
+	<GL/glut.h>
+	<time.h>
+	<math.h>
+	<time.h>
+	<map>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_model.h
+	<_common.h>
+	<_textureLoader.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_textureloader.h
+	<_common.h>
+	<SOIL.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_inputs.h
+	<_model.h>
+	<_parallax.h>
+	<_player.h>
+	<_sounds.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_parallax.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_timer.h
+	<_common.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_player.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_sounds.h
+	<SNDS/irrKlang.h>
+	<_common.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_enemy.h
+	<_common.h>
+	<_timer.h>
+	<_textureLoader.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_collision.h
+	<_common.h>
+
+1742450569 c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\include\_bullet.h
+	<_common.h>
+	<_textureLoader.h>
+	<_timer.h>
+
+1739418232 c:\users\lance heinrich\desktop\csci 178\common\include\gl\glut.h
+	<windows.h>
+	<stdlib.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1739418232 c:\users\lance heinrich\desktop\csci 178\common\include\soil.h
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\irrklang.h
+	"ik_irrKlangTypes.h"
+	"ik_vec3d.h"
+	"ik_IRefCounted.h"
+	"ik_IVirtualRefCounted.h"
+	"ik_ESoundOutputDrivers.h"
+	"ik_ESoundEngineOptions.h"
+	"ik_EStreamModes.h"
+	"ik_SAudioStreamFormat.h"
+	"ik_ISoundEngine.h"
+	"ik_ISoundSource.h"
+	"ik_ISound.h"
+	"ik_IAudioStream.h"
+	"ik_IAudioStreamLoader.h"
+	"ik_ISoundEffectControl.h"
+	"ik_ISoundStopEventReceiver.h"
+	"ik_IFileFactory.h"
+	"ik_IFileReader.h"
+	"ik_ISoundDeviceList.h"
+	"ik_IAudioRecorder.h"
+	"ik_ISoundMixedOutputReceiver.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_irrklangtypes.h
+	<wchar.h>
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_vec3d.h
+	<math.h>
+	"ik_irrKlangTypes.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_irefcounted.h
+	"ik_irrKlangTypes.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_ivirtualrefcounted.h
+	"ik_irrKlangTypes.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_esoundoutputdrivers.h
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_esoundengineoptions.h
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_estreammodes.h
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_saudiostreamformat.h
+	"ik_IRefCounted.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_isoundengine.h
+	"ik_IRefCounted.h"
+	"ik_vec3d.h"
+	"ik_ISoundSource.h"
+	"ik_ISound.h"
+	"ik_EStreamModes.h"
+	"ik_IFileFactory.h"
+	"ik_ISoundMixedOutputReceiver.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_isoundsource.h
+	"ik_IVirtualRefCounted.h"
+	"ik_vec3d.h"
+	"ik_EStreamModes.h"
+	"ik_SAudioStreamFormat.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_isound.h
+	"ik_IVirtualRefCounted.h"
+	"ik_ISoundEffectControl.h"
+	"ik_vec3d.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_isoundeffectcontrol.h
+	"ik_IVirtualRefCounted.h"
+	"ik_vec3d.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_ifilefactory.h
+	"ik_IRefCounted.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_isoundmixedoutputreceiver.h
+	"ik_IRefCounted.h"
+	"ik_SAudioStreamFormat.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_iaudiostream.h
+	"ik_IRefCounted.h"
+	"ik_SAudioStreamFormat.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_iaudiostreamloader.h
+	"ik_IRefCounted.h"
+	"ik_IFileReader.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_ifilereader.h
+	"ik_IRefCounted.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_isoundstopeventreceiver.h
+	"ik_IRefCounted.h"
+	"ik_SAudioStreamFormat.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_isounddevicelist.h
+	"ik_IRefCounted.h"
+
+1742450570 c:\users\lance heinrich\desktop\csci 178\common\include\snds\ik_iaudiorecorder.h
+	"ik_IRefCounted.h"
+	"ik_ISoundSource.h"
+
+1742497831 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_bullet.cpp
+	"_Bullet.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_collision.cpp
+	"_collision.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_enemy.cpp
+	"_enemy.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_inputs.cpp
+	"_inputs.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_model.cpp
+	"_model.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_parallax.cpp
+	"_parallax.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_player.cpp
+	"_player.h"
+
+1742497896 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_scene.cpp
+	"_scene.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1742450570 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_timer.cpp
+	"_timer.h"
+
+1742497185 source:c:\users\lance heinrich\desktop\csci 178\lesson13_bullets\src\_sounds.cpp
+	"_sounds.h"
+

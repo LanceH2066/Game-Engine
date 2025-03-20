@@ -17,6 +17,8 @@ int _sounds::initSounds()
         //return 0;
     }
 
+    soundEngine->setSoundVolume(0.05f);
+
     return 1;
 }
 void _sounds::playMusic(char* fileName)

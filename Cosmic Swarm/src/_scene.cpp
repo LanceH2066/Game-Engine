@@ -1,7 +1,6 @@
 #include "_scene.h"
 
 _lightSetting *myLight = new _lightSetting();
-_model *myModel = new _model();
 _inputs *input = new _inputs();
 _parallax *prlx1 = new _parallax();
 _player *player = new _player();
@@ -30,6 +29,7 @@ GLint _scene::initGL()
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_TEXTURE_2D);
     myLight->setLight(GL_LIGHT0);
 
     glEnable(GL_BLEND);
@@ -38,11 +38,11 @@ GLint _scene::initGL()
     dim.x = GetSystemMetrics(SM_CXSCREEN);
     dim.y = GetSystemMetrics(SM_CYSCREEN);
 
-    myModel->initModel("images/skin.jpg");
-    prlx1->initParallax("images/forestBG.png", 0.005, false, true);
+    prlx1->initParallax("images/background.png", 0.005, false, false);
 
-    player->initPlayer(6,4,"images/Sprites/WALK.png","images/Sprites/WALK.png","images/Sprites/WALK.png");
+    player->initPlayer(1,1,"images/player.png");
 
+    /*
     enemies[0].initEnemy("images/Sprites/mon.png");
     bullets[0].textureLoader->loadTexture("images/bullet.png");
 
@@ -54,6 +54,7 @@ GLint _scene::initGL()
 
         bullets[i].init(player->playerPosition);
     }
+    */
 
     sounds->initSounds();
     sounds->playMusic("sounds/music.mp3");
@@ -66,13 +67,18 @@ void _scene::drawScene()
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); // Clear Bits
     glLoadIdentity();                                 // Identity Matrix
 
-    gluLookAt(0,0,2,0,0,0,0,1,0);
-    //myModel->drawModel();
+    // Camera follows the player
+    vec3 cameraPos = {player->playerPosition.x, player->playerPosition.y, player->playerPosition.z + 20.0f};
+    vec3 lookAtPos = {player->playerPosition.x, player->playerPosition.y, player->playerPosition.z};
+
+    gluLookAt(cameraPos.x, cameraPos.y, cameraPos.z, // Eye position (camera)
+              lookAtPos.x, lookAtPos.y, lookAtPos.z, // Center position (where the camera looks)
+              0, 1, 0); // Up vector (keeps camera upright)
 
     glPushMatrix();
         glDisable(GL_LIGHTING);
-        glScalef(13.25,13.25,1);
-        prlx1->drawBackground(dim.x,dim.y);
+        prlx1->drawBackground(dim.x, dim.y, player->playerPosition); // Move background with player
+        //prlx2->drawBackground(dim.x,dim.y);
         glEnable(GL_LIGHTING);
     glPopMatrix();
 
@@ -82,6 +88,7 @@ void _scene::drawScene()
         glEnable(GL_LIGHTING);
     glPopMatrix();
 
+    /*
     glPushMatrix();
         glDisable(GL_LIGHTING);
         for(int i =0; i < 20; i++)
@@ -106,6 +113,7 @@ void _scene::drawScene()
         glEnable(GL_LIGHTING);
 
     glPopMatrix();
+    */
 }
 
 void _scene::reSize(GLint width, GLint height)
@@ -129,19 +137,18 @@ int _scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         case WM_KEYDOWN:
             input->wParam = wParam;
-            input->keyPressed(myModel);
-            input->keyPressedPRLX(prlx1);
             input->keyPressedPlayer(player);
-            input->keyPressedSounds(sounds,"sounds/stepdirt_1.wav");
+            input->keyPressedSounds(sounds,"sounds/engineSound.mp3");
             break;
         case WM_KEYUP:
             input->keyUpPlayer(player);
+            input->keyUpSounds(sounds,"sounds/engineSound.mp3");
             break;
 
         case WM_LBUTTONDOWN:
         case WM_RBUTTONDOWN:
             input->wParam = wParam;
-            input->mouseEventDown(myModel, LOWORD(lParam), HIWORD(lParam));
+            //input->mouseEventDown(myModel, LOWORD(lParam), HIWORD(lParam));
             break;
 
         case WM_LBUTTONUP:
@@ -151,11 +158,11 @@ int _scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             break;
 
         case WM_MOUSEMOVE:
-            input->mouseMove(myModel, LOWORD(lParam), HIWORD(lParam));
+            //input->mouseMove(myModel, LOWORD(lParam), HIWORD(lParam));
             break;
 
         case WM_MOUSEWHEEL:
-            input->mouseWheel(myModel,(double)GET_WHEEL_DELTA_WPARAM(wParam));
+            //input->mouseWheel(myModel,(double)GET_WHEEL_DELTA_WPARAM(wParam));
             break;
     }
     return 0;
