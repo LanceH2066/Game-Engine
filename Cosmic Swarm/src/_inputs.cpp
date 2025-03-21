@@ -56,35 +56,38 @@ void _inputs::keyPressedPRLX(_parallax* PRLX)
 
 void _inputs::keyPressedPlayer(_player* player)
 {
-    switch(wParam)
-    {
-    case VK_LEFT: // Left Arrow
-    case 'A':     // A key
+    bool moveLeft = (GetAsyncKeyState(VK_LEFT) & 0x8000) || (GetAsyncKeyState('A') & 0x8000);
+    bool moveRight = (GetAsyncKeyState(VK_RIGHT) & 0x8000) || (GetAsyncKeyState('D') & 0x8000);
+    bool moveUp = (GetAsyncKeyState(VK_UP) & 0x8000) || (GetAsyncKeyState('W') & 0x8000);
+    bool moveDown = (GetAsyncKeyState(VK_DOWN) & 0x8000) || (GetAsyncKeyState('S') & 0x8000);
+
+    if (moveLeft && moveUp) {
+        player->setFacingDirection("up-left");
+    }
+    else if (moveRight && moveUp) {
+        player->setFacingDirection("up-right");
+    }
+    else if (moveLeft && moveDown) {
+        player->setFacingDirection("down-left");
+    }
+    else if (moveRight && moveDown) {
+        player->setFacingDirection("down-right");
+    }
+    else if (moveLeft) {
         player->setFacingDirection("left");
-        player->actionTrigger = player->FLYING;
-        player->playerActions();
-        break;
-
-    case VK_RIGHT: // Right Arrow
-    case 'D':      // D key
+    }
+    else if (moveRight) {
         player->setFacingDirection("right");
-        player->actionTrigger = player->FLYING;
-        player->playerActions();
-        break;
-
-    case VK_UP: // Up Arrow
-    case 'W':   // W key
+    }
+    else if (moveUp) {
         player->setFacingDirection("up");
-        player->actionTrigger = player->FLYING;
-        player->playerActions();
-        break;
-
-    case VK_DOWN: // Down Arrow
-    case 'S':     // S key
+    }
+    else if (moveDown) {
         player->setFacingDirection("down");
-        player->actionTrigger = player->FLYING;
+    }
+    else {
+        player->actionTrigger = player->IDLE;
         player->playerActions();
-        break;
     }
 }
 void _inputs::keyPressedSounds(_sounds* sounds, char* fileName)
@@ -131,14 +134,14 @@ void _inputs::keyUpSounds(_sounds* sounds, char* fileName)
 }
 void _inputs::keyUpPlayer(_player* player)
 {
-    switch(wParam)
-    {
-        default:
-        {
-            player->actionTrigger = player->IDLE;
-            player->playerActions();
-            break;
-        }
+    bool moveLeft = (GetAsyncKeyState(VK_LEFT) & 0x8000) || (GetAsyncKeyState('A') & 0x8000);
+    bool moveRight = (GetAsyncKeyState(VK_RIGHT) & 0x8000) || (GetAsyncKeyState('D') & 0x8000);
+    bool moveUp = (GetAsyncKeyState(VK_UP) & 0x8000) || (GetAsyncKeyState('W') & 0x8000);
+    bool moveDown = (GetAsyncKeyState(VK_DOWN) & 0x8000) || (GetAsyncKeyState('S') & 0x8000);
+
+    if (!moveLeft && !moveRight && !moveUp && !moveDown) {
+        player->actionTrigger = player->IDLE;
+        player->playerActions();
     }
 }
 

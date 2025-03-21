@@ -9,9 +9,9 @@
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+#pragma comment(lib, "glu32.lib")
 
-#include<_scene.h>  // Scene Class (Has all other libraries)
-
+#include "_scene.h"  // Scene Class (Has all other libraries)
 using namespace std;
 
 

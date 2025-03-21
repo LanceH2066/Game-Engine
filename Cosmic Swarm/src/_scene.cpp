@@ -41,7 +41,6 @@ GLint _scene::initGL()
     prlx1->initParallax("images/background.png", 0.005, false, false);
 
     player->initPlayer(1,1,"images/player.png");
-
     /*
     enemies[0].initEnemy("images/Sprites/mon.png");
     bullets[0].textureLoader->loadTexture("images/bullet.png");

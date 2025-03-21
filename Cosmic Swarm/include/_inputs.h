@@ -1,6 +1,7 @@
 #ifndef _INPUTS_H
 #define _INPUTS_H
 
+#include<_common.h>
 #include<_model.h>
 #include<_parallax.h>
 #include<_player.h>
@@ -32,6 +33,7 @@ class _inputs
         bool isMsRotation;
 
         WPARAM wParam;
+        map<int, bool> keyStates;
 
     protected:
 

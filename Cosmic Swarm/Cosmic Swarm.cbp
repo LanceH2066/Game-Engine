@@ -32,7 +32,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add directory="include" />
+			<Add directory="C:/Users/Lance Heinrich/Desktop/CSCI 178/common/include" />
 		</Compiler>
 		<Linker>
 			<Add library="../common/lib/libSOIL.a" />
@@ -44,13 +44,14 @@
 			<Add library="../common/lib/libirrKlang.a" />
 			<Add directory="C:/Users/Lance Heinrich/Desktop/CSCI 178/common/lib" />
 		</Linker>
+		<Unit filename="images/Spaceship fx/Large flame.png" />
+		<Unit filename="images/Spaceship fx/Large flame_ship.png" />
+		<Unit filename="images/Spaceship fx/Small flame.png" />
+		<Unit filename="images/Spaceship fx/Small flame_ship.png" />
 		<Unit filename="images/background.png" />
-		<Unit filename="images/blackbg.png" />
 		<Unit filename="images/bugfighter.png" />
 		<Unit filename="images/player.png" />
-		<Unit filename="images/skin.jpg" />
 		<Unit filename="images/smallbug.png" />
-		<Unit filename="images/stars.png" />
 		<Unit filename="images/swarmbot.png" />
 		<Unit filename="include/_Bullet.h" />
 		<Unit filename="include/_collision.h" />
@@ -71,6 +72,7 @@
 		<Unit filename="sounds/stepdirt_1.wav" />
 		<Unit filename="src/_Bullet.cpp" />
 		<Unit filename="src/_collision.cpp" />
+		<Unit filename="src/_common.cpp" />
 		<Unit filename="src/_enemy.cpp" />
 		<Unit filename="src/_inputs.cpp" />
 		<Unit filename="src/_lightSetting.cpp" />

@@ -72,14 +72,9 @@ void _player::drawPlayer()
 
 void _player::setFacingDirection(const string& direction)
 {
-    // Check if direction is already set
-    if (facingDirection == direction)
-        return;
 
-    // Update facing direction
     facingDirection = direction;
 
-    // Adjust scale/rotation for proper orientation
     if (direction == "left")
     {
         playerRotation.z = 90;
@@ -100,6 +95,29 @@ void _player::setFacingDirection(const string& direction)
         playerRotation.x = 180;
         playerRotation.z = 0;
     }
+    else if (direction == "up-left")
+    {
+        playerRotation.z = 45;
+        playerRotation.x = 0;
+    }
+    else if (direction == "up-right")
+    {
+        playerRotation.z = -45;
+        playerRotation.x = 0;
+    }
+    else if (direction == "down-left")
+    {
+        playerRotation.z = 135;
+        playerRotation.x = 0;
+    }
+    else if (direction == "down-right")
+    {
+        playerRotation.z = -135;
+        playerRotation.x = 0;
+    }
+
+    actionTrigger = FLYING;
+    playerActions();
 }
 
 void _player::playerActions()
@@ -116,26 +134,36 @@ void _player::playerActions()
             break;
         case FLYING:
         {
-            if(playerTimer->getTicks() > 10)
+
+            float moveX = 0.0f, moveY = 0.0f;
+
+            if (facingDirection == "left") moveX = -1.0f;
+            else if (facingDirection == "right") moveX = 1.0f;
+            else if (facingDirection == "up") moveY = 1.0f;
+            else if (facingDirection == "down") moveY = -1.0f;
+            else if (facingDirection == "up-left") { moveX = -1.0f; moveY = 1.0f; }
+            else if (facingDirection == "up-right") { moveX = 1.0f; moveY = 1.0f; }
+            else if (facingDirection == "down-left") { moveX = -1.0f; moveY = -1.0f; }
+            else if (facingDirection == "down-right") { moveX = 1.0f; moveY = -1.0f; }
+
+            // Normalize diagonal movement
+            if (moveX != 0.0f && moveY != 0.0f)
             {
-                if (facingDirection == "left")
-                {
-                    playerPosition.x -= speed;
-                }
-                else if (facingDirection == "right")
-                {
-                    playerPosition.x += speed;
-                }
-                else if (facingDirection == "up")
-                {
-                    playerPosition.y += speed;
-                }
-                else if (facingDirection == "down")
-                {
-                    playerPosition.y -= speed;
-                }
+                float magnitude = sqrt(moveX * moveX + moveY * moveY);
+                moveX /= magnitude;
+                moveY /= magnitude;
+            }
+
+            playerPosition.x += moveX * speed;
+            playerPosition.y += moveY * speed;
+
+
 
             /*
+            if(playerTimer->getTicks() > 10)
+            {
+
+
                 xMax +=1.0/(float)framesX;
                 xMin += 1.0/(float)framesX;
 
@@ -154,9 +182,10 @@ void _player::playerActions()
                         yMax = 1.0 / (float)framesY;
                     }
                 }
-            */
-                playerTimer->reset();
+
+            playerTimer->reset();
             }
+            */
             break;
         }
     }
