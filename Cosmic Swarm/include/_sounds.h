@@ -18,8 +18,10 @@ class _sounds
         int initSounds();
         void playMusic(char* fileName);
         void stopMusic();
-        void playThrusterSound(char* fileName);
+        void playThrusterSound();
         void stopThrusterSound();
+
+        char * thrusterSoundFilename = "sounds/engineSound.mp3";
     protected:
 
     private:

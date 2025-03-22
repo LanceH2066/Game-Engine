@@ -22,6 +22,7 @@ void _Bullet::init(vec3 playerPos)
 
     xMin = yMin = 0;
     xMax = yMax = 1.0;
+
 }
 
 void _Bullet::reset(vec3 playerPos)

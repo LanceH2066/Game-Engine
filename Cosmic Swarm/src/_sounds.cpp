@@ -39,11 +39,11 @@ void _sounds::stopMusic()
         currentMusic = nullptr;
     }
 }
-void _sounds::playThrusterSound(char* fileName)
+void _sounds::playThrusterSound()
 {
     if (!thrusterSound || thrusterSound->isFinished())
     {
-        thrusterSound = soundEngine->play2D(fileName, true, false, true); // Looping sound
+        thrusterSound = soundEngine->play2D(thrusterSoundFilename, true, false, true); // Looping sound
         thrusterSound->setVolume(0.25f);
     }
 }

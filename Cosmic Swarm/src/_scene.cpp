@@ -7,7 +7,6 @@ _player *player = new _player();
 _enemy enemies[20];
 _collision *collision = new _collision();
 _sounds *sounds = new _sounds();
-_Bullet bullets[20];
 
 _scene::_scene()
 {
@@ -21,26 +20,27 @@ _scene::~_scene()
 
 GLint _scene::initGL()
 {
+    // GL SETTINGS
     glClearColor(1.0,1.0,1.0,1.0);
     glClearDepth(1.0);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_TEXTURE_2D);
     myLight->setLight(GL_LIGHT0);
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    // SCREEN SIZE
     dim.x = GetSystemMetrics(SM_CXSCREEN);
     dim.y = GetSystemMetrics(SM_CYSCREEN);
 
+    // INITIALIZE OBJECTS IN SCENE
     prlx1->initParallax("images/background.png", 0.005, false, false);
-
     player->initPlayer(1,1,"images/player.png");
+
     /*
     enemies[0].initEnemy("images/Sprites/mon.png");
     bullets[0].textureLoader->loadTexture("images/bullet.png");
@@ -55,6 +55,7 @@ GLint _scene::initGL()
     }
     */
 
+    // INITIALIZE SOUNDS & START MUSIC
     sounds->initSounds();
     sounds->playMusic("sounds/music.mp3");
 
@@ -107,7 +108,6 @@ void _scene::drawScene()
             enemies[i].drawEnemy(enemies[0].enemyTextureLoader->tex);
             enemies[i].enemyActions();
 
-            bullets[i].drawBullet(bullets[0].textureLoader->tex);
         }
         glEnable(GL_LIGHTING);
 
@@ -132,6 +132,6 @@ void _scene::reSize(GLint width, GLint height)
 
 void _scene::processKeyboardInput()
 {
-    input->keyPressedPlayer(player);
-    input->keyUpPlayer(player);
+    input->keyPressed(player, sounds);
+    input->keyUp(player, sounds);
 }
