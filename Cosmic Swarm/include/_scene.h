@@ -22,8 +22,7 @@ class _scene
         void drawScene();                       // Render The Final Scene
         void reSize(GLint width, GLint height); // Resize Window
 
-        int winMsg(	HWND hWnd, UINT	uMsg, WPARAM wParam, LPARAM	lParam);
-
+        void processKeyboardInput();
         vec2 dim; // for screen width/height
 
     protected:

@@ -35,7 +35,7 @@ void _player::initPlayer(int xFrames, int yFrames, char* fileName)
     xMax = 1.0;
     yMax = 1.0;
     yMin = 0;
-    speed = 1.0f;
+    speed = 0.01f;
     playerTextureLoader->loadTexture(fileName);
 
     actionTrigger = IDLE;
@@ -134,7 +134,6 @@ void _player::playerActions()
             break;
         case FLYING:
         {
-
             float moveX = 0.0f, moveY = 0.0f;
 
             if (facingDirection == "left") moveX = -1.0f;

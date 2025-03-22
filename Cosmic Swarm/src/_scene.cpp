@@ -130,39 +130,8 @@ void _scene::reSize(GLint width, GLint height)
 
 }
 
-int _scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+void _scene::processKeyboardInput()
 {
-    switch(uMsg)
-    {
-        case WM_KEYDOWN:
-            input->wParam = wParam;
-            input->keyPressedPlayer(player);
-            input->keyPressedSounds(sounds,"sounds/engineSound.mp3");
-            break;
-        case WM_KEYUP:
-            input->keyUpPlayer(player);
-            input->keyUpSounds(sounds,"sounds/engineSound.mp3");
-            break;
-
-        case WM_LBUTTONDOWN:
-        case WM_RBUTTONDOWN:
-            input->wParam = wParam;
-            //input->mouseEventDown(myModel, LOWORD(lParam), HIWORD(lParam));
-            break;
-
-        case WM_LBUTTONUP:
-        case WM_RBUTTONUP:
-        case WM_MBUTTONUP:
-            input->mouseEventUp();
-            break;
-
-        case WM_MOUSEMOVE:
-            //input->mouseMove(myModel, LOWORD(lParam), HIWORD(lParam));
-            break;
-
-        case WM_MOUSEWHEEL:
-            //input->mouseWheel(myModel,(double)GET_WHEEL_DELTA_WPARAM(wParam));
-            break;
-    }
-    return 0;
+    input->keyPressedPlayer(player);
+    input->keyUpPlayer(player);
 }

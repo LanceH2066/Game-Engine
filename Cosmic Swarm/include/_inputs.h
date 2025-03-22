@@ -13,6 +13,8 @@ class _inputs
         _inputs();
         virtual ~_inputs();
 
+        void processRawInput(LPARAM lParam, _player* player);
+
         void keyPressed(_model *);  // Handling given model by key strokes
         void keyPressedPRLX(_parallax*);
         void keyPressedPlayer(_player*);

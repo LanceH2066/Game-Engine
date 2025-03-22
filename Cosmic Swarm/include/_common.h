@@ -1,7 +1,8 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 
-#include<windows.h>
+#include <windows.h>
+#include <Winuser.h>
 #include<iostream>
 #include<stdlib.h>
 #include<gl/gl.h>

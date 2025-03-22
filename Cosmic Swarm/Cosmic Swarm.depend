@@ -1,6 +1,5 @@
 # depslib dependency file v1.0
-1742540427 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\main.cpp
-	<windows.h>
+1742620737 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\main.cpp
 	"_scene.h"
 
 1742499554 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_bullet.cpp
@@ -14,22 +13,22 @@
 1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_enemy.cpp
 	"_enemy.h"
 
-1742528627 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_inputs.cpp
+1742620151 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_inputs.cpp
 	"_inputs.h"
 
 1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_lightsetting.cpp
 	"_lightSetting.h"
 
-1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_model.cpp
+1742615647 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_model.cpp
 	"_model.h"
 
-1742508684 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_parallax.cpp
+1742586228 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_parallax.cpp
 	"_parallax.h"
 
-1742528563 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_player.cpp
+1742621029 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_player.cpp
 	"_player.h"
 
-1742525634 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_scene.cpp
+1742620597 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_scene.cpp
 	"_scene.h"
 
 1742510450 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_sounds.cpp
