@@ -10,19 +10,25 @@ _Bullet::~_Bullet()
 
 }
 
-void _Bullet::init(vec3 playerPos)
+void _Bullet::init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * fileName)
 {
     position = playerPos;
-    position.z = -1.0 ;
-    target.x = 5;               // for enemies this = playerpos , for players this will be mouse most likely
-    target.y = playerPos.y;
-    target.z = playerPos.z;
-    scale = {0.15,0.15,1};
-    rotation = {0,0,90};        // DEPENDS ON SPRITE
+    position.z = playerPos.z + 1;  // Ensure bullets spawn in front of the player
+
+    // Ensure bullets move straight out from the ship
+    float angleRad = (playerRotation.z + 90) * (M_PI / 180.0); // Convert to radians
+
+    // Set direction using player's rotation
+    direction.x = cos(angleRad);
+    direction.y = sin(angleRad);
+
+    scale = {1, 1, 1};
+    rotation = playerRotation;  // Bullet inherits player's rotation
 
     xMin = yMin = 0;
     xMax = yMax = 1.0;
 
+    textureLoader->loadTexture(fileName);
 }
 
 void _Bullet::reset(vec3 playerPos)
@@ -31,28 +37,17 @@ void _Bullet::reset(vec3 playerPos)
     isAlive = false;
 }
 
-void _Bullet::update(vec3 source, vec3 target)
+void _Bullet::update()
 {
-    if(actionTrigger == SHOOT)
-    {
-        if(timer->getTicks()>50)
+        float bulletSpeed = 0.015f;
+        position.x += direction.x * bulletSpeed;
+        position.y += direction.y * bulletSpeed;
+
+        // If bullet moves off-screen, deactivate
+        if (position.y > 100 || position.y < -100 || position.x > 100 || position.x < -100)
         {
-            position.x = source.x + t*(target.x-source.x);
-            position.y = source.y + t*(target.y-source.y);
-
-            if(t<1)
-            {
-                t+=0.05;
-            }
-            else
-            {
-                t = 0;
-                actionTrigger = IDLE;
-            }
-
-            timer->reset();
+            isAlive = false;
         }
-    }
 }
 
 void _Bullet::actions()
@@ -77,7 +72,7 @@ void _Bullet::actions()
     }
 }
 
-void _Bullet::drawBullet(GLuint texture)
+void _Bullet::drawBullet()
 {
         glPushMatrix();
             if(isAlive)
@@ -88,7 +83,7 @@ void _Bullet::drawBullet(GLuint texture)
                 glRotatef(rotation.y,0,1,0);
                 glRotatef(rotation.z,0,0,1);
 
-                glBindTexture(GL_TEXTURE_2D, texture);
+                textureLoader->textureBinder();
 
                 glBegin(GL_QUADS);
                     glTexCoord2f(xMin,yMax);

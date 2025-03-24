@@ -317,6 +317,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return 0;
     }
 
+    ShowCursor(TRUE);
+    SetCursor(LoadCursor(NULL, IDC_CROSS));
+
+
     GameLoop(); // Run the game loop
     KillGLWindow();
     return 0;

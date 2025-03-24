@@ -44,6 +44,8 @@
 			<Add library="../common/lib/libirrKlang.a" />
 			<Add directory="C:/Users/Lance Heinrich/Desktop/CSCI 178/common/lib" />
 		</Linker>
+		<Unit filename="images/Green laser cannon.png" />
+		<Unit filename="images/Greenlasercannon.png" />
 		<Unit filename="images/Spaceship fx/Large flame.png" />
 		<Unit filename="images/Spaceship fx/Large flame_ship.png" />
 		<Unit filename="images/Spaceship fx/Small flame.png" />

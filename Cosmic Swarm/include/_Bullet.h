@@ -18,16 +18,18 @@ class _Bullet
         int t=0;
         // ACTIONS
         enum{IDLE,SHOOT,HIT};
+
         int actionTrigger;
         bool isAlive = false;
         // TRANSFORM
-        vec3 position, target, rotation, scale;
+        vec3 position, direction, rotation, scale;
+
         // METHODS
-        void init(vec3 playerPos);                  // Initialization
+        void init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * fileName);
         void reset(vec3);                           // Reset on hit
-        void update(vec3 source, vec3 target);      // Update bullet
+        void update();      // Update bullet
         void actions();                             // Bullet actions
-        void drawBullet(GLuint);                          // Draw Bullet
+        void drawBullet();                          // Draw Bullet
     protected:
 
     private:

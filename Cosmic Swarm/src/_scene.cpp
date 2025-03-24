@@ -64,8 +64,8 @@ GLint _scene::initGL()
 
 void _scene::drawScene()
 {
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); // Clear Bits
-    glLoadIdentity();                                 // Identity Matrix
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
 
     // Camera follows the player
     vec3 cameraPos = {player->playerPosition.x, player->playerPosition.y, player->playerPosition.z + 20.0f};
@@ -77,8 +77,7 @@ void _scene::drawScene()
 
     glPushMatrix();
         glDisable(GL_LIGHTING);
-        prlx1->drawBackground(dim.x, dim.y, player->playerPosition); // Move background with player
-        //prlx2->drawBackground(dim.x,dim.y);
+        prlx1->drawBackground(dim.x, dim.y, player->playerPosition);
         glEnable(GL_LIGHTING);
     glPopMatrix();
 
@@ -88,6 +87,25 @@ void _scene::drawScene()
         glEnable(GL_LIGHTING);
     glPopMatrix();
 
+    glPushMatrix();
+        glDisable(GL_LIGHTING);
+            player->bullets.erase
+            (
+                remove_if(player->bullets.begin(), player->bullets.end(), [](const _Bullet& b) { return !b.isAlive; }),
+                player->bullets.end()
+            );
+            for (auto& bullet : player->bullets)
+            {
+                if (bullet.isAlive)
+                {
+                    bullet.update();
+                    bullet.drawBullet();
+                }
+            }
+        glEnable(GL_LIGHTING);
+    glPopMatrix();
+
+    player->playerActions();
     /*
     glPushMatrix();
         glDisable(GL_LIGHTING);
@@ -132,6 +150,17 @@ void _scene::reSize(GLint width, GLint height)
 
 void _scene::processKeyboardInput()
 {
+    POINT mousePos;
+    GetCursorPos(&mousePos);
+    ScreenToClient(GetActiveWindow(), &mousePos);  // Convert to client space
+
+    vec3 worldMousePos;
+    worldMousePos.x = (mousePos.x - dim.x / 2) / (float)(dim.x / 2);
+    worldMousePos.y = (dim.y / 2 - mousePos.y) / (float)(dim.y / 2);
+
+    input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);
+    player->shoot(worldMousePos);
+    input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);
     input->keyPressed(player, sounds);
     input->keyUp(player, sounds);
 }

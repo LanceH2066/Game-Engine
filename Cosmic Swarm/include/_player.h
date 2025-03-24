@@ -5,6 +5,7 @@
 #include<_timer.h>
 #include<_textureLoader.h>
 #include<_collision.h>
+#include<_Bullet.h>
 
 class _player
 {
@@ -19,7 +20,10 @@ class _player
         void initPlayer(int,int,char*); // number of x,y frames, filename
         void drawPlayer();              // render sprites
         void playerActions();           // decide actions
-        void setFacingDirection(const string& direction);
+
+        vector<_Bullet> bullets;  // Store active bullets
+        _timer bulletTimer;  // Timer to regulate auto-firing
+        void shoot(vec3 mousePos);
 
         enum {IDLE,FLYING,SHOOTING}; // Player Actions based on sprite
         vec3 playerPosition;
@@ -34,7 +38,6 @@ class _player
         vec3 vertices[4];   // draw QUAD to place player sprite
 
         int actionTrigger;  // select action
-        string facingDirection = "up";
         float speed;
 
     protected:

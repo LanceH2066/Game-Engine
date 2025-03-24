@@ -15,10 +15,12 @@ class _inputs
 
         void keyPressed(_player*, _sounds* sounds);
         void keyUp(_player* player, _sounds* sounds);
+        void updateMouseRotation(_player* player, int mouseX, int mouseY, int screenWidth, int screenHeight);
 
     protected:
 
     private:
+
 };
 
 #endif // _INPUTS_H

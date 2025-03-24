@@ -4,7 +4,9 @@
 #include <windows.h>
 #include <Winuser.h>
 #include<iostream>
+#include <algorithm>
 #include<stdlib.h>
+#include<vector>
 #include<gl/gl.h>
 #include<GL/glut.h>
 #include<time.h>
