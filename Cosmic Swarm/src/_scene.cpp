@@ -168,6 +168,7 @@ void _scene::processKeyboardInput()
     if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
     {
         player->shoot(worldMousePos);
+        sounds->playShootSound();
     }
 
     input->keyPressed(player, sounds,deltaTime);

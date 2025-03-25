@@ -28,7 +28,7 @@ void _sounds::playMusic(char* fileName)
     }
 
     currentMusic = soundEngine->play2D(fileName, true, false, true); // Store sound reference
-    currentMusic->setVolume(0.025f);
+    currentMusic->setVolume(0.05f);
 }
 void _sounds::stopMusic()
 {
@@ -44,7 +44,18 @@ void _sounds::playThrusterSound()
     if (!thrusterSound || thrusterSound->isFinished())
     {
         thrusterSound = soundEngine->play2D(thrusterSoundFilename, true, false, true); // Looping sound
-        thrusterSound->setVolume(0.25f);
+        thrusterSound->setVolume(0.5f);
+    }
+}
+void _sounds::playShootSound()
+{
+    if (!shootSound)
+    {
+        //shootSound = soundEngine->play2D(shootSoundFilename, false);
+    }
+    if(shootSound)
+    {
+        //shootSound->setVolume(0.5f);
     }
 }
 void _sounds::stopThrusterSound()

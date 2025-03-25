@@ -11,6 +11,7 @@ class _sounds
         irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
         irrklang::ISound* currentMusic = nullptr; // Background music
         irrklang::ISound* thrusterSound = nullptr; // Thruster sound
+        irrklang::ISound* shootSound = nullptr; // Thruster sound
 
         _sounds();
         ~_sounds();
@@ -20,8 +21,11 @@ class _sounds
         void stopMusic();
         void playThrusterSound();
         void stopThrusterSound();
+        void playShootSound();
 
         char * thrusterSoundFilename = "sounds/engineSound.mp3";
+        char * shootSoundFilename = "sounds/blast.mp3";
+
     protected:
 
     private:

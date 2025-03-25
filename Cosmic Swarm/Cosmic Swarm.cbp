@@ -71,6 +71,7 @@
 		<Unit filename="include/_textureLoader.h" />
 		<Unit filename="include/_timer.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="sounds/blast.mp3" />
 		<Unit filename="sounds/engineSound.mp3" />
 		<Unit filename="sounds/music.mp3" />
 		<Unit filename="sounds/stepdirt_1.wav" />
