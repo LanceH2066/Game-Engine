@@ -44,8 +44,9 @@
 			<Add library="../common/lib/libirrKlang.a" />
 			<Add directory="C:/Users/Lance Heinrich/Desktop/CSCI 178/common/lib" />
 		</Linker>
-		<Unit filename="images/Green laser cannon.png" />
 		<Unit filename="images/Greenlasercannon.png" />
+		<Unit filename="images/Large flame_ship.png" />
+		<Unit filename="images/Small flame_ship.png" />
 		<Unit filename="images/Spaceship fx/Large flame.png" />
 		<Unit filename="images/Spaceship fx/Large flame_ship.png" />
 		<Unit filename="images/Spaceship fx/Small flame.png" />
@@ -54,6 +55,7 @@
 		<Unit filename="images/bugfighter.png" />
 		<Unit filename="images/player.png" />
 		<Unit filename="images/smallbug.png" />
+		<Unit filename="images/spritesheet.png" />
 		<Unit filename="images/swarmbot.png" />
 		<Unit filename="include/_Bullet.h" />
 		<Unit filename="include/_collision.h" />

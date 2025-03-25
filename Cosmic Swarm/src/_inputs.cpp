@@ -10,7 +10,7 @@ _inputs::~_inputs()
 
 }
 
-void _inputs::keyPressed(_player* player, _sounds* sounds)
+void _inputs::keyPressed(_player* player, _sounds* sounds,float deltaTime)
 {
     player->actionTrigger = player->FLYING;
 
@@ -34,9 +34,8 @@ void _inputs::keyPressed(_player* player, _sounds* sounds)
         moveY /= magnitude;
     }
 
-    // Move the player WITHOUT affecting rotation
-    player->playerPosition.x += moveX * player->speed;
-    player->playerPosition.y += moveY * player->speed;
+    player->playerPosition.x += moveX * player->speed * deltaTime;
+    player->playerPosition.y += moveY * player->speed * deltaTime;
 
     if (moveLeft || moveRight || moveUp || moveDown)
     {

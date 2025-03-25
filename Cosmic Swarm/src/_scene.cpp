@@ -10,7 +10,9 @@ _sounds *sounds = new _sounds();
 
 _scene::_scene()
 {
-
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&lastTime);
+    deltaTime = 0.0f;
 }
 
 _scene::~_scene()
@@ -39,7 +41,7 @@ GLint _scene::initGL()
 
     // INITIALIZE OBJECTS IN SCENE
     prlx1->initParallax("images/background.png", 0.005, false, false);
-    player->initPlayer(1,1,"images/player.png");
+    player->initPlayer(1,1,"images/spritesheet.png");
 
     /*
     enemies[0].initEnemy("images/Sprites/mon.png");
@@ -98,7 +100,7 @@ void _scene::drawScene()
             {
                 if (bullet.isAlive)
                 {
-                    bullet.update();
+                    bullet.update(deltaTime); // Pass deltaTime
                     bullet.drawBullet();
                 }
             }
@@ -150,17 +152,35 @@ void _scene::reSize(GLint width, GLint height)
 
 void _scene::processKeyboardInput()
 {
+    updateDeltaTime();
+
     POINT mousePos;
     GetCursorPos(&mousePos);
-    ScreenToClient(GetActiveWindow(), &mousePos);  // Convert to client space
+    ScreenToClient(GetActiveWindow(), &mousePos);
 
     vec3 worldMousePos;
     worldMousePos.x = (mousePos.x - dim.x / 2) / (float)(dim.x / 2);
     worldMousePos.y = (dim.y / 2 - mousePos.y) / (float)(dim.y / 2);
 
     input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);
-    player->shoot(worldMousePos);
-    input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);
-    input->keyPressed(player, sounds);
+
+    // Check if left mouse button is pressed
+    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+    {
+        player->shoot(worldMousePos);
+    }
+
+    input->keyPressed(player, sounds,deltaTime);
     input->keyUp(player, sounds);
+}
+
+void _scene::updateDeltaTime()
+{
+    LARGE_INTEGER currentTime;
+    QueryPerformanceCounter(&currentTime);
+
+    // Compute time difference in seconds
+    deltaTime = (float)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
+
+    lastTime = currentTime; // Store current time for next frame
 }

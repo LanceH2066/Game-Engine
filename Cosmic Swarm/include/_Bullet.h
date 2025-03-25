@@ -27,7 +27,7 @@ class _Bullet
         // METHODS
         void init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * fileName);
         void reset(vec3);                           // Reset on hit
-        void update();      // Update bullet
+        void update(float deltaTime);      // Update bullet
         void actions();                             // Bullet actions
         void drawBullet();                          // Draw Bullet
     protected:

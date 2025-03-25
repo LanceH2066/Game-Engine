@@ -8,7 +8,6 @@ _player::~_player()
 {
 
 }
-
 void _player::initPlayer(int xFrames, int yFrames, char* fileName)
 {
     // INIT QUAD
@@ -34,7 +33,7 @@ void _player::initPlayer(int xFrames, int yFrames, char* fileName)
     xMax = 1.0;
     yMax = 1.0;
     yMin = 0;
-    speed = 0.005f;
+    speed = 10.0f;
     playerTextureLoader->loadTexture(fileName);
 
     actionTrigger = IDLE;
@@ -71,13 +70,13 @@ void _player::drawPlayer()
 
 void _player::shoot(vec3 mousePos)
 {
-    if (bulletTimer.getTicks() > 1000)
+    if (bulletTimer.getTicks() > 250)
     {
         _Bullet newBullet;
         newBullet.init(playerPosition,playerRotation,mousePos,"images/Greenlasercannon.png");
         newBullet.actionTrigger = _Bullet::SHOOT;
         newBullet.isAlive = true;
-        bullets.push_back(newBullet);  // Store bullet
+        bullets.push_back(newBullet);
         bulletTimer.reset();
     }
 }
@@ -88,43 +87,31 @@ void _player::playerActions()
     {
         case IDLE:
         {
-            xMin =0;
-            xMax = 1.0;
-            yMax = 1.0;
-            yMin = 0;
+            xMin = 0.0f;
+            xMax = 1.0f / 3.0f;
+            yMin = 0.0f;
+            yMax = 1.0f;
+            playerTimer->reset();
         }
-            break;
+        break;
         case FLYING:
         {
-            /*
-            if(playerTimer->getTicks() > 10)
+            if (playerTimer->getTicks() < 250)  // First 100ms: Thruster startup frame
             {
-
-
-                xMax +=1.0/(float)framesX;
-                xMin += 1.0/(float)framesX;
-
-                if (xMax >= 1.0)
-                {
-                    xMax = 1.0 / (float)framesX;
-                    xMin = 0;
-
-                    yMax += 1.0 / (float)framesY;
-                    yMin += 1.0 / (float)framesY;
-
-                    if (yMax > 1.0)
-                    if (yMax > 1.0)
-                    {
-                        yMin = 0;
-                        yMax = 1.0 / (float)framesY;
-                    }
-                }
-
-            playerTimer->reset();
+                xMin = 1.0f / 3.0f;  // Second frame (thrusters starting)
+                xMax = 2.0f / 3.0f;
             }
-            */
-            break;
+            else  // After 100ms: Fully engaged thrusters
+            {
+                xMin = 2.0f / 3.0f;  // Third frame (fully engaged)
+                xMax = 1.0f;
+            }
+
+            yMin = 0.0f;
+            yMax = 1.0f;
         }
+        break;
+
     }
 }
 

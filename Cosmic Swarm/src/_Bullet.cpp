@@ -37,17 +37,17 @@ void _Bullet::reset(vec3 playerPos)
     isAlive = false;
 }
 
-void _Bullet::update()
+void _Bullet::update(float deltaTime)
 {
-        float bulletSpeed = 0.015f;
-        position.x += direction.x * bulletSpeed;
-        position.y += direction.y * bulletSpeed;
+    float bulletSpeed = 30.0f; // Adjusted for frame-rate independence
+    position.x += direction.x * bulletSpeed * deltaTime;
+    position.y += direction.y * bulletSpeed * deltaTime;
 
-        // If bullet moves off-screen, deactivate
-        if (position.y > 100 || position.y < -100 || position.x > 100 || position.x < -100)
-        {
-            isAlive = false;
-        }
+    // If bullet moves off-screen, deactivate
+    if (position.y > 100 || position.y < -100 || position.x > 100 || position.x < -100)
+    {
+        isAlive = false;
+    }
 }
 
 void _Bullet::actions()

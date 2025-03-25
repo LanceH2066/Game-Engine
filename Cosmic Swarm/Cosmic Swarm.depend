@@ -40,3 +40,44 @@
 1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_timer.cpp
 	"_timer.h"
 
+1742857509 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\main.cpp
+	"_scene.h"
+
+1742860614 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_bullet.cpp
+	"_Bullet.h"
+
+1742515421 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_collision.cpp
+	"_collision.h"
+
+1742515421 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_common.cpp
+
+1742515421 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_enemy.cpp
+	"_enemy.h"
+
+1742860354 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_inputs.cpp
+	"_inputs.h"
+
+1742515421 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_lightsetting.cpp
+	"_lightSetting.h"
+
+1742515421 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_model.cpp
+	"_model.h"
+
+1742515421 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_parallax.cpp
+	"_parallax.h"
+
+1742861466 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_player.cpp
+	"_player.h"
+
+1742861371 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_scene.cpp
+	"_scene.h"
+
+1742857509 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_sounds.cpp
+	"_sounds.h"
+
+1742515422 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_textureloader.cpp
+	"_textureLoader.h"
+
+1742515422 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_timer.cpp
+	"_timer.h"
+
