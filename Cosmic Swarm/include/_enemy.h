@@ -4,6 +4,7 @@
 #include<_common.h>
 #include<_timer.h>
 #include<_textureLoader.h>
+#include<_player.h>
 
 class _enemy
 {
@@ -20,29 +21,24 @@ class _enemy
         vec3 rotation;
         vec2 scale;
 
+        //For enemies to track player
+        void setPlayerReference(_player* player);
+        _player* targetPlayer = new _player();
+
         // Animation
         float xMax, xMin, yMax, yMin;
         float speed;
-        int framesX;
-        int framesY;
         int actionTrigger;
-
         bool isAlive;
 
         // Methods
         void initEnemy(char* fileName);
         void drawEnemy(GLuint);
         void placeEnemy(vec3);
-        void enemyActions();
+        void enemyActions(float deltaTime);
 
-        enum {IDLE,LEFTWALK,RIGHTWALK,ROTATELEFT,ROTATERIGHT,ATTACK}; // Enemy Actions
+        enum{PURSUIT,ATTACK};
 
-        // Gravity
-        float v = 35;        // velocity
-        float theta = 0;    // theta angle of the projectile
-        float t = 0;        // time step
-        // y = vtsin(theta)-0.5g*t*t
-        // x = vtcos(theta)
     protected:
 
     private:

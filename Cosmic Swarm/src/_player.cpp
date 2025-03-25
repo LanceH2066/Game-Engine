@@ -68,7 +68,7 @@ void _player::drawPlayer()
     glPopMatrix();
 }
 
-void _player::shoot(vec3 mousePos)
+void _player::shoot(vec3 mousePos, _sounds *sounds)
 {
     if (bulletTimer.getTicks() > 250)
     {
@@ -78,6 +78,7 @@ void _player::shoot(vec3 mousePos)
         newBullet.isAlive = true;
         bullets.push_back(newBullet);
         bulletTimer.reset();
+        sounds->playShootSound();
     }
 }
 

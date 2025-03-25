@@ -2,27 +2,26 @@
 
 _enemy::_enemy()
 {
-    position = {0,0,-2};
-    scale = {0.25,0.25};
-    rotation = {0,0,0};
-    actionTrigger = IDLE;
-    speed = 0.05f;
+    //position = {0,0,-2};
+    position.x = 0.0; position.y = 0.0; position.z = -2.0;
+    //scale = {5.0,5.0};
+    scale.x = 1.0; scale.y = 1.0;
+    //rotation = {0,0,0};
+    rotation.x = 0.0; rotation.y = 0.0; rotation.z = 0.0;
+    speed = 1.5f;
     isAlive = true;
 
-    framesX=7;
-    framesY=2;
-
     xMin = 0;
-    xMax = 1.0/(float)framesX;
-    yMax = 1.0/(float)framesY;
-    yMin = yMax-(1.0/framesY);
-
+    xMax = 1.0;
+    yMax = 1.0;
+    yMin = 0;
 }
 
 _enemy::~_enemy()
 {
 
 }
+
 void _enemy::initEnemy(char* fileName)
 {
     enemyTextureLoader->loadTexture(fileName);
@@ -66,138 +65,82 @@ void _enemy::drawEnemy(GLuint tex)
 
 void _enemy::placeEnemy(vec3 pos)
 {
-    position = pos;
+    position.x = pos.x;
+    position.y = pos.y;
+    position.z = pos.z;
 }
 
-void _enemy::enemyActions()
+void _enemy::setPlayerReference(_player* player)
 {
+    targetPlayer = player;
+}
+
+void _enemy::enemyActions(float deltaTime)
+{
+    static float attackCooldown = 0.0f; // To track when the enemy can spray
+    static float attackDuration = 0.0f; // To track how long the spray lasts
+
     switch(actionTrigger)
     {
-    case IDLE:
-        if(enemyTimer->getTicks()>60)
+        case PURSUIT:
         {
-            xMin = 0;
-            xMax = 1.0/(float)framesX;
-            xMin += 1.0/(float)framesX;
-            xMax += 1.0/(float)framesX;
-
-            if(position.x < 0)
+            if (targetPlayer && isAlive)
             {
-                actionTrigger = RIGHTWALK;
+                xMin = 0;
+                xMax = 0.5f;
+
+                // Compute direction vector from enemy to player
+                float deltaX = targetPlayer->playerPosition.x - position.x;
+                float deltaY = targetPlayer->playerPosition.y - position.y;
+
+                // Compute the angle in degrees
+                float angle = atan2(deltaY, deltaX) * (180.0f / M_PI);
+
+                // Adjust to match enemy's default forward direction (downward)
+                rotation.z = angle -90.0f;
+
+                // Normalize direction vector
+                float magnitude = sqrt(deltaX * deltaX + deltaY * deltaY);
+                if (magnitude > 0.0f)
+                {
+                    deltaX /= magnitude;
+                    deltaY /= magnitude;
+                }
+
+                // Move enemy towards the player
+                position.x += deltaX * speed * deltaTime;
+                position.y += deltaY * speed * deltaTime;
+
+                enemyTimer->reset();
             }
-            else
-            {
-                actionTrigger = LEFTWALK;
-            }
-            enemyTimer->reset();
-        }
-    break;
-    case LEFTWALK:
-        if(enemyTimer->getTicks()>60)
-        {
-            xMin += 1.0/(float)framesX;
-            xMax += 1.0/(float)framesX;
-
-            yMin = 0;
-            yMax = 0.5;
-
-
-            if(position.x >= -1)
-            {
-               position.x += speed * -1.0;
-            }
-            else
-            {
-                actionTrigger = RIGHTWALK;
-                break;
-            }
-
-            enemyTimer->reset();
-        }
-        break;
-    case RIGHTWALK:
-    if(enemyTimer->getTicks()>60)
-    {
-        yMin = 0.5;
-        yMax = 1;
-
-        xMin += 1.0/(float)framesX;
-        xMax += 1.0/(float)framesX;
-
-        if(position.x <= 1)
-        {
-            position.x += speed * 1.0;;
-        }
-        else
-        {
-            actionTrigger = LEFTWALK;
             break;
         }
-
-        enemyTimer->reset();
-    }
-    break;
-    case ROTATELEFT:
-    if(enemyTimer->getTicks()>60)
-    {
-        yMin = 0.5;
-        yMax = 1;
-        xMin += 1.0/(float)framesX;
-        xMax += 1.0/(float)framesX;
-
-        theta = 30*PI/180;
-        position.x -= v*t*cos(theta)/1500;
-        position.y += (v*t*sin(theta)-0.5*GRAVITY*t*t)/200;
-
-        if(position.y > -0.8)
+        case ATTACK:
         {
-            t+=0.3;
-        }
-        else
-        {
-            t=0;
-            position.y=-0.7;
-        }
+            // Attack cooldown logic: trigger attack every couple of seconds (e.g., 2 seconds)
+            attackCooldown += deltaTime;
+            if (attackCooldown >= 2.0f) // Every 2 seconds
+            {
+                // Activate the spray attack and show the spray animation for 1-2 seconds
+                xMin = 0.5f;
+                xMax = 1.0f;
+                attackDuration = 1.5f; // Keep the spray attack on for 1.5 seconds
 
-        if(position.x < -3.0)
-        {
-            position.y = -0.8;
-            actionTrigger = RIGHTWALK;
+                attackCooldown = 0.0f; // Reset the cooldown timer
+            }
+
+            // Handle spray attack duration: keep it showing for a second or two
+            if (attackDuration > 0.0f)
+            {
+                attackDuration -= deltaTime; // Reduce the duration
+            }
+            else
+            {
+                // After the duration ends, reset the animation back to idle state
+                xMin = 0;
+                xMax = 0.5f;
+            }
+            break;
         }
-
-        enemyTimer->reset();
-    }
-    break;
-    case ROTATERIGHT:
-    if(enemyTimer->getTicks()>60)
-    {
-        xMin += 1.0/(float)framesX;
-        xMax += 1.0/(float)framesX;
-        yMin = 0;
-        yMax = 0.5;
-
-        theta = 30*PI/180;
-        position.x += v*t*cos(theta)/1500;
-        position.y += (v*t*sin(theta)-0.5*GRAVITY*t*t)/200;
-
-        if(position.y > -0.8)
-        {
-            t+=0.3;
-        }
-        else
-        {
-            t=0;
-            position.y=-0.7;
-        }
-
-        if(position.x > 3.0)
-        {
-            position.y = -0.8;
-            actionTrigger = LEFTWALK;
-        }
-
-        enemyTimer->reset();
-    }
-    break;
     }
 }

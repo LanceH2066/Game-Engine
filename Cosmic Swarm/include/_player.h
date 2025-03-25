@@ -6,6 +6,7 @@
 #include<_textureLoader.h>
 #include<_collision.h>
 #include<_Bullet.h>
+#include <_sounds.h>
 
 class _player
 {
@@ -23,7 +24,7 @@ class _player
 
         vector<_Bullet> bullets;  // Store active bullets
         _timer bulletTimer;  // Timer to regulate auto-firing
-        void shoot(vec3 mousePos);
+        void shoot(vec3 mousePos,_sounds *sounds);
 
         enum {IDLE,FLYING,SHOOTING}; // Player Actions based on sprite
         vec3 playerPosition;

@@ -25,7 +25,6 @@ GLint _scene::initGL()
     // GL SETTINGS
     glClearColor(1.0,1.0,1.0,1.0);
     glClearDepth(1.0);
-    glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -43,23 +42,31 @@ GLint _scene::initGL()
     prlx1->initParallax("images/background.png", 0.005, false, false);
     player->initPlayer(1,1,"images/spritesheet.png");
 
-    /*
-    enemies[0].initEnemy("images/Sprites/mon.png");
-    bullets[0].textureLoader->loadTexture("images/bullet.png");
 
-    for(int i =0; i < 20; i++)
+    // Convert screen pixels to world space (assumes orthographic units)
+    float worldUnitsPerPixel = 10.0f / dim.x; // Adjust based on projection settings
+    float screenWidthUnits = dim.x * worldUnitsPerPixel;
+
+    float minDistance = screenWidthUnits * 1.2f; // Slightly offscreen
+    float maxDistance = screenWidthUnits * 1.5f; // More variation
+
+    for (int i = 0; i < 20; i++)
     {
-        vec3 randPos = {(float)rand()/(float)(RAND_MAX)*5-2.5,-0.8,-2};
-        enemies[i].position = randPos;
-        enemies[i].speed = (float)((rand()%8)+1.0)/100.0;
+        float angle = (rand() % 360) * (M_PI / 180.0f); // Convert to radians
+        float distance = minDistance + (rand() / (float)RAND_MAX) * (maxDistance - minDistance);
 
-        bullets[i].init(player->playerPosition);
+        vec3 randPos;
+        randPos.x = player->playerPosition.x + cos(angle) * distance;
+        randPos.y = player->playerPosition.y + sin(angle) * distance;
+        randPos.z = 48.0f; // Maintain depth
+
+        enemies[i].placeEnemy(randPos);
+        enemies[i].setPlayerReference(player);
+        enemies[i].initEnemy("images/swarmbot.png");
     }
-    */
 
     // INITIALIZE SOUNDS & START MUSIC
-    sounds->initSounds();
-    sounds->playMusic("sounds/music.mp3");
+    sounds->playMusic();
 
     return true;
 }
@@ -108,31 +115,25 @@ void _scene::drawScene()
     glPopMatrix();
 
     player->playerActions();
-    /*
+
     glPushMatrix();
         glDisable(GL_LIGHTING);
-        for(int i =0; i < 20; i++)
+        for (int i = 0; i < 20; i++)
         {
-            if(collision->isRadialCollision(enemies[i].position,player->playerPosition,0.1,0.2,0.02))
+            if(collision->isRadialCollision(enemies[i].position,player->playerPosition,0.5,0.5,0.02))
             {
-                if(enemies[i].actionTrigger==enemies[i].RIGHTWALK)
-                {
-                    enemies[i].actionTrigger = enemies[i].ROTATELEFT;
-                }
-                else if(enemies[i].actionTrigger==enemies[i].LEFTWALK)
-                {
-                    enemies[i].actionTrigger = enemies[i].ROTATERIGHT;
-                }
+                enemies[i].actionTrigger = enemies[i].ATTACK;
+            }
+            else
+            {
+                enemies[i].actionTrigger = enemies[i].PURSUIT;
             }
 
-            enemies[i].drawEnemy(enemies[0].enemyTextureLoader->tex);
-            enemies[i].enemyActions();
-
+            enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
+            enemies[i].enemyActions(deltaTime);
         }
         glEnable(GL_LIGHTING);
-
     glPopMatrix();
-    */
 }
 
 void _scene::reSize(GLint width, GLint height)
@@ -167,8 +168,7 @@ void _scene::processKeyboardInput()
     // Check if left mouse button is pressed
     if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
     {
-        player->shoot(worldMousePos);
-        sounds->playShootSound();
+        player->shoot(worldMousePos, sounds);
     }
 
     input->keyPressed(player, sounds,deltaTime);
