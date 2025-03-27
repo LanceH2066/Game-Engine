@@ -24,11 +24,17 @@ class _scene
 
         void updateDeltaTime(); // New function to update delta time
         void processKeyboardInput();
+        void updateEnemySpawning();
         vec2 dim; // for screen width/height
 
     protected:
 
     private:
+
+    float elapsedTime = 0.0f;  // Tracks total run time
+    float spawnInterval = 0.2f; // Initial time between spawns
+    float lastSpawnTime = 0.0f; // Time since last spawn
+    int maxEnemies = 20;  // Start with a limit
 
     LARGE_INTEGER frequency;
     LARGE_INTEGER lastTime;
