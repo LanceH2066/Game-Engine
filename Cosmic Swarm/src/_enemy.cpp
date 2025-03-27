@@ -111,7 +111,6 @@ void _enemy::enemyActions(float deltaTime)
                 position.x += deltaX * speed * deltaTime;
                 position.y += deltaY * speed * deltaTime;
 
-                enemyTimer->reset();
             }
             break;
         }
