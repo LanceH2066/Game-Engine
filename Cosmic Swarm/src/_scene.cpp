@@ -4,7 +4,7 @@ _lightSetting *myLight = new _lightSetting();
 _inputs *input = new _inputs();
 _parallax *prlx1 = new _parallax();
 _player *player = new _player();
-_enemy enemies[20];
+_enemy enemies[50];
 _collision *collision = new _collision();
 _sounds *sounds = new _sounds();
 
@@ -50,6 +50,7 @@ GLint _scene::initGL()
     float minDistance = screenWidthUnits * 1.2f; // Slightly offscreen
     float maxDistance = screenWidthUnits * 1.5f; // More variation
 
+    /*
     for (int i = 0; i < 20; i++)
     {
         float angle = (rand() % 360) * (M_PI / 180.0f); // Convert to radians
@@ -64,7 +65,7 @@ GLint _scene::initGL()
         enemies[i].setPlayerReference(player);
         enemies[i].initEnemy("images/swarmbot.png");
     }
-
+    */
     // INITIALIZE SOUNDS & START MUSIC
     sounds->playMusic();
 
@@ -116,22 +117,51 @@ void _scene::drawScene()
 
     player->playerActions();
 
+    updateEnemySpawning();
+
     glPushMatrix();
         glDisable(GL_LIGHTING);
-        for (int i = 0; i < 20; i++)
+ for (int i = 0; i < 20; i++)
+    {
+        for (int j = i + 1; j < 20; j++)
         {
-            if(collision->isRadialCollision(enemies[i].position,player->playerPosition,0.5,0.5,0.02))
-            {
-                enemies[i].actionTrigger = enemies[i].ATTACK;
-            }
-            else
-            {
-                enemies[i].actionTrigger = enemies[i].PURSUIT;
-            }
+            vec3 diff = {
+                enemies[i].position.x - enemies[j].position.x,
+                enemies[i].position.y - enemies[j].position.y,
+                0.0f
+            };
 
-            enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
-            enemies[i].enemyActions(deltaTime);
+            float distSq = diff.x * diff.x + diff.y * diff.y;
+            float minDist = 0.5f; // Minimum distance to maintain
+
+            if (distSq < (minDist * minDist) && distSq > 0.0f)
+            {
+                float dist = sqrt(distSq);
+                float pushForce = (minDist - dist) * 0.05f; // Push force factor
+
+                // Normalize direction and apply push
+                diff.x /= dist;
+                diff.y /= dist;
+
+                enemies[i].position.x += diff.x * pushForce;
+                enemies[i].position.y += diff.y * pushForce;
+                enemies[j].position.x -= diff.x * pushForce;
+                enemies[j].position.y -= diff.y * pushForce;
+            }
         }
+
+        if (collision->isRadialCollision(enemies[i].position, player->playerPosition, 0.5, 0.5, 0.02))
+        {
+            enemies[i].actionTrigger = enemies[i].ATTACK;
+        }
+        else
+        {
+            enemies[i].actionTrigger = enemies[i].PURSUIT;
+        }
+
+        enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
+        enemies[i].enemyActions(deltaTime);
+    }
         glEnable(GL_LIGHTING);
     glPopMatrix();
 }
@@ -175,13 +205,50 @@ void _scene::processKeyboardInput()
     input->keyUp(player, sounds);
 }
 
+void _scene::updateEnemySpawning()
+{
+    if (elapsedTime >= 1200.0f)  // Stop spawning after 20 minutes
+        return;
+
+    if (elapsedTime - lastSpawnTime >= spawnInterval)
+    {
+        if (maxEnemies < 50)  // Scale max enemies over time
+            maxEnemies++;
+
+        vec3 randPos;
+        float angle = (rand() % 360) * (M_PI / 180.0f);
+        float distance = 17.0f; // Spawn distance from player
+
+        randPos.x = player->playerPosition.x + cos(angle) * distance;
+        randPos.y = player->playerPosition.y + sin(angle) * distance;
+
+        randPos.z = 48.0f;
+
+        for (int i = 0; i < maxEnemies; i++)
+        {
+            if (!enemies[i].isAlive)  // Reuse dead enemies
+            {
+                enemies[i].placeEnemy(randPos);
+                enemies[i].isAlive = true;
+                enemies[i].initEnemy("images/swarmbot.png");
+                enemies[i].setPlayerReference(player);
+                lastSpawnTime = elapsedTime;
+                break;
+            }
+        }
+
+        // Adjust spawn rate dynamically
+        spawnInterval = fmax(0.5f, 2.0f - elapsedTime / 600.0f);  // Faster spawns over time
+    }
+}
+
 void _scene::updateDeltaTime()
 {
     LARGE_INTEGER currentTime;
     QueryPerformanceCounter(&currentTime);
 
-    // Compute time difference in seconds
     deltaTime = (float)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
+    lastTime = currentTime;
 
-    lastTime = currentTime; // Store current time for next frame
+    elapsedTime += deltaTime; // Track total run time
 }

@@ -8,8 +8,8 @@ _enemy::_enemy()
     scale.x = 1.0; scale.y = 1.0;
     //rotation = {0,0,0};
     rotation.x = 0.0; rotation.y = 0.0; rotation.z = 0.0;
-    speed = 1.5f;
-    isAlive = true;
+    speed = 2.0f;
+    isAlive = false;
 
     xMin = 0;
     xMax = 1.0;
@@ -34,16 +34,14 @@ void _enemy::drawEnemy(GLuint tex)
         glPushMatrix();
 
             glColor3f(1.0,1.0,1.0);
-            //enemyTextureLoader->textureBinder();
-            glBindTexture(GL_TEXTURE_2D, tex);
-
+            enemyTextureLoader->textureBinder();
             glTranslatef(position.x,position.y,position.z);
             glRotatef(rotation.x,1,0,0);
             glRotatef(rotation.y,0,1,0);
             glRotatef(rotation.z,0,0,1);
             glScalef(scale.x,scale.y,1.0);
 
-            glBegin(GL_POLYGON);
+            glBegin(GL_QUADS);
 
             glTexCoord2f(xMin,yMin);
             glVertex3f(1.0,1.0,0);
@@ -111,7 +109,6 @@ void _enemy::enemyActions(float deltaTime)
                 position.x += deltaX * speed * deltaTime;
                 position.y += deltaY * speed * deltaTime;
 
-                enemyTimer->reset();
             }
             break;
         }
