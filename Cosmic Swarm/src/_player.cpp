@@ -72,11 +72,16 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
 {
     if (bulletTimer.getTicks() > 250)
     {
-        _Bullet newBullet;
-        newBullet.init(playerPosition,playerRotation,mousePos,"images/Greenlasercannon.png");
-        newBullet.actionTrigger = _Bullet::SHOOT;
-        newBullet.isAlive = true;
-        bullets.push_back(newBullet);
+        _Bullet leftBullet;
+        _Bullet rightBullet;
+        leftBullet.init(playerPosition, playerRotation, mousePos, "images/GreenlasercannonLeft.png", true);  // Left bullet
+        rightBullet.init(playerPosition, playerRotation, mousePos, "images/GreenlasercannonRight.png", false); // Right bullet
+        leftBullet.actionTrigger = _Bullet::SHOOT;
+        rightBullet.actionTrigger = _Bullet::SHOOT;
+        leftBullet.isAlive = true;
+        rightBullet.isAlive = true;
+        bullets.push_back(leftBullet);
+        bullets.push_back(rightBullet);
         bulletTimer.reset();
         sounds->playShootSound();
     }

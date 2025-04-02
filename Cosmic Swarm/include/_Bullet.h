@@ -22,14 +22,19 @@ class _Bullet
         int actionTrigger;
         bool isAlive = false;
         // TRANSFORM
-        vec3 position, direction, rotation, scale;
+        vec3 initialPosition, position, direction, rotation, scale;
+        vec3 offset;  // Offset from center for collision purposes
+        bool isLeftBullet;  // To identify left vs right bullet
 
         // METHODS
-        void init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * fileName);
+        void init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * fileName, bool isLeft = false);
         void reset(vec3);                           // Reset on hit
-        void update(float deltaTime);      // Update bullet
+        void update(float deltaTime);               // Update bullet
         void actions();                             // Bullet actions
         void drawBullet();                          // Draw Bullet
+
+        float damage = 5.0f;
+
     protected:
 
     private:

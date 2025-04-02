@@ -15,6 +15,8 @@ _enemy::_enemy()
     xMax = 1.0;
     yMax = 1.0;
     yMin = 0;
+
+    currentHp = maxHp = 20.0f;
 }
 
 _enemy::~_enemy()
@@ -73,6 +75,15 @@ void _enemy::setPlayerReference(_player* player)
     targetPlayer = player;
 }
 
+void _enemy::takeDamage(float damage)
+{
+    currentHp -= damage;
+    if(currentHp <= 0)
+    {
+        isAlive = false;
+    }
+}
+
 void _enemy::enemyActions(float deltaTime)
 {
     static float attackCooldown = 0.0f; // To track when the enemy can spray
@@ -114,6 +125,7 @@ void _enemy::enemyActions(float deltaTime)
         }
         case ATTACK:
         {
+            /*
             // Attack cooldown logic: trigger attack every couple of seconds (e.g., 2 seconds)
             attackCooldown += deltaTime;
             if (attackCooldown >= 2.0f) // Every 2 seconds
@@ -137,6 +149,7 @@ void _enemy::enemyActions(float deltaTime)
                 xMin = 0;
                 xMax = 0.5f;
             }
+            */
             break;
         }
     }

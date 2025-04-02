@@ -32,9 +32,9 @@ class _scene
     private:
 
     float elapsedTime = 0.0f;  // Tracks total run time
-    float spawnInterval = 0.2f; // Initial time between spawns
+    float spawnInterval = 0.05f; // Initial time between spawns
     float lastSpawnTime = 0.0f; // Time since last spawn
-    int maxEnemies = 20;  // Start with a limit
+    int maxEnemies = 100;  // Start with a limit
 
     LARGE_INTEGER frequency;
     LARGE_INTEGER lastTime;

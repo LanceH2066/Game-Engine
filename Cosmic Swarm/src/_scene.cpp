@@ -42,7 +42,6 @@ GLint _scene::initGL()
     prlx1->initParallax("images/background.png", 0.005, false, false);
     player->initPlayer(1,1,"images/spritesheet.png");
 
-
     // Convert screen pixels to world space (assumes orthographic units)
     float worldUnitsPerPixel = 10.0f / dim.x; // Adjust based on projection settings
     float screenWidthUnits = dim.x * worldUnitsPerPixel;
@@ -50,22 +49,6 @@ GLint _scene::initGL()
     float minDistance = screenWidthUnits * 1.2f; // Slightly offscreen
     float maxDistance = screenWidthUnits * 1.5f; // More variation
 
-    /*
-    for (int i = 0; i < 20; i++)
-    {
-        float angle = (rand() % 360) * (M_PI / 180.0f); // Convert to radians
-        float distance = minDistance + (rand() / (float)RAND_MAX) * (maxDistance - minDistance);
-
-        vec3 randPos;
-        randPos.x = player->playerPosition.x + cos(angle) * distance;
-        randPos.y = player->playerPosition.y + sin(angle) * distance;
-        randPos.z = 48.0f; // Maintain depth
-
-        enemies[i].placeEnemy(randPos);
-        enemies[i].setPlayerReference(player);
-        enemies[i].initEnemy("images/swarmbot.png");
-    }
-    */
     // INITIALIZE SOUNDS & START MUSIC
     sounds->playMusic();
 
@@ -108,8 +91,22 @@ void _scene::drawScene()
             {
                 if (bullet.isAlive)
                 {
-                    bullet.update(deltaTime); // Pass deltaTime
+                    bullet.update(deltaTime);
                     bullet.drawBullet();
+
+                    // Calculate the adjusted position for collision based on offset
+                    vec3 adjustedBulletPos = bullet.position;
+                    adjustedBulletPos.x += bullet.offset.x * cos(bullet.rotation.z * M_PI / 180.0f) - bullet.offset.y * sin(bullet.rotation.z * M_PI / 180.0f);
+                    adjustedBulletPos.y += bullet.offset.x * sin(bullet.rotation.z * M_PI / 180.0f) + bullet.offset.y * cos(bullet.rotation.z * M_PI / 180.0f);
+
+                    for (int i = 0; i < maxEnemies; i++)
+                    {
+                        if (collision->isRadialCollision(adjustedBulletPos, enemies[i].position, 0.25, 0.5, 0.02))
+                        {
+                            bullet.isAlive = false;
+                            enemies[i].takeDamage(bullet.damage);
+                        }
+                    }
                 }
             }
         glEnable(GL_LIGHTING);
@@ -119,49 +116,51 @@ void _scene::drawScene()
 
     updateEnemySpawning();
 
+    // KEEP ENEMIES FROM STACKING, CHECK FOR PLAYER COLLISION, DRAW ENEMIES, RUN ACTIONS
     glPushMatrix();
         glDisable(GL_LIGHTING);
- for (int i = 0; i < 20; i++)
-    {
-        for (int j = i + 1; j < 20; j++)
-        {
-            vec3 diff = {
-                enemies[i].position.x - enemies[j].position.x,
-                enemies[i].position.y - enemies[j].position.y,
-                0.0f
-            };
-
-            float distSq = diff.x * diff.x + diff.y * diff.y;
-            float minDist = 0.5f; // Minimum distance to maintain
-
-            if (distSq < (minDist * minDist) && distSq > 0.0f)
+            for (int i = 0; i < 20; i++)
             {
-                float dist = sqrt(distSq);
-                float pushForce = (minDist - dist) * 0.05f; // Push force factor
+                for (int j = i + 1; j < 20; j++)
+                {
+                    vec3 diff =
+                    {
+                        enemies[i].position.x - enemies[j].position.x,
+                        enemies[i].position.y - enemies[j].position.y,
+                        0.0f
+                    };
 
-                // Normalize direction and apply push
-                diff.x /= dist;
-                diff.y /= dist;
+                    float distSq = diff.x * diff.x + diff.y * diff.y;
+                    float minDist = 0.5f; // Minimum distance to maintain
 
-                enemies[i].position.x += diff.x * pushForce;
-                enemies[i].position.y += diff.y * pushForce;
-                enemies[j].position.x -= diff.x * pushForce;
-                enemies[j].position.y -= diff.y * pushForce;
+                    if (distSq < (minDist * minDist) && distSq > 0.0f)
+                    {
+                        float dist = sqrt(distSq);
+                        float pushForce = (minDist - dist) * 0.05f; // Push force factor
+
+                        // Normalize direction and apply push
+                        diff.x /= dist;
+                        diff.y /= dist;
+
+                        enemies[i].position.x += diff.x * pushForce;
+                        enemies[i].position.y += diff.y * pushForce;
+                        enemies[j].position.x -= diff.x * pushForce;
+                        enemies[j].position.y -= diff.y * pushForce;
+                    }
+                }
+
+                if (collision->isRadialCollision(enemies[i].position, player->playerPosition, 0.5, 0.5, 0.02))
+                {
+                    enemies[i].actionTrigger = enemies[i].ATTACK;
+                }
+                else
+                {
+                    enemies[i].actionTrigger = enemies[i].PURSUIT;
+                }
+
+                enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
+                enemies[i].enemyActions(deltaTime);
             }
-        }
-
-        if (collision->isRadialCollision(enemies[i].position, player->playerPosition, 0.5, 0.5, 0.02))
-        {
-            enemies[i].actionTrigger = enemies[i].ATTACK;
-        }
-        else
-        {
-            enemies[i].actionTrigger = enemies[i].PURSUIT;
-        }
-
-        enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
-        enemies[i].enemyActions(deltaTime);
-    }
         glEnable(GL_LIGHTING);
     glPopMatrix();
 }
@@ -212,7 +211,7 @@ void _scene::updateEnemySpawning()
 
     if (elapsedTime - lastSpawnTime >= spawnInterval)
     {
-        if (maxEnemies < 50)  // Scale max enemies over time
+        if (maxEnemies < 300)  // Scale max enemies over time
             maxEnemies++;
 
         vec3 randPos;
@@ -238,7 +237,8 @@ void _scene::updateEnemySpawning()
         }
 
         // Adjust spawn rate dynamically
-        spawnInterval = fmax(0.5f, 2.0f - elapsedTime / 600.0f);  // Faster spawns over time
+        //spawnInterval = fmax(0.5f, 2.0f - elapsedTime / 600.0f);  // Faster spawns over time
+        spawnInterval =0.5f;
     }
 }
 

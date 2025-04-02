@@ -10,23 +10,27 @@ _Bullet::~_Bullet()
 
 }
 
-void _Bullet::init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * fileName)
+void _Bullet::init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * fileName, bool isLeft)
 {
-    position = playerPos;
+    initialPosition = position = playerPos;
     position.z = playerPos.z + 1;  // Ensure bullets spawn in front of the player
 
-    // Ensure bullets move straight out from the ship
     float angleRad = (playerRotation.z + 90) * (M_PI / 180.0); // Convert to radians
-
-    // Set direction using player's rotation
     direction.x = cos(angleRad);
     direction.y = sin(angleRad);
 
     scale = {1, 1, 1};
-    rotation = playerRotation;  // Bullet inherits player's rotation
+    rotation = playerRotation;
 
     xMin = yMin = 0;
     xMax = yMax = 1.0;
+
+    isLeftBullet = isLeft;
+    // Define offset based on whether it's left or right bullet
+    float offsetDistance = 0.5f;  // Adjust this value based on your bullet sprite size/position
+    offset.x = isLeft ? -offsetDistance : offsetDistance;
+    offset.y = 0.0f;
+    offset.z = 0.0f;
 
     textureLoader->loadTexture(fileName);
 }
@@ -43,8 +47,11 @@ void _Bullet::update(float deltaTime)
     position.x += direction.x * bulletSpeed * deltaTime;
     position.y += direction.y * bulletSpeed * deltaTime;
 
-    // If bullet moves off-screen, deactivate
-    if (position.y > 100 || position.y < -100 || position.x > 100 || position.x < -100)
+    float maxTravelDistance = 100.0f;  // Set a maximum range for bullets
+    float distanceSq = (position.x - initialPosition.x) * (position.x - initialPosition.x) +
+                       (position.y - initialPosition.y) * (position.y - initialPosition.y);
+
+    if (distanceSq > maxTravelDistance * maxTravelDistance)
     {
         isAlive = false;
     }

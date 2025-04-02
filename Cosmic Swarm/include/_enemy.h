@@ -36,8 +36,11 @@ class _enemy
         void drawEnemy(GLuint);
         void placeEnemy(vec3);
         void enemyActions(float deltaTime);
-
+        void takeDamage(float damage);
         enum{PURSUIT,ATTACK};
+
+        float maxHp, currentHp;
+
 
     protected:
 
