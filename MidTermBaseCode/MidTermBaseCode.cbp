@@ -63,6 +63,8 @@
 		<Unit filename="include/enms.h" />
 		<Unit filename="include/test.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="sounds/canon_sound.mp3" />
+		<Unit filename="sounds/impact.mp3" />
 		<Unit filename="src/_bullets.cpp" />
 		<Unit filename="src/_collisionckeck.cpp" />
 		<Unit filename="src/_enms.cpp" />

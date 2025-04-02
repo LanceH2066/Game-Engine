@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CSCI178_Midterm_LanceHeinrich" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/CSCI178_Midterm_LanceHeinrich" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="C:/Users/Lance Heinrich/Desktop/CSCI 178/common/bin" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/CSCI178_Midterm_LanceHeinrich" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="C:/Users/Lance Heinrich/Desktop/CSCI 178/common/bin" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="../common/include" />
+		</Compiler>
+		<Linker>
+			<Add library="../common/lib/libSOIL.a" />
+			<Add library="../common/lib/libirrKlang.a" />
+			<Add library="glut32" />
+			<Add library="opengl32" />
+			<Add library="glu32" />
+			<Add library="winmm" />
+			<Add library="gdi32" />
+			<Add directory="../common/lib" />
+		</Linker>
+		<Unit filename="images/bg.png" />
+		<Unit filename="images/cannon.png" />
+		<Unit filename="images/cannon_base.png" />
+		<Unit filename="images/cannonballs.png" />
+		<Unit filename="include/_bullets.h" />
+		<Unit filename="include/_collisionckeck.h" />
+		<Unit filename="include/_common.h" />
+		<Unit filename="include/_enms.h" />
+		<Unit filename="include/_inputs.h" />
+		<Unit filename="include/_lightsetting.h" />
+		<Unit filename="include/_model.h" />
+		<Unit filename="include/_parallax.h" />
+		<Unit filename="include/_player.h" />
+		<Unit filename="include/_scene.h" />
+		<Unit filename="include/_sounds.h" />
+		<Unit filename="include/_textureloader.h" />
+		<Unit filename="include/_timer.h" />
+		<Unit filename="include/enms.h" />
+		<Unit filename="include/test.h" />
+		<Unit filename="main.cpp" />
+		<Unit filename="sounds/canon_sound.mp3" />
+		<Unit filename="sounds/impact.mp3" />
+		<Unit filename="src/_bullets.cpp" />
+		<Unit filename="src/_collisionckeck.cpp" />
+		<Unit filename="src/_enms.cpp" />
+		<Unit filename="src/_inputs.cpp" />
+		<Unit filename="src/_lightsetting.cpp" />
+		<Unit filename="src/_model.cpp" />
+		<Unit filename="src/_parallax.cpp" />
+		<Unit filename="src/_player.cpp" />
+		<Unit filename="src/_scene.cpp" />
+		<Unit filename="src/_sounds.cpp" />
+		<Unit filename="src/_textureloader.cpp" />
+		<Unit filename="src/_timer.cpp" />
+		<Unit filename="src/enms.cpp" />
+		<Unit filename="src/test.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,48 @@
+# depslib dependency file v1.0
+1741651416 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_collisionckeck.cpp
+	"_collisionckeck.h"
+
+1741824855 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_enms.cpp
+	"_enms.h"
+
+1738633112 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_lightsetting.cpp
+	"_lightsetting.h"
+
+1743544454 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_model.cpp
+	"_model.h"
+
+1740444776 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_parallax.cpp
+	"_parallax.h"
+
+1743544449 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_player.cpp
+	"_player.h"
+
+1739408234 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_textureloader.cpp
+	"_textureloader.h"
+
+1740443348 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_timer.cpp
+	"_timer.h"
+
+1741047454 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\enms.cpp
+	"enms.h"
+
+1743138430 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\test.cpp
+	"test.h"
+
+1743616628 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\main.cpp
+	<windows.h>
+	<_common.h>
+	<_scene.h>
+
+1743616041 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_bullets.cpp
+	"_bullets.h"
+
+1743615154 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_inputs.cpp
+	"_inputs.h"
+
+1743616265 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_scene.cpp
+	"_scene.h"
+
+1743615733 source:c:\users\lance heinrich\desktop\csci 178\csci178_midterm_lanceheinrich\src\_sounds.cpp
+	"_sounds.h"
+
