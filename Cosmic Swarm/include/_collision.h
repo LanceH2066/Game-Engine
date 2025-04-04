@@ -17,6 +17,8 @@ class _collision
         bool isSphereCollision(vec3 pos1, vec3 pos2, float r1, float r2, float threshold);   // Spherical Collision Check
         bool isBoxCollision(vec3 pos, vec3 minBounds, vec3 maxBounds);
 
+        bool isOBBCollision(vec3 min1, vec3 max1, vec3 min2, vec3 max2);  // 2D OBB check (ignores z for now)
+
     protected:
 
     private:

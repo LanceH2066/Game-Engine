@@ -10,6 +10,15 @@ _collision::~_collision()
 
 }
 
+bool _collision::isOBBCollision(vec3 min1, vec3 max1, vec3 min2, vec3 max2)
+{
+    // Simple AABB check first for early rejection (assuming z is ignored for 2D gameplay)
+    if (max1.x < min2.x || min1.x > max2.x || max1.y < min2.y || min1.y > max2.y) {
+        return false;
+    }
+    return true;  // For now, assume overlap if AABB passes; refine with full OBB later if needed
+}
+
 bool _collision::isRadialCollision(vec3 pos1, vec3 pos2, float r1, float r2, float threshold)
 {
     return ((sqrt(pow((pos1.x-pos2.x),2)+pow((pos1.y-pos2.y),2))-(r1+r2))<threshold);

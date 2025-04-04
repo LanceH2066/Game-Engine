@@ -10,12 +10,12 @@ _Bullet::~_Bullet()
 
 }
 
-void _Bullet::init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * fileName, bool isLeft)
+void _Bullet::init(vec3 spawnPos, vec3 playerRotation, vec3 targetPos, char *fileName)
 {
-    initialPosition = position = playerPos;
-    position.z = playerPos.z + 1;  // Ensure bullets spawn in front of the player
+    initialPosition = position = spawnPos;
+    position.z = spawnPos.z + 1;  // Spawn in front of player
 
-    float angleRad = (playerRotation.z + 90) * (M_PI / 180.0); // Convert to radians
+    float angleRad = (playerRotation.z + 90) * (M_PI / 180.0);
     direction.x = cos(angleRad);
     direction.y = sin(angleRad);
 
@@ -24,13 +24,6 @@ void _Bullet::init(vec3 playerPos, vec3 playerRotation, vec3 targetPos, char * f
 
     xMin = yMin = 0;
     xMax = yMax = 1.0;
-
-    isLeftBullet = isLeft;
-    // Define offset based on whether it's left or right bullet
-    float offsetDistance = 0.5f;  // Adjust this value based on your bullet sprite size/position
-    offset.x = isLeft ? -offsetDistance : offsetDistance;
-    offset.y = 0.0f;
-    offset.z = 0.0f;
 
     textureLoader->loadTexture(fileName);
 }

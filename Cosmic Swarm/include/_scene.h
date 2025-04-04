@@ -40,6 +40,7 @@ class _scene
     LARGE_INTEGER lastTime;
     float deltaTime;
 
+    bool debugMode = true;  // Add this for toggling hitbox drawing
 };
 
 #endif // _SCENE_H

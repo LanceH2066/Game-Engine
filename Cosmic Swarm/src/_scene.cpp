@@ -33,7 +33,6 @@ GLint _scene::initGL()
     myLight->setLight(GL_LIGHT0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     // SCREEN SIZE
     dim.x = GetSystemMetrics(SM_CXSCREEN);
     dim.y = GetSystemMetrics(SM_CYSCREEN);
@@ -94,19 +93,35 @@ void _scene::drawScene()
                     bullet.update(deltaTime);
                     bullet.drawBullet();
 
-                    // Calculate the adjusted position for collision based on offset
-                    vec3 adjustedBulletPos = bullet.position;
-                    adjustedBulletPos.x += bullet.offset.x * cos(bullet.rotation.z * M_PI / 180.0f) - bullet.offset.y * sin(bullet.rotation.z * M_PI / 180.0f);
-                    adjustedBulletPos.y += bullet.offset.x * sin(bullet.rotation.z * M_PI / 180.0f) + bullet.offset.y * cos(bullet.rotation.z * M_PI / 180.0f);
+                    vec3 bulletMin = bullet.getCollisionBoxMin();
+                    vec3 bulletMax = bullet.getCollisionBoxMax();
 
                     for (int i = 0; i < maxEnemies; i++)
                     {
-                        if (collision->isRadialCollision(adjustedBulletPos, enemies[i].position, 0.25, 0.5, 0.02))
+                        if (enemies[i].isAlive)
                         {
-                            bullet.isAlive = false;
-                            enemies[i].takeDamage(bullet.damage);
+                            vec3 enemyMin = enemies[i].getCollisionBoxMin();
+                            vec3 enemyMax = enemies[i].getCollisionBoxMax();
+
+                            if (collision->isOBBCollision(bulletMin, bulletMax, enemyMin, enemyMax))
+                            {
+                                bullet.isAlive = false;
+                                enemies[i].takeDamage(bullet.damage);
+                            }
                         }
                     }
+                    if (debugMode) {
+                    glPushMatrix();
+                        glTranslatef(bullet.position.x, bullet.position.y, bullet.position.z);
+                        glColor3f(0.0f, 1.0f, 0.0f);  // Green for bullets
+                        glBegin(GL_LINE_LOOP);
+                            glVertex3f(bulletMin.x - bullet.position.x, bulletMin.y - bullet.position.y, 50.0);
+                            glVertex3f(bulletMax.x - bullet.position.x, bulletMin.y - bullet.position.y, 50.0);
+                            glVertex3f(bulletMax.x - bullet.position.x, bulletMax.y - bullet.position.y, 50.0);
+                            glVertex3f(bulletMin.x - bullet.position.x, bulletMax.y - bullet.position.y, 50.0);
+                        glEnd();
+                    glPopMatrix();
+                }
                 }
             }
         glEnable(GL_LIGHTING);
@@ -149,17 +164,21 @@ void _scene::drawScene()
                     }
                 }
 
-                if (collision->isRadialCollision(enemies[i].position, player->playerPosition, 0.5, 0.5, 0.02))
-                {
-                    enemies[i].actionTrigger = enemies[i].ATTACK;
-                }
-                else
-                {
-                    enemies[i].actionTrigger = enemies[i].PURSUIT;
-                }
-
                 enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
                 enemies[i].enemyActions(deltaTime);
+
+                if (debugMode && enemies[i].isAlive) {
+                glPushMatrix();
+                    glTranslatef(enemies[i].position.x, enemies[i].position.y, enemies[i].position.z);
+                    glColor3f(1.0f, 0.0f, 0.0f);  // Red for enemies
+                    glBegin(GL_LINE_LOOP);
+                        glVertex3f(enemies[i].getCollisionBoxMin().x - enemies[i].position.x, enemies[i].getCollisionBoxMin().y - enemies[i].position.y, 0);
+                        glVertex3f(enemies[i].getCollisionBoxMax().x - enemies[i].position.x, enemies[i].getCollisionBoxMin().y - enemies[i].position.y, 0);
+                        glVertex3f(enemies[i].getCollisionBoxMax().x - enemies[i].position.x, enemies[i].getCollisionBoxMax().y - enemies[i].position.y, 0);
+                        glVertex3f(enemies[i].getCollisionBoxMin().x - enemies[i].position.x, enemies[i].getCollisionBoxMax().y - enemies[i].position.y, 0);
+                    glEnd();
+                glPopMatrix();
+            }
             }
         glEnable(GL_LIGHTING);
     glPopMatrix();
@@ -198,6 +217,20 @@ void _scene::processKeyboardInput()
     if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
     {
         player->shoot(worldMousePos, sounds);
+    }
+
+    // Toggle debug mode with 'D' key
+    if (GetAsyncKeyState('F') & 0x8000) {
+        static bool lastState = false;  // Debounce to prevent rapid toggling
+        bool currentState = true;
+        if (!lastState && currentState) {
+            debugMode = !debugMode;
+            printf("Debug mode: %s\n", debugMode ? "ON" : "OFF");
+        }
+        lastState = currentState;
+    } else {
+        static bool lastState = false;
+        lastState = false;
     }
 
     input->keyPressed(player, sounds,deltaTime);

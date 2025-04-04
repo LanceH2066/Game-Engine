@@ -72,16 +72,43 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
 {
     if (bulletTimer.getTicks() > 250)
     {
+        // Calculate spawn offsets based on player rotation
+        float angleRad = playerRotation.z * (M_PI / 180.0);  // Player's facing angle
+        float offsetDistance = 2.0f;  // Distance from center to left/right (tweak this)
+
+        // Perpendicular offset (90 degrees from facing direction)
+        float offsetX = cos(angleRad + M_PI / 2) * offsetDistance;
+        float offsetY = sin(angleRad + M_PI / 2) * offsetDistance;
+
+        // Left bullet spawn position
+        vec3 leftSpawnPos = playerPosition;
+        leftSpawnPos.x -= offsetX;  // Left side
+        leftSpawnPos.y -= offsetY;
+
+        // Right bullet spawn position
+        vec3 rightSpawnPos = playerPosition;
+        rightSpawnPos.x += offsetX;  // Right side
+        rightSpawnPos.y += offsetY;
+
+        printf("Player pos: (%.2f, %.2f)\n", playerPosition.x, playerPosition.y);
+        printf("Left spawn: (%.2f, %.2f)\n", leftSpawnPos.x, leftSpawnPos.y);
+        printf("Right spawn: (%.2f, %.2f)\n", rightSpawnPos.x, rightSpawnPos.y);
+
+
+        // Create bullets
         _Bullet leftBullet;
-        _Bullet rightBullet;
-        leftBullet.init(playerPosition, playerRotation, mousePos, "images/GreenlasercannonLeft.png", true);  // Left bullet
-        rightBullet.init(playerPosition, playerRotation, mousePos, "images/GreenlasercannonRight.png", false); // Right bullet
+        leftBullet.init(leftSpawnPos, playerRotation, mousePos, "images/Greenlasercannon.png");
         leftBullet.actionTrigger = _Bullet::SHOOT;
-        rightBullet.actionTrigger = _Bullet::SHOOT;
         leftBullet.isAlive = true;
+
+        _Bullet rightBullet;
+        rightBullet.init(rightSpawnPos, playerRotation, mousePos, "images/Greenlasercannon.png");
+        rightBullet.actionTrigger = _Bullet::SHOOT;
         rightBullet.isAlive = true;
+
         bullets.push_back(leftBullet);
         bullets.push_back(rightBullet);
+
         bulletTimer.reset();
         sounds->playShootSound();
     }

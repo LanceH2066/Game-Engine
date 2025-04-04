@@ -41,6 +41,10 @@ class _enemy
 
         float maxHp, currentHp;
 
+        // Add these for collision
+        vec3 collisionBoxSize = {0.25f, 0.25f, 1.0f};  // Half-extents of the collision box
+        vec3 getCollisionBoxMin() { return {position.x - collisionBoxSize.x, position.y - collisionBoxSize.y, position.z - collisionBoxSize.z}; }
+        vec3 getCollisionBoxMax() { return {position.x + collisionBoxSize.x, position.y + collisionBoxSize.y, position.z + collisionBoxSize.z}; }
 
     protected:
 
