@@ -18,17 +18,19 @@ class _Bullet
     int actionTrigger;
     bool isAlive = false;
     vec3 initialPosition, position, direction, rotation, scale;
-    vec3 collisionBoxSize = {0.1f, 0.1f, 1.0f};  // Half-extents, tweak based on PNG size
+    vec3 collisionBoxSize = {0.15f, 0.6f, 1.0f};  // Half-extents, tweak based on PNG size
     float damage = 5.0f;
 
-    void init(vec3 spawnPos, vec3 playerRotation, vec3 targetPos, char *fileName);
+    void init(vec3 spawnPos, vec3 playerRotation, vec3 targetPos, _textureLoader* loader);
     void reset(vec3);
     void update(float deltaTime);
     void actions();
     void drawBullet();
-    vec3 getCollisionBoxMin() { return {position.x - collisionBoxSize.x, position.y - collisionBoxSize.y, position.z - collisionBoxSize.z}; }
-    vec3 getCollisionBoxMax() { return {position.x + collisionBoxSize.x, position.y + collisionBoxSize.y, position.z + collisionBoxSize.z}; }
+    vec3 getCollisionBoxMin() const { return {position.x - collisionBoxSize.x, position.y - collisionBoxSize.y, position.z - collisionBoxSize.z}; }
+    vec3 getCollisionBoxMax() const { return {position.x + collisionBoxSize.x, position.y + collisionBoxSize.y, position.z + collisionBoxSize.z}; }
 
+    vector<vec3> getRotatedCorners() const;
+    vector<int> hitEnemies;
     protected:
 
     private:

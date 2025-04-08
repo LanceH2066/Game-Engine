@@ -2,7 +2,7 @@
 
 _player::_player()
 {
-
+    maxHp = currentHp = 100.0f;  // Initialize player health (adjust as needed)
 }
 _player::~_player()
 {
@@ -37,6 +37,7 @@ void _player::initPlayer(int xFrames, int yFrames, char* fileName)
 
     actionTrigger = IDLE;
     playerTextureLoader->loadTexture(fileName);
+    bulletTextureLoader->loadTexture("images/Greenlasercannon.png");
 }
 
 void _player::drawPlayer()
@@ -72,38 +73,46 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
 {
     if (bulletTimer.getTicks() > 250)
     {
-        /*
         // Calculate spawn offsets based on player rotation
-        float angleRad = playerRotation.z * (M_PI / 180.0);  // Player's facing angle
-        float offsetDistance = 2.0f;  // Distance from center to left/right (tweak this)
+        float angleRad = playerRotation.z * (M_PI / 180.0);
 
-        // Perpendicular offset (90 degrees from facing direction)
-        float offsetX = cos(angleRad + M_PI / 2) * offsetDistance;
-        float offsetY = sin(angleRad + M_PI / 2) * offsetDistance;
+        // Define gun positions relative to the ship's center (in local space)
+        float gunOffsetX = 0.35f;  // Distance from center to each gun (left/right)
+        float gunOffsetY = 0.5f;  // Forward offset (tweak based on sprite)
 
-        // Left bullet spawn position
+        // Transform gun offsets based on the ship's rotation
+        float cosAngle = cos(angleRad);
+        float sinAngle = sin(angleRad);
+
+        // Left gun position (local space: (-gunOffsetX, gunOffsetY))
+        float leftLocalX = -gunOffsetX;
+        float leftLocalY = gunOffsetY;
+        float leftWorldX = leftLocalX * cosAngle - leftLocalY * sinAngle;
+        float leftWorldY = leftLocalX * sinAngle + leftLocalY * cosAngle;
+
+        // Right gun position (local space: (gunOffsetX, gunOffsetY))
+        float rightLocalX = gunOffsetX;
+        float rightLocalY = gunOffsetY;
+        float rightWorldX = rightLocalX * cosAngle - rightLocalY * sinAngle;
+        float rightWorldY = rightLocalX * sinAngle + rightLocalY * cosAngle;
+
+        // Apply to world positions
         vec3 leftSpawnPos = playerPosition;
-        leftSpawnPos.x -= offsetX;  // Left side
-        leftSpawnPos.y -= offsetY;
+        leftSpawnPos.x += leftWorldX;
+        leftSpawnPos.y += leftWorldY;
 
-        // Right bullet spawn position
         vec3 rightSpawnPos = playerPosition;
-        rightSpawnPos.x += offsetX;  // Right side
-        rightSpawnPos.y += offsetY;
-        */
-        vec3 leftSpawnPos = playerPosition;
-        vec3 rightSpawnPos = playerPosition;
-        leftSpawnPos.x -= 0.5f;
-        rightSpawnPos.x += 0.5f;
+        rightSpawnPos.x += rightWorldX;
+        rightSpawnPos.y += rightWorldY;
 
         // Create bullets
         _Bullet leftBullet;
-        leftBullet.init(leftSpawnPos, playerRotation, mousePos, "images/Greenlasercannon.png");
+        leftBullet.init(leftSpawnPos, playerRotation, mousePos, bulletTextureLoader);
         leftBullet.actionTrigger = _Bullet::SHOOT;
         leftBullet.isAlive = true;
 
         _Bullet rightBullet;
-        rightBullet.init(rightSpawnPos, playerRotation, mousePos, "images/Greenlasercannon.png");
+        rightBullet.init(rightSpawnPos, playerRotation, mousePos, bulletTextureLoader);
         rightBullet.actionTrigger = _Bullet::SHOOT;
         rightBullet.isAlive = true;
 
@@ -150,3 +159,38 @@ void _player::playerActions(float deltaTime)
     }
 }
 
+void _player::takeDamage(float damage)
+{
+    currentHp -= damage;
+    if (currentHp <= 0)
+    {
+        currentHp = 0;  // Prevent negative health
+        // Player is "dead" - we'll handle game-over in _scene
+    }
+}
+
+vector<vec3> _player::getRotatedCorners() const
+{
+    vector<vec3> corners(4);
+    vec3 min = getCollisionBoxMin();
+    vec3 max = getCollisionBoxMax();
+
+    corners[0] = {min.x - playerPosition.x, min.y - playerPosition.y, 0};  // Bottom-left
+    corners[1] = {max.x - playerPosition.x, min.y - playerPosition.y, 0};  // Bottom-right
+    corners[2] = {max.x - playerPosition.x, max.y - playerPosition.y, 0};  // Top-right
+    corners[3] = {min.x - playerPosition.x, max.y - playerPosition.y, 0};  // Top-left
+
+    float angleRad = playerRotation.z * (M_PI / 180.0);
+    float cosA = cos(angleRad);
+    float sinA = sin(angleRad);
+
+    for (auto& corner : corners)
+    {
+        float x = corner.x * cosA - corner.y * sinA;
+        float y = corner.x * sinA + corner.y * cosA;
+        corner.x = x + playerPosition.x;
+        corner.y = y + playerPosition.y;
+    }
+
+    return corners;
+}

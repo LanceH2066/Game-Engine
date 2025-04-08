@@ -37,14 +37,15 @@ class _enemy
         void placeEnemy(vec3);
         void enemyActions(float deltaTime);
         void takeDamage(float damage);
-        enum{PURSUIT,ATTACK};
 
         float maxHp, currentHp;
-
+        float stoppingDistance = 1.0f;
         // Add these for collision
-        vec3 collisionBoxSize = {0.25f, 0.25f, 1.0f};  // Half-extents of the collision box
-        vec3 getCollisionBoxMin() { return {position.x - collisionBoxSize.x, position.y - collisionBoxSize.y, position.z - collisionBoxSize.z}; }
-        vec3 getCollisionBoxMax() { return {position.x + collisionBoxSize.x, position.y + collisionBoxSize.y, position.z + collisionBoxSize.z}; }
+        vec3 collisionBoxSize = {0.6f, 0.6f, 1.0f};  // Half-extents of the collision box
+        vec3 getCollisionBoxMin()const { return {position.x - collisionBoxSize.x, position.y - collisionBoxSize.y, position.z - collisionBoxSize.z}; }
+        vec3 getCollisionBoxMax()const { return {position.x + collisionBoxSize.x, position.y + collisionBoxSize.y, position.z + collisionBoxSize.z}; }
+
+        vector<vec3> getRotatedCorners() const;
 
     protected:
 

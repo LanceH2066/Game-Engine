@@ -3,7 +3,6 @@
 _inputs *input = new _inputs();
 _parallax *prlx1 = new _parallax();
 _player *player = new _player();
-_enemy enemies[50];
 _collision *collision = new _collision();
 _sounds *sounds = new _sounds();
 
@@ -12,6 +11,7 @@ _scene::_scene()
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&lastTime);
     deltaTime = 0.0f;
+    enemies.clear();
 }
 
 _scene::~_scene()
@@ -64,21 +64,40 @@ void _scene::drawScene()
               lookAtPos.x, lookAtPos.y, lookAtPos.z,
               0, 1, 0);
 
-    // Draw background (always render, even when paused)
     glPushMatrix();
         glColor3f(1.0f, 1.0f, 1.0f);
         prlx1->drawBackground(dim.x, dim.y, player->playerPosition);
     glPopMatrix();
 
-    // Draw player (always render)
     glPushMatrix();
         player->drawPlayer();
     glPopMatrix();
 
-    // Bullets: update only if not paused, draw always
+    if (debugMode)
+    {
+        vec3 playerMin = player->getCollisionBoxMin();
+        vec3 playerMax = player->getCollisionBoxMax();
+        glPushMatrix();
+            glDisable(GL_TEXTURE_2D);
+            glTranslatef(player->playerPosition.x, player->playerPosition.y, player->playerPosition.z + 0.1f);
+            glRotatef(player->playerRotation.z, 0, 0, 1);  // Apply player's rotation
+            glColor3f(0.0f, 0.0f, 1.0f);  // Blue for player
+            glBegin(GL_LINE_LOOP);
+                glVertex3f(playerMin.x - player->playerPosition.x, playerMin.y - player->playerPosition.y, 0);
+                glVertex3f(playerMax.x - player->playerPosition.x, playerMin.y - player->playerPosition.y, 0);
+                glVertex3f(playerMax.x - player->playerPosition.x, playerMax.y - player->playerPosition.y, 0);
+                glVertex3f(playerMin.x - player->playerPosition.x, playerMax.y - player->playerPosition.y, 0);
+            glEnd();
+            glColor3f(1.0f, 1.0f, 1.0f);
+            glEnable(GL_TEXTURE_2D);
+        glPopMatrix();
+    }
+
     glPushMatrix();
-        if (!isPaused) {
-            player->bullets.erase(
+        if (!isPaused)
+        {
+            player->bullets.erase
+            (
                 remove_if(player->bullets.begin(), player->bullets.end(), [](const _Bullet& b) { return !b.isAlive; }),
                 player->bullets.end()
             );
@@ -87,41 +106,37 @@ void _scene::drawScene()
         {
             if (bullet.isAlive)
             {
-                // BULLET MOVEMENT
                 if (!isPaused)
                 {
                     bullet.update(deltaTime);
                 }
-
                 bullet.drawBullet();
 
                 vec3 bulletMin = bullet.getCollisionBoxMin();
                 vec3 bulletMax = bullet.getCollisionBoxMax();
 
-                // BULLET COLLISION
                 if (!isPaused)
                 {
-                    for (int i = 0; i < maxEnemies; i++)
+                    for (size_t i = 0; i < enemies.size(); i++)
                     {
-                        if (enemies[i].isAlive)
+                        // Check if this enemy has already been hit by this bullet
+                        if (find(bullet.hitEnemies.begin(), bullet.hitEnemies.end(), i) == bullet.hitEnemies.end())
                         {
-                            vec3 enemyMin = enemies[i].getCollisionBoxMin();
-                            vec3 enemyMax = enemies[i].getCollisionBoxMax();
-                            if (collision->isOBBCollision(bulletMin, bulletMax, enemyMin, enemyMax))
+                            if (collision->isOBBCollision(bullet, enemies[i]))
                             {
-                                bullet.isAlive = false;
                                 enemies[i].takeDamage(bullet.damage);
+                                bullet.hitEnemies.push_back(i);  // Record this enemy as hit
                             }
                         }
                     }
                 }
 
-                // DRAW HITBOXES ON BULLETS
                 if (debugMode)
                 {
                     glPushMatrix();
-                    glDisable(GL_TEXTURE_2D);  // Disable texturing for hitbox
+                        glDisable(GL_TEXTURE_2D);
                         glTranslatef(bullet.position.x, bullet.position.y, bullet.position.z + 0.1f);
+                        glRotatef(bullet.rotation.z, 0, 0, 1);  // Apply bullet's rotation
                         glColor3f(0.0f, 1.0f, 0.0f);
                         glBegin(GL_LINE_LOOP);
                             glVertex3f(bulletMin.x - bullet.position.x, bulletMin.y - bullet.position.y, 0);
@@ -130,27 +145,25 @@ void _scene::drawScene()
                             glVertex3f(bulletMin.x - bullet.position.x, bulletMax.y - bullet.position.y, 0);
                         glEnd();
                         glColor3f(1.0f, 1.0f, 1.0f);
-                        glEnable(GL_TEXTURE_2D);  // Re-enable texturing
+                        glEnable(GL_TEXTURE_2D);
                     glPopMatrix();
                 }
             }
         }
     glPopMatrix();
 
-    // Player actions and enemy updates only if not paused
     if (!isPaused)
     {
         player->playerActions(deltaTime);
         updateEnemySpawning();
     }
 
-    // Enemies: update only if not paused, draw always
     glPushMatrix();
-        for (int i = 0; i < 20; i++)
+        for (size_t i = 0; i < enemies.size(); i++)  // Use size()
         {
             if (!isPaused)
             {
-                for (int j = i + 1; j < 20; j++)
+                for (size_t j = i + 1; j < enemies.size(); j++)  // Use size()
                 {
                     vec3 diff = {enemies[i].position.x - enemies[j].position.x, enemies[i].position.y - enemies[j].position.y, 0.0f};
                     float distSq = diff.x * diff.x + diff.y * diff.y;
@@ -168,16 +181,24 @@ void _scene::drawScene()
                     }
                 }
 
-                if (collision->isRadialCollision(enemies[i].position, player->playerPosition, 0.5, 0.5, 0.02))
+                if (enemies[i].isAlive && player->currentHp > 0)
                 {
-                    enemies[i].actionTrigger = enemies[i].ATTACK;
-                }
-                else
-                {
-                    enemies[i].actionTrigger = enemies[i].PURSUIT;
-                }
+                    enemies[i].enemyActions(deltaTime);
 
-                enemies[i].enemyActions(deltaTime);
+                    if (collision->isOBBCollision(*player, enemies[i]))
+                    {
+                        if (damageCooldown <= 0.0f)
+                        {
+                            player->takeDamage(10.0f);  // Deal 10 damage per collision (adjust as needed)
+                            damageCooldown = 0.5f;  // 0.5-second cooldown between damage (adjust as needed)
+                            if (player->currentHp <= 0)
+                            {
+                                gameOver = true;  // Set game-over state
+                                sounds->stopMusic();  // Stop music on game over
+                            }
+                        }
+                    }
+                }
             }
 
             enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
@@ -187,6 +208,7 @@ void _scene::drawScene()
                 glPushMatrix();
                     glDisable(GL_TEXTURE_2D);
                     glTranslatef(enemies[i].position.x, enemies[i].position.y, enemies[i].position.z + 0.1f);
+                    glRotatef(enemies[i].rotation.z, 0, 0, 1);  // Apply enemy's rotation
                     glColor3f(1.0f, 0.0f, 0.0f);
                     glBegin(GL_LINE_LOOP);
                         glVertex3f(enemies[i].getCollisionBoxMin().x - enemies[i].position.x, enemies[i].getCollisionBoxMin().y - enemies[i].position.y, 0);
@@ -200,6 +222,13 @@ void _scene::drawScene()
             }
         }
     glPopMatrix();
+
+    if (damageCooldown > 0.0f && !isPaused)
+    {
+        damageCooldown -= deltaTime;
+        if (damageCooldown < 0.0f)
+            damageCooldown = 0.0f;
+    }
 }
 
 void _scene::reSize(GLint width, GLint height)
@@ -229,13 +258,13 @@ void _scene::processKeyboardInput()
     worldMousePos.x = (mousePos.x - dim.x / 2) / (float)(dim.x / 2);
     worldMousePos.y = (dim.y / 2 - mousePos.y) / (float)(dim.y / 2);
 
-    if (!isPaused)
+    if (!isPaused && !gameOver)
     {
         input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);
         player->bulletTimer.update(deltaTime);  // Update timer with deltaTime
     }
 
-    if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !isPaused)
+    if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !isPaused && !gameOver)
     {
         player->shoot(worldMousePos, sounds);
     }
@@ -280,7 +309,7 @@ void _scene::processKeyboardInput()
         lastPauseState = false;
     }
 
-    if (!isPaused)
+    if (!isPaused && !gameOver)
     {
         input->keyPressed(player, sounds, deltaTime);
         input->keyUp(player, sounds);
@@ -289,38 +318,63 @@ void _scene::processKeyboardInput()
 
 void _scene::updateEnemySpawning()
 {
-    if (elapsedTime >= 1200.0f)  // Stop spawning after 20 minutes
+    if (elapsedTime >= 1800.0f || gameOver)  // Stop spawning after 30 minutes or on game over (adjust as needed)
         return;
+
+    // Dynamic spawn interval: decreases exponentially from 2.0 to 0.1 over time
+    float timeFactor = elapsedTime / 600.0f;  // Normalize time over 10 minutes
+    spawnInterval = 2.0f * exp(-timeFactor) + 0.1f;  // Exponential decay + minimum interval
+    spawnInterval = fmax(0.1f, spawnInterval);  // Clamp to minimum 0.1 seconds
+
+    // Dynamic enemy cap: scales from 50 to 500 over 20 minutes
+    int maxEnemies = 50 + static_cast<int>((elapsedTime / 1200.0f) * 450);  // Linear increase
+    maxEnemies = min(maxEnemies, 500);  // Hard cap at 500 for performance
 
     if (elapsedTime - lastSpawnTime >= spawnInterval)
     {
-        if (maxEnemies < 300)  // Scale max enemies over time
-            maxEnemies++;
-
-        vec3 randPos;
-        float angle = (rand() % 360) * (M_PI / 180.0f);
-        float distance = 17.0f; // Spawn distance from player
-
-        randPos.x = player->playerPosition.x + cos(angle) * distance;
-        randPos.y = player->playerPosition.y + sin(angle) * distance;
-
-        randPos.z = 48.0f;
-
-        for (int i = 0; i < maxEnemies; i++)
+        if (enemies.size() < static_cast<size_t>(maxEnemies))
         {
-            if (!enemies[i].isAlive)  // Reuse dead enemies
-            {
-                enemies[i].placeEnemy(randPos);
-                enemies[i].isAlive = true;
-                enemies[i].initEnemy("images/swarmbot.png");
-                enemies[i].setPlayerReference(player);
-                lastSpawnTime = elapsedTime;
-                break;
-            }
-        }
+            // Batch spawning: spawn 1–5 enemies at a time, scaling with time
+            int batchSize = 10 + static_cast<int>(timeFactor * 4);  // 1 at start, up to 5 later
+            batchSize = min(batchSize, 30);  // Cap batch size
 
-        // Adjust spawn rate dynamically
-        spawnInterval = fmax(0.5f, 2.0f - elapsedTime / 600.0f);  // Faster spawns over time
+            for (int i = 0; i < batchSize; i++)
+            {
+                vec3 randPos;
+                float angle = (rand() % 360) * (M_PI / 180.0f);
+                float distance = 15.0f + (rand() % 11) * 1.0f;  // Random distance 15–25 units
+                randPos.x = player->playerPosition.x + cos(angle) * distance;
+                randPos.y = player->playerPosition.y + sin(angle) * distance;
+                randPos.z = 48.0f;
+
+                // Reuse dead enemies or add new ones
+                bool reused = false;
+                for (auto& enemy : enemies)
+                {
+                    if (!enemy.isAlive)
+                    {
+                        enemy.placeEnemy(randPos);
+                        enemy.isAlive = true;
+                        enemy.initEnemy("images/swarmbot.png");
+                        enemy.setPlayerReference(player);
+                        enemy.currentHp = enemy.maxHp;  // Reset health
+                        reused = true;
+                        break;
+                    }
+                }
+                if (!reused && enemies.size() < static_cast<size_t>(maxEnemies))
+                {
+                    _enemy newEnemy;
+                    newEnemy.placeEnemy(randPos);
+                    newEnemy.isAlive = true;
+                    newEnemy.initEnemy("images/swarmbot.png");
+                    newEnemy.setPlayerReference(player);
+                    enemies.push_back(newEnemy);
+                }
+            }
+
+            lastSpawnTime = elapsedTime;
+        }
     }
 }
 

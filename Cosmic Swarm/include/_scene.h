@@ -26,6 +26,7 @@ class _scene
         void processKeyboardInput();
         void updateEnemySpawning();
         vec2 dim; // for screen width/height
+        vector<_enemy> enemies;
 
     protected:
 
@@ -42,6 +43,8 @@ class _scene
 
     bool debugMode = false;  // Add this for toggling hitbox drawing
     bool isPaused = false;  // Add this for pausing
+    bool gameOver = false;  // Add this for game-over state
+    float damageCooldown = 0.0f;  // Cooldown timer to prevent rapid damage
 };
 
 #endif // _SCENE_H
