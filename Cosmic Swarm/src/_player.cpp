@@ -34,9 +34,9 @@ void _player::initPlayer(int xFrames, int yFrames, char* fileName)
     yMax = 1.0;
     yMin = 0;
     speed = 10.0f;
-    playerTextureLoader->loadTexture(fileName);
 
     actionTrigger = IDLE;
+    playerTextureLoader->loadTexture(fileName);
 }
 
 void _player::drawPlayer()
@@ -72,6 +72,7 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
 {
     if (bulletTimer.getTicks() > 250)
     {
+        /*
         // Calculate spawn offsets based on player rotation
         float angleRad = playerRotation.z * (M_PI / 180.0);  // Player's facing angle
         float offsetDistance = 2.0f;  // Distance from center to left/right (tweak this)
@@ -89,11 +90,11 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
         vec3 rightSpawnPos = playerPosition;
         rightSpawnPos.x += offsetX;  // Right side
         rightSpawnPos.y += offsetY;
-
-        printf("Player pos: (%.2f, %.2f)\n", playerPosition.x, playerPosition.y);
-        printf("Left spawn: (%.2f, %.2f)\n", leftSpawnPos.x, leftSpawnPos.y);
-        printf("Right spawn: (%.2f, %.2f)\n", rightSpawnPos.x, rightSpawnPos.y);
-
+        */
+        vec3 leftSpawnPos = playerPosition;
+        vec3 rightSpawnPos = playerPosition;
+        leftSpawnPos.x -= 0.5f;
+        rightSpawnPos.x += 0.5f;
 
         // Create bullets
         _Bullet leftBullet;
@@ -114,8 +115,9 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
     }
 }
 
-void _player::playerActions()
+void _player::playerActions(float deltaTime)
 {
+    playerTimer->update(deltaTime);
     switch(actionTrigger)
     {
         case IDLE:

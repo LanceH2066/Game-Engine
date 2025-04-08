@@ -2,35 +2,63 @@
 
 _timer::_timer()
 {
-    startTime = clock();
+    elapsedTime = 0.0f;
+    pausedTime = 0.0f;
+    isPaused = false;
 }
 
 _timer::~_timer()
 {
-
 }
 
-clock_t _timer::getTicks()
+float _timer::getTicks()
 {
-    return clock()-startTime;
+    if (isPaused)
+    {
+        return pausedTime * 1000.0f;  // Return paused time in milliseconds
+    }
+    return elapsedTime * 1000.0f;  // Convert seconds to milliseconds
+}
+
+void _timer::update(float deltaTime)
+{
+    if (!isPaused)
+    {
+        elapsedTime += deltaTime;  // Accumulate time in seconds
+    }
 }
 
 void _timer::pause()
 {
-
+    if (!isPaused)
+    {
+        pausedTime = elapsedTime;
+        isPaused = true;
+    }
 }
 
 void _timer::unPause()
 {
-
+    if (isPaused)
+    {
+        elapsedTime = pausedTime;
+        isPaused = false;
+    }
 }
 
 void _timer::stop()
 {
-
+    elapsedTime = 0.0f;
+    pausedTime = 0.0f;
+    isPaused = false;
 }
 
 void _timer::reset()
 {
-    startTime = clock();
+    elapsedTime = 0.0f;
+    pausedTime = 0.0f;
+    if (isPaused)
+    {
+        isPaused = false;  // Resetting unpauses the timer
+    }
 }

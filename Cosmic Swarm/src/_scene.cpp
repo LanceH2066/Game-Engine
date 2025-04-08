@@ -1,6 +1,5 @@
 #include "_scene.h"
 
-_lightSetting *myLight = new _lightSetting();
 _inputs *input = new _inputs();
 _parallax *prlx1 = new _parallax();
 _player *player = new _player();
@@ -17,22 +16,22 @@ _scene::_scene()
 
 _scene::~_scene()
 {
-
+    delete input;
+    delete prlx1;
+    delete player;
+    delete collision;
+    delete sounds;
 }
 
 GLint _scene::initGL()
 {
     // GL SETTINGS
-    glClearColor(1.0,1.0,1.0,1.0);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glClearDepth(1.0);
-    glDepthFunc(GL_LEQUAL);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_TEXTURE_2D);
-    myLight->setLight(GL_LIGHT0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // SCREEN SIZE
     dim.x = GetSystemMetrics(SM_CXSCREEN);
     dim.y = GetSystemMetrics(SM_CYSCREEN);
@@ -59,50 +58,55 @@ void _scene::drawScene()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    // Camera follows the player
     vec3 cameraPos = {player->playerPosition.x, player->playerPosition.y, player->playerPosition.z + 20.0f};
     vec3 lookAtPos = {player->playerPosition.x, player->playerPosition.y, player->playerPosition.z};
+    gluLookAt(cameraPos.x, cameraPos.y, cameraPos.z,
+              lookAtPos.x, lookAtPos.y, lookAtPos.z,
+              0, 1, 0);
 
-    gluLookAt(cameraPos.x, cameraPos.y, cameraPos.z, // Eye position (camera)
-              lookAtPos.x, lookAtPos.y, lookAtPos.z, // Center position (where the camera looks)
-              0, 1, 0); // Up vector (keeps camera upright)
-
+    // Draw background (always render, even when paused)
     glPushMatrix();
-        glDisable(GL_LIGHTING);
+        glColor3f(1.0f, 1.0f, 1.0f);
         prlx1->drawBackground(dim.x, dim.y, player->playerPosition);
-        glEnable(GL_LIGHTING);
     glPopMatrix();
 
+    // Draw player (always render)
     glPushMatrix();
-        glDisable(GL_LIGHTING);
         player->drawPlayer();
-        glEnable(GL_LIGHTING);
     glPopMatrix();
 
+    // Bullets: update only if not paused, draw always
     glPushMatrix();
-        glDisable(GL_LIGHTING);
-            player->bullets.erase
-            (
+        if (!isPaused) {
+            player->bullets.erase(
                 remove_if(player->bullets.begin(), player->bullets.end(), [](const _Bullet& b) { return !b.isAlive; }),
                 player->bullets.end()
             );
-            for (auto& bullet : player->bullets)
+        }
+        for (auto& bullet : player->bullets)
+        {
+            if (bullet.isAlive)
             {
-                if (bullet.isAlive)
+                // BULLET MOVEMENT
+                if (!isPaused)
                 {
                     bullet.update(deltaTime);
-                    bullet.drawBullet();
+                }
 
-                    vec3 bulletMin = bullet.getCollisionBoxMin();
-                    vec3 bulletMax = bullet.getCollisionBoxMax();
+                bullet.drawBullet();
 
+                vec3 bulletMin = bullet.getCollisionBoxMin();
+                vec3 bulletMax = bullet.getCollisionBoxMax();
+
+                // BULLET COLLISION
+                if (!isPaused)
+                {
                     for (int i = 0; i < maxEnemies; i++)
                     {
                         if (enemies[i].isAlive)
                         {
                             vec3 enemyMin = enemies[i].getCollisionBoxMin();
                             vec3 enemyMax = enemies[i].getCollisionBoxMax();
-
                             if (collision->isOBBCollision(bulletMin, bulletMax, enemyMin, enemyMax))
                             {
                                 bullet.isAlive = false;
@@ -110,53 +114,53 @@ void _scene::drawScene()
                             }
                         }
                     }
-                    if (debugMode) {
+                }
+
+                // DRAW HITBOXES ON BULLETS
+                if (debugMode)
+                {
                     glPushMatrix();
-                        glTranslatef(bullet.position.x, bullet.position.y, bullet.position.z);
-                        glColor3f(0.0f, 1.0f, 0.0f);  // Green for bullets
+                    glDisable(GL_TEXTURE_2D);  // Disable texturing for hitbox
+                        glTranslatef(bullet.position.x, bullet.position.y, bullet.position.z + 0.1f);
+                        glColor3f(0.0f, 1.0f, 0.0f);
                         glBegin(GL_LINE_LOOP);
-                            glVertex3f(bulletMin.x - bullet.position.x, bulletMin.y - bullet.position.y, 50.0);
-                            glVertex3f(bulletMax.x - bullet.position.x, bulletMin.y - bullet.position.y, 50.0);
-                            glVertex3f(bulletMax.x - bullet.position.x, bulletMax.y - bullet.position.y, 50.0);
-                            glVertex3f(bulletMin.x - bullet.position.x, bulletMax.y - bullet.position.y, 50.0);
+                            glVertex3f(bulletMin.x - bullet.position.x, bulletMin.y - bullet.position.y, 0);
+                            glVertex3f(bulletMax.x - bullet.position.x, bulletMin.y - bullet.position.y, 0);
+                            glVertex3f(bulletMax.x - bullet.position.x, bulletMax.y - bullet.position.y, 0);
+                            glVertex3f(bulletMin.x - bullet.position.x, bulletMax.y - bullet.position.y, 0);
                         glEnd();
+                        glColor3f(1.0f, 1.0f, 1.0f);
+                        glEnable(GL_TEXTURE_2D);  // Re-enable texturing
                     glPopMatrix();
                 }
-                }
             }
-        glEnable(GL_LIGHTING);
+        }
     glPopMatrix();
 
-    player->playerActions();
+    // Player actions and enemy updates only if not paused
+    if (!isPaused)
+    {
+        player->playerActions(deltaTime);
+        updateEnemySpawning();
+    }
 
-    updateEnemySpawning();
-
-    // KEEP ENEMIES FROM STACKING, CHECK FOR PLAYER COLLISION, DRAW ENEMIES, RUN ACTIONS
+    // Enemies: update only if not paused, draw always
     glPushMatrix();
-        glDisable(GL_LIGHTING);
-            for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++)
+        {
+            if (!isPaused)
             {
                 for (int j = i + 1; j < 20; j++)
                 {
-                    vec3 diff =
-                    {
-                        enemies[i].position.x - enemies[j].position.x,
-                        enemies[i].position.y - enemies[j].position.y,
-                        0.0f
-                    };
-
+                    vec3 diff = {enemies[i].position.x - enemies[j].position.x, enemies[i].position.y - enemies[j].position.y, 0.0f};
                     float distSq = diff.x * diff.x + diff.y * diff.y;
-                    float minDist = 0.5f; // Minimum distance to maintain
-
+                    float minDist = 0.5f;
                     if (distSq < (minDist * minDist) && distSq > 0.0f)
                     {
                         float dist = sqrt(distSq);
-                        float pushForce = (minDist - dist) * 0.05f; // Push force factor
-
-                        // Normalize direction and apply push
+                        float pushForce = (minDist - dist) * 0.05f;
                         diff.x /= dist;
                         diff.y /= dist;
-
                         enemies[i].position.x += diff.x * pushForce;
                         enemies[i].position.y += diff.y * pushForce;
                         enemies[j].position.x -= diff.x * pushForce;
@@ -164,23 +168,37 @@ void _scene::drawScene()
                     }
                 }
 
-                enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
-                enemies[i].enemyActions(deltaTime);
+                if (collision->isRadialCollision(enemies[i].position, player->playerPosition, 0.5, 0.5, 0.02))
+                {
+                    enemies[i].actionTrigger = enemies[i].ATTACK;
+                }
+                else
+                {
+                    enemies[i].actionTrigger = enemies[i].PURSUIT;
+                }
 
-                if (debugMode && enemies[i].isAlive) {
+                enemies[i].enemyActions(deltaTime);
+            }
+
+            enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
+
+            if (debugMode && enemies[i].isAlive)
+            {
                 glPushMatrix();
-                    glTranslatef(enemies[i].position.x, enemies[i].position.y, enemies[i].position.z);
-                    glColor3f(1.0f, 0.0f, 0.0f);  // Red for enemies
+                    glDisable(GL_TEXTURE_2D);
+                    glTranslatef(enemies[i].position.x, enemies[i].position.y, enemies[i].position.z + 0.1f);
+                    glColor3f(1.0f, 0.0f, 0.0f);
                     glBegin(GL_LINE_LOOP);
                         glVertex3f(enemies[i].getCollisionBoxMin().x - enemies[i].position.x, enemies[i].getCollisionBoxMin().y - enemies[i].position.y, 0);
                         glVertex3f(enemies[i].getCollisionBoxMax().x - enemies[i].position.x, enemies[i].getCollisionBoxMin().y - enemies[i].position.y, 0);
                         glVertex3f(enemies[i].getCollisionBoxMax().x - enemies[i].position.x, enemies[i].getCollisionBoxMax().y - enemies[i].position.y, 0);
                         glVertex3f(enemies[i].getCollisionBoxMin().x - enemies[i].position.x, enemies[i].getCollisionBoxMax().y - enemies[i].position.y, 0);
                     glEnd();
+                    glColor3f(1.0f, 1.0f, 1.0f);
+                    glEnable(GL_TEXTURE_2D);
                 glPopMatrix();
             }
-            }
-        glEnable(GL_LIGHTING);
+        }
     glPopMatrix();
 }
 
@@ -211,30 +229,62 @@ void _scene::processKeyboardInput()
     worldMousePos.x = (mousePos.x - dim.x / 2) / (float)(dim.x / 2);
     worldMousePos.y = (dim.y / 2 - mousePos.y) / (float)(dim.y / 2);
 
-    input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);
+    if (!isPaused)
+    {
+        input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);
+        player->bulletTimer.update(deltaTime);  // Update timer with deltaTime
+    }
 
-    // Check if left mouse button is pressed
-    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+    if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !isPaused)
     {
         player->shoot(worldMousePos, sounds);
     }
 
-    // Toggle debug mode with 'D' key
-    if (GetAsyncKeyState('F') & 0x8000) {
-        static bool lastState = false;  // Debounce to prevent rapid toggling
+    // Toggle debug mode with 'F' key
+    static bool lastState = false;
+    if (GetAsyncKeyState('F') & 0x8000)
+    {
         bool currentState = true;
-        if (!lastState && currentState) {
+        if (!lastState && currentState)
+        {
             debugMode = !debugMode;
-            printf("Debug mode: %s\n", debugMode ? "ON" : "OFF");
         }
         lastState = currentState;
-    } else {
-        static bool lastState = false;
+    }
+    else
+    {
         lastState = false;
     }
 
-    input->keyPressed(player, sounds,deltaTime);
-    input->keyUp(player, sounds);
+    // Toggle pause with 'P' key
+    static bool lastPauseState = false;
+    if (GetAsyncKeyState('P') & 0x8000)
+    {
+        bool currentState = true;
+        if (!lastPauseState && currentState)
+        {
+            isPaused = !isPaused;
+            if (isPaused)
+            {
+                player->bulletTimer.pause();
+            }
+            else
+            {
+                player->bulletTimer.unPause();
+            }
+        }
+        lastPauseState = currentState;
+    }
+    else
+    {
+        lastPauseState = false;
+    }
+
+    if (!isPaused)
+    {
+        input->keyPressed(player, sounds, deltaTime);
+        input->keyUp(player, sounds);
+    }
 }
 
 void _scene::updateEnemySpawning()
@@ -270,18 +320,35 @@ void _scene::updateEnemySpawning()
         }
 
         // Adjust spawn rate dynamically
-        //spawnInterval = fmax(0.5f, 2.0f - elapsedTime / 600.0f);  // Faster spawns over time
-        spawnInterval =0.5f;
+        spawnInterval = fmax(0.5f, 2.0f - elapsedTime / 600.0f);  // Faster spawns over time
     }
 }
 
 void _scene::updateDeltaTime()
 {
     LARGE_INTEGER currentTime;
-    QueryPerformanceCounter(&currentTime);
+    QueryPerformanceCounter(&currentTime);  // Pass pointer to currentTime
 
-    deltaTime = (float)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
-    lastTime = currentTime;
-
-    elapsedTime += deltaTime; // Track total run time
+    static bool wasPausedLastFrame = false;  // Declare at function scope
+    if (!isPaused)
+    {
+        if (wasPausedLastFrame)
+        {
+            // First frame after unpause: reset lastTime but don’t calculate deltaTime yet
+            lastTime = currentTime;
+            deltaTime = 0.0f;
+            wasPausedLastFrame = false;
+        }
+        else
+        {
+            deltaTime = (float)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
+            lastTime = currentTime;
+            elapsedTime += deltaTime;
+        }
+    }
+    else
+    {
+        deltaTime = 0.0f;
+        wasPausedLastFrame = true;  // Track that we’re paused
+    }
 }

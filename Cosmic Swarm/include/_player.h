@@ -20,7 +20,7 @@ class _player
 
         void initPlayer(int,int,char*); // number of x,y frames, filename
         void drawPlayer();              // render sprites
-        void playerActions();           // decide actions
+        void playerActions(float deltaTime);
 
         vector<_Bullet> bullets;  // Store active bullets
         _timer bulletTimer;  // Timer to regulate auto-firing

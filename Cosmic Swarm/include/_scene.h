@@ -40,7 +40,8 @@ class _scene
     LARGE_INTEGER lastTime;
     float deltaTime;
 
-    bool debugMode = true;  // Add this for toggling hitbox drawing
+    bool debugMode = false;  // Add this for toggling hitbox drawing
+    bool isPaused = false;  // Add this for pausing
 };
 
 #endif // _SCENE_H
