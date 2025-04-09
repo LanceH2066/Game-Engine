@@ -1,0 +1,43 @@
+#ifndef _XPORB_H
+#define _XPORB_H
+
+#include<_common.h>
+#include<_textureLoader.h>
+
+
+class _xpOrb
+{
+    public:
+        _xpOrb();
+        virtual ~_xpOrb();
+
+        //orb position, size and state
+        vec3 position;
+        vec3 scale;
+        bool isActive;
+
+        //animation/texture
+        float xMin, xMax, yMin, yMax;
+        _textureLoader * xpTextureLoader = new _textureLoader();
+
+
+        //methods
+        void initOrb(char* fileName);
+        void drawOrb();
+        void placeOrb(vec3);
+
+        vec3 getCollisionBoxMin() const;
+        vec3 getCollisionBoxMax() const;
+        vec3 collisionBoxSize = {0.4f, 0.4f, 1.0f}; // pickup radius
+
+
+
+
+
+
+    protected:
+
+    private:
+};
+
+#endif // _XPORB_H
