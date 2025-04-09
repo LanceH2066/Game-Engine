@@ -1,0 +1,55 @@
+# depslib dependency file v1.0
+1742254695 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\main.cpp
+	<windows.h>
+	<_common.h>
+	<_scene.h>
+
+1742860930 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_bullets.cpp
+	"_bullets.h"
+
+1741651416 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_collisionckeck.cpp
+	"_collisionckeck.h"
+
+1741824855 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_enms.cpp
+	"_enms.h"
+
+1742859820 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_inputs.cpp
+	"_inputs.h"
+
+1738633112 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_lightsetting.cpp
+	"_lightsetting.h"
+
+1740010614 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_model.cpp
+	"_model.h"
+
+1740444776 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_parallax.cpp
+	"_parallax.h"
+
+1744067345 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_particles.cpp
+	"_particles.h"
+
+1741821500 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_player.cpp
+	"_player.h"
+
+1744067526 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_scene.cpp
+	"_scene.h"
+	<_lightsetting.h>
+	<_model.h>
+	<_inputs.h>
+	<_parallax.h>
+	<_player.h>
+	<_enms.h>
+	<_collisionckeck.h>
+	<_sounds.h>
+	<_bullets.h>
+	<_particles.h>
+
+1742256799 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_sounds.cpp
+	"_sounds.h"
+
+1739408234 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_textureloader.cpp
+	"_textureloader.h"
+
+1740443348 source:c:\users\heinr\onedrive\desktop\csci178\lesson15_mouse\src\_timer.cpp
+	"_timer.h"
+
