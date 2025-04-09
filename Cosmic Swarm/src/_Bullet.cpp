@@ -2,7 +2,8 @@
 
 _Bullet::_Bullet()
 {
-
+    damage = 5.0f;
+    hitEnemies.clear();
 }
 
 _Bullet::~_Bullet()
@@ -10,28 +11,26 @@ _Bullet::~_Bullet()
 
 }
 
-void _Bullet::init(vec3 spawnPos, vec3 playerRotation, vec3 targetPos, char *fileName)
+void _Bullet::init(vec3 spawnPos, vec3 playerRotation, vec3 targetPos, _textureLoader* loader)
 {
     initialPosition = position = spawnPos;
-    position.z = spawnPos.z + 1;  // Spawn in front of player
-
+    position.z = spawnPos.z + 1;
     float angleRad = (playerRotation.z + 90) * (M_PI / 180.0);
     direction.x = cos(angleRad);
     direction.y = sin(angleRad);
-
     scale = {1, 1, 1};
     rotation = playerRotation;
-
     xMin = yMin = 0;
     xMax = yMax = 1.0;
-
-    textureLoader->loadTexture(fileName);
+    textureLoader = loader;  // Use shared loader
+    hitEnemies.clear();
 }
 
 void _Bullet::reset(vec3 playerPos)
 {
     position = playerPos;
     isAlive = false;
+    hitEnemies.clear();
 }
 
 void _Bullet::update(float deltaTime)
@@ -100,4 +99,32 @@ void _Bullet::drawBullet()
                 glEnd();
             }
         glPopMatrix();
+}
+
+vector<vec3> _Bullet::getRotatedCorners() const
+{
+    vector<vec3> corners(4);
+    vec3 min = getCollisionBoxMin();
+    vec3 max = getCollisionBoxMax();
+
+    // Define corners in local space (relative to bullet position)
+    corners[0] = {min.x - position.x, min.y - position.y, 0};  // Bottom-left
+    corners[1] = {max.x - position.x, min.y - position.y, 0};  // Bottom-right
+    corners[2] = {max.x - position.x, max.y - position.y, 0};  // Top-right
+    corners[3] = {min.x - position.x, max.y - position.y, 0};  // Top-left
+
+    // Rotate corners around the bullet's center
+    float angleRad = rotation.z * (M_PI / 180.0);
+    float cosA = cos(angleRad);
+    float sinA = sin(angleRad);
+
+    for (auto& corner : corners)
+    {
+        float x = corner.x * cosA - corner.y * sinA;
+        float y = corner.x * sinA + corner.y * cosA;
+        corner.x = x + position.x;  // Translate back to world space
+        corner.y = y + position.y;
+    }
+
+    return corners;
 }

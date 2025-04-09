@@ -86,71 +86,59 @@ void _enemy::takeDamage(float damage)
 
 void _enemy::enemyActions(float deltaTime)
 {
-    static float attackCooldown = 0.0f; // To track when the enemy can spray
-    static float attackDuration = 0.0f; // To track how long the spray lasts
+    xMin = 0;
+    xMax = 0.5f;
 
-    switch(actionTrigger)
+    // Compute direction vector from enemy to player
+    float deltaX = targetPlayer->playerPosition.x - position.x;
+    float deltaY = targetPlayer->playerPosition.y - position.y;
+
+    // Compute the angle in degrees
+    float angle = atan2(deltaY, deltaX) * (180.0f / M_PI);
+
+    // Adjust to match enemy's default forward direction (downward)
+    rotation.z = angle - 90.0f;
+
+    // Compute the distance to the player
+    float magnitude = sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    // Normalize direction vector
+    if (magnitude > 0.0f)
     {
-        case PURSUIT:
-        {
-            if (targetPlayer && isAlive)
-            {
-                xMin = 0;
-                xMax = 0.5f;
-
-                // Compute direction vector from enemy to player
-                float deltaX = targetPlayer->playerPosition.x - position.x;
-                float deltaY = targetPlayer->playerPosition.y - position.y;
-
-                // Compute the angle in degrees
-                float angle = atan2(deltaY, deltaX) * (180.0f / M_PI);
-
-                // Adjust to match enemy's default forward direction (downward)
-                rotation.z = angle -90.0f;
-
-                // Normalize direction vector
-                float magnitude = sqrt(deltaX * deltaX + deltaY * deltaY);
-                if (magnitude > 0.0f)
-                {
-                    deltaX /= magnitude;
-                    deltaY /= magnitude;
-                }
-
-                // Move enemy towards the player
-                position.x += deltaX * speed * deltaTime;
-                position.y += deltaY * speed * deltaTime;
-
-            }
-            break;
-        }
-        case ATTACK:
-        {
-            /*
-            // Attack cooldown logic: trigger attack every couple of seconds (e.g., 2 seconds)
-            attackCooldown += deltaTime;
-            if (attackCooldown >= 2.0f) // Every 2 seconds
-            {
-                // Activate the spray attack and show the spray animation for 1-2 seconds
-                xMin = 0.5f;
-                xMax = 1.0f;
-                attackDuration = 1.5f; // Keep the spray attack on for 1.5 seconds
-
-                attackCooldown = 0.0f; // Reset the cooldown timer
-            }
-
-            // Handle spray attack duration: keep it showing for a second or two
-            if (attackDuration > 0.0f)
-            {
-                attackDuration -= deltaTime; // Reduce the duration
-            }
-            else
-            {
-                // After the duration ends, reset the animation back to idle state
-                xMin = 0;
-                xMax = 0.5f;
-            }
-            */
-            break;
-        }
+        deltaX /= magnitude;
+        deltaY /= magnitude;
     }
+
+    // Move enemy towards the player only if outside the stopping distance
+    if (magnitude > stoppingDistance)
+    {
+        position.x += deltaX * speed * deltaTime;
+        position.y += deltaY * speed * deltaTime;
+    }
+}
+
+vector<vec3> _enemy::getRotatedCorners() const
+{
+    vector<vec3> corners(4);
+    vec3 min = getCollisionBoxMin();
+    vec3 max = getCollisionBoxMax();
+
+    corners[0] = {min.x - position.x, min.y - position.y, 0};  // Bottom-left
+    corners[1] = {max.x - position.x, min.y - position.y, 0};  // Bottom-right
+    corners[2] = {max.x - position.x, max.y - position.y, 0};  // Top-right
+    corners[3] = {min.x - position.x, max.y - position.y, 0};  // Top-left
+
+    float angleRad = rotation.z * (M_PI / 180.0);
+    float cosA = cos(angleRad);
+    float sinA = sin(angleRad);
+
+    for (auto& corner : corners)
+    {
+        float x = corner.x * cosA - corner.y * sinA;
+        float y = corner.x * sinA + corner.y * cosA;
+        corner.x = x + position.x;
+        corner.y = y + position.y;
+    }
+
+    return corners;
 }
