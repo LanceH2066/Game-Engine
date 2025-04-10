@@ -5,6 +5,7 @@ _parallax *prlx1 = new _parallax();
 _player *player = new _player();
 _collision *collision = new _collision();
 _sounds *sounds = new _sounds();
+_textureLoader* xpOrbTexture = new _textureLoader();
 
 _scene::_scene()
 {
@@ -39,6 +40,7 @@ GLint _scene::initGL()
     // INITIALIZE OBJECTS IN SCENE
     prlx1->initParallax("images/background.png", 0.005, false, false);
     player->initPlayer(1,1,"images/spritesheet.png");
+    xpOrbTexture->loadTexture("images/experienceOrb.png");
 
     // Convert screen pixels to world space (assumes orthographic units)
     float worldUnitsPerPixel = 10.0f / dim.x; // Adjust based on projection settings
@@ -68,6 +70,7 @@ void _scene::drawScene()
         glColor3f(1.0f, 1.0f, 1.0f);
         prlx1->drawBackground(dim.x, dim.y, player->playerPosition);
     glPopMatrix();
+
 
     glPushMatrix();
         player->drawPlayer();
@@ -122,10 +125,21 @@ void _scene::drawScene()
                         // Check if this enemy has already been hit by this bullet
                         if (find(bullet.hitEnemies.begin(), bullet.hitEnemies.end(), i) == bullet.hitEnemies.end())
                         {
-                            if (collision->isOBBCollision(bullet, enemies[i]))
+                            if (collision->isOBBCollision(bullet, enemies[i]))     //bullet hits enemy ---------------------------- xp orb code
                             {
+                                bool wasAlive = enemies[i].isAlive;
+
                                 enemies[i].takeDamage(bullet.damage);
                                 bullet.hitEnemies.push_back(i);  // Record this enemy as hit
+
+                                if (wasAlive && !enemies[i].isAlive)
+                                {
+                                    _xpOrb orb;
+                                    orb.xpTextureLoader = xpOrbTexture;        // Assign shared texture loader
+                                    orb.placeOrb(enemies[i].position);
+                                    orb.initOrb("images/experienceOrb.png");   // This now uses the correct texture loader
+                                    xpOrbs.push_back(orb);
+                                }
                             }
                         }
                     }
@@ -229,6 +243,28 @@ void _scene::drawScene()
         if (damageCooldown < 0.0f)
             damageCooldown = 0.0f;
     }
+
+    for (auto& orb : xpOrbs)    //draw xp orbs
+    {
+        orb.drawOrb();
+    }
+
+    //check for XP orb pickups
+    for (auto& orb : xpOrbs)
+    {
+        if (orb.isActive && collision->isOBBCollision(*player, orb))
+        {
+            orb.isActive = false;
+            player->gainXP(1);  // player gain 1 XP
+            cout << "Player XP: " << player->experiencePoints << endl;
+        }
+    }
+
+    //remove collected orbs
+    xpOrbs.erase(
+    remove_if(xpOrbs.begin(), xpOrbs.end(), [](const _xpOrb& o) { return !o.isActive; }),
+    xpOrbs.end()
+    );
 }
 
 void _scene::reSize(GLint width, GLint height)

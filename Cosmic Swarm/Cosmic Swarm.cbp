@@ -53,6 +53,7 @@
 		<Unit filename="images/Spaceship fx/Small flame_ship.png" />
 		<Unit filename="images/background.png" />
 		<Unit filename="images/bugfighter.png" />
+		<Unit filename="images/experienceOrb.png" />
 		<Unit filename="images/player.png" />
 		<Unit filename="images/smallbug.png" />
 		<Unit filename="images/spritesheet.png" />
@@ -70,6 +71,7 @@
 		<Unit filename="include/_sounds.h" />
 		<Unit filename="include/_textureLoader.h" />
 		<Unit filename="include/_timer.h" />
+		<Unit filename="include/_xporb.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="sounds/blast.mp3" />
 		<Unit filename="sounds/engineSound.mp3" />
@@ -88,6 +90,7 @@
 		<Unit filename="src/_sounds.cpp" />
 		<Unit filename="src/_textureLoader.cpp" />
 		<Unit filename="src/_timer.cpp" />
+		<Unit filename="src/_xporb.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
