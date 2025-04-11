@@ -45,10 +45,15 @@ class _player
         void takeDamage(float damage);
 
         // Add collision box for OBB collision
-        vec3 collisionBoxSize = {0.5f, 0.5f, 1.0f};  // Half-extents of the collision box (adjust as needed)
+        vec3 collisionBoxSize = {0.3f, 0.3f, 1.0f};  // Half-extents of the collision box (adjust as needed)
         vec3 getCollisionBoxMin() const { return {playerPosition.x - collisionBoxSize.x, playerPosition.y - collisionBoxSize.y, playerPosition.z - collisionBoxSize.z}; }
         vec3 getCollisionBoxMax() const { return {playerPosition.x + collisionBoxSize.x, playerPosition.y + collisionBoxSize.y, playerPosition.z + collisionBoxSize.z}; }
         vector<vec3> getRotatedCorners() const;
+
+
+        //xp orbs
+        int experiencePoints = 0;
+        void gainXP(int);
 
     protected:
 

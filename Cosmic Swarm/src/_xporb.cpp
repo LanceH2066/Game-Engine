@@ -3,8 +3,8 @@
 _xpOrb::_xpOrb()
 {
     //ctor
-    position = {0.0f, 0.0f, 0.0f};
-    scale = {0.25f, 0.25f};
+    position = vec3(0.0f, 0.0f, 0.0f);
+    scale = vec3(0.5f, 0.5f, 1.0f);
     isActive = true;
 
     xMin = 0.0f;

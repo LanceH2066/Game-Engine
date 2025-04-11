@@ -194,3 +194,8 @@ vector<vec3> _player::getRotatedCorners() const
 
     return corners;
 }
+
+void _player::gainXP(int amount)
+{
+    experiencePoints += amount;
+}

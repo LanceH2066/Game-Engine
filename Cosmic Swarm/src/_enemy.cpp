@@ -2,21 +2,19 @@
 
 _enemy::_enemy()
 {
-    //position = {0,0,-2};
     position.x = 0.0; position.y = 0.0; position.z = -2.0;
-    //scale = {5.0,5.0};
     scale.x = 1.0; scale.y = 1.0;
-    //rotation = {0,0,0};
     rotation.x = 0.0; rotation.y = 0.0; rotation.z = 0.0;
     speed = 2.0f;
     isAlive = false;
-
+    startFlash = false;
     xMin = 0;
     xMax = 1.0;
     yMax = 1.0;
     yMin = 0;
-
     currentHp = maxHp = 20.0f;
+    explosionEffect = new _particleSystem();
+    hasExploded = false;
 }
 
 _enemy::~_enemy()
@@ -27,9 +25,10 @@ _enemy::~_enemy()
 void _enemy::initEnemy(char* fileName)
 {
     enemyTextureLoader->loadTexture(fileName);
+    explosionEffect->init("images/particle.png");
 }
 
-void _enemy::drawEnemy(GLuint tex)
+void _enemy::drawEnemy(GLuint tex, float deltaTime)
 {
     if(isAlive)
     {
@@ -61,6 +60,11 @@ void _enemy::drawEnemy(GLuint tex)
 
         glPopMatrix();
     }
+    if (explosionEffect->isActive())
+    {
+        explosionEffect->update(deltaTime);
+        explosionEffect->draw();
+    }
 }
 
 void _enemy::placeEnemy(vec3 pos)
@@ -68,6 +72,7 @@ void _enemy::placeEnemy(vec3 pos)
     position.x = pos.x;
     position.y = pos.y;
     position.z = pos.z;
+    hasExploded = false;
 }
 
 void _enemy::setPlayerReference(_player* player)
@@ -78,16 +83,42 @@ void _enemy::setPlayerReference(_player* player)
 void _enemy::takeDamage(float damage)
 {
     currentHp -= damage;
-    if(currentHp <= 0)
+    if (currentHp <= 0 && isAlive)
     {
         isAlive = false;
+        if (!hasExploded)
+        {
+            explosionEffect->spawnExplosion(position, 50);
+            hasExploded = true;
+        }
     }
+    startFlash = true;
+    flashTimer = 0.0f;  // Reset flash timer
 }
 
 void _enemy::enemyActions(float deltaTime)
 {
-    xMin = 0;
-    xMax = 0.5f;
+    // Handle flash effect
+    if (startFlash)
+    {
+        flashTimer += deltaTime;
+        if (flashTimer >= flashDuration)
+        {
+            startFlash = false;  // Revert to default sprite
+            flashTimer = 0.0f;  // Reset timer
+        }
+    }
+
+    if(!startFlash) // default sprite
+    {
+        xMin = 0;
+        xMax = 0.5f;
+    }
+    else    // white sprite for flash
+    {
+        xMin = 0.5f;
+        xMax = 1.0f;
+    }
 
     // Compute direction vector from enemy to player
     float deltaX = targetPlayer->playerPosition.x - position.x;

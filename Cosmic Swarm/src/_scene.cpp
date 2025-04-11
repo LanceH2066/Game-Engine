@@ -26,6 +26,8 @@ _scene::~_scene()
 
 GLint _scene::initGL()
 {
+    srand(static_cast<unsigned>(time(nullptr)));
+    for (int i = 0; i < 20; ++i) rand();
     // GL SETTINGS
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClearDepth(1.0);
@@ -40,7 +42,7 @@ GLint _scene::initGL()
     // INITIALIZE OBJECTS IN SCENE
     prlx1->initParallax("images/background.png", 0.005, false, false);
     player->initPlayer(1,1,"images/spritesheet.png");
-    xpOrbTexture->loadTexture("images/experienceOrb.png");
+    xpOrbTexture->loadTexture("images/scrap.png");
 
     // Convert screen pixels to world space (assumes orthographic units)
     float worldUnitsPerPixel = 10.0f / dim.x; // Adjust based on projection settings
@@ -137,7 +139,7 @@ void _scene::drawScene()
                                     _xpOrb orb;
                                     orb.xpTextureLoader = xpOrbTexture;        // Assign shared texture loader
                                     orb.placeOrb(enemies[i].position);
-                                    orb.initOrb("images/experienceOrb.png");   // This now uses the correct texture loader
+                                    orb.initOrb("images/scrap.png");   // This now uses the correct texture loader
                                     xpOrbs.push_back(orb);
                                 }
                             }
@@ -215,7 +217,7 @@ void _scene::drawScene()
                 }
             }
 
-            enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex);
+            enemies[i].drawEnemy(enemies[i].enemyTextureLoader->tex, deltaTime);
 
             if (debugMode && enemies[i].isAlive)
             {
@@ -256,7 +258,6 @@ void _scene::drawScene()
         {
             orb.isActive = false;
             player->gainXP(1);  // player gain 1 XP
-            cout << "Player XP: " << player->experiencePoints << endl;
         }
     }
 

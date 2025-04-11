@@ -5,7 +5,7 @@
 #include<_timer.h>
 #include<_textureLoader.h>
 #include<_player.h>
-
+#include <_particleSystem.h>
 class _enemy
 {
     public:
@@ -15,6 +15,7 @@ class _enemy
         // Timer / Texture Loader
         _timer * enemyTimer = new _timer();
         _textureLoader * enemyTextureLoader = new _textureLoader();
+        _particleSystem* explosionEffect;
 
         // Position / Rotation / Scale
         vec3 position;
@@ -33,7 +34,7 @@ class _enemy
 
         // Methods
         void initEnemy(char* fileName);
-        void drawEnemy(GLuint);
+        void drawEnemy(GLuint,float);
         void placeEnemy(vec3);
         void enemyActions(float deltaTime);
         void takeDamage(float damage);
@@ -47,6 +48,10 @@ class _enemy
 
         vector<vec3> getRotatedCorners() const;
 
+        bool startFlash;
+        float flashDuration = 0.2f;  // Duration of flash in seconds
+        float flashTimer = 0.0f;     // Tracks elapsed flash time
+        bool hasExploded; // Track if explosion has been triggered
     protected:
 
     private:

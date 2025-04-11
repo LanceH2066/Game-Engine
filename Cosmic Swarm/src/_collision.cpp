@@ -140,3 +140,17 @@ bool _collision::isOBBCollision(const _player& player, const _enemy& enemy)
     return true;  // No separating axis found, collision detected
 }
 
+bool _collision::isOBBCollision(const _player& player, const _xpOrb& orb)
+{
+    // Simple AABB test using their bounding boxes (since orbs don’t rotate)
+    vec3 pMin = player.getCollisionBoxMin();
+    vec3 pMax = player.getCollisionBoxMax();
+    vec3 oMin = orb.getCollisionBoxMin();
+    vec3 oMax = orb.getCollisionBoxMax();
+
+    bool xOverlap = pMin.x <= oMax.x && pMax.x >= oMin.x;
+    bool yOverlap = pMin.y <= oMax.y && pMax.y >= oMin.y;
+    bool zOverlap = pMin.z <= oMax.z && pMax.z >= oMin.z;
+
+    return xOverlap && yOverlap && zOverlap;
+}

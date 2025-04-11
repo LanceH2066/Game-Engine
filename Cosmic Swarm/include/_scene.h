@@ -10,6 +10,7 @@
 #include<_collision.h>
 #include<_sounds.h>
 #include<_Bullet.h>
+#include<_xporb.h>
 
 class _scene
 {
@@ -27,7 +28,8 @@ class _scene
         void updateEnemySpawning();
         vec2 dim; // for screen width/height
         vector<_enemy> enemies;
-
+        //xpOrbs
+        vector<_xpOrb> xpOrbs;
     protected:
 
     private:
