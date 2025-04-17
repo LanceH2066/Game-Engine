@@ -100,7 +100,7 @@ void _Bullet::update(float deltaTime, vector<_enemy>& enemies)
     */
 }
 
-void _Bullet::explode(vector<_enemy>& enemies,vector<_xpOrb>& xpOrbs, _textureLoader* xpOrbTexture)
+void _Bullet::explode(vector<_enemy>& enemies,vector<_xpOrb>& xpOrbs, _textureLoader* xpOrbTexture, vector<_enemyDrops>& enemyDrops, _textureLoader* enemyDropsMagnetTexture, _textureLoader* enemyDropsHealthTexture)
 {
     hasExploded = true;
     explosionEffect->spawnExplosion(position, weapon.level*50, weapon.level*2);
@@ -110,7 +110,7 @@ void _Bullet::explode(vector<_enemy>& enemies,vector<_xpOrb>& xpOrbs, _textureLo
         float dy = enemy.position.y - position.y;
         if (sqrt(dx * dx + dy * dy) <= 2.0 + (1.5*weapon.level))
         {
-            enemy.takeDamage(weapon.damage, xpOrbs, xpOrbTexture);
+            enemy.takeDamage(weapon.damage, xpOrbs, xpOrbTexture,enemyDrops, enemyDropsMagnetTexture, enemyDropsHealthTexture);
         }
     }
 }

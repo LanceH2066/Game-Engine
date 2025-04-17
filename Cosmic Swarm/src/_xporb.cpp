@@ -49,6 +49,14 @@ void _xpOrb::update(float deltaTime, vec3 playerPos, float pickupRange)
 {
     if (!isActive) return;
 
+    if(pickupRange >=1000)
+    {
+        speed = 15.0f;
+    }
+    else
+    {
+        speed = 2.0f;
+    }
     // Calculate distance to player
     vec3 diff = {playerPos.x - position.x, playerPos.y - position.y, 0.0f};
     float distance = sqrt(diff.x * diff.x + diff.y * diff.y);

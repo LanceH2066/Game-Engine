@@ -9,6 +9,7 @@
 #include<_sounds.h>
 #include<_Bullet.h>
 #include<_xporb.h>
+#include<_enemyDrops.h>
 
 class _scene
 {
@@ -23,6 +24,8 @@ class _scene
         _collision *collision;
         _sounds *sounds;
         _textureLoader* xpOrbTexture;
+        _textureLoader* enemyDropsMagnetTexture;
+        _textureLoader* enemyDropsHealthTexture;
 
         GLint initGL();                         // Initialize Game Objects
         void drawScene();                       // Render The Final Scene
@@ -35,19 +38,31 @@ class _scene
         vector<_enemy> enemies;
         //xpOrbs
         vector<_xpOrb> xpOrbs;
+        vector<_enemyDrops> enemyDrops;
 
         float xpPickupRange = 5.0f; // Modifiable pickup range (world units)
 
         float bugSpawnInterval = 10.0f; // Spawn bugs every 10 seconds
-        float lastBugSpawnTime = 0.0f; // Track last bug spawn
+        float lastBugSpawnTime = 0.0f; // Track last bug spawnF
         void spawnBugSwarm(); // New method for bug spawning
         vec3 worldMousePos; // Mouse position in world coordinates
         bool upgradeMenuActive = false; // Track upgrade menu state
-        // Upgrade selection
-        vector<string> availableUpgrades = {"Damage", "Speed", "Health", "FireRate", "AoeSize"};
-        vector<string> currentUpgradeOptions; // Current choices (e.g., 3 random upgrades)
+       // Upgrade selection
+        struct UpgradeOption {
+            string name;        // e.g., "Damage", "Weapon_Laser"
+            string displayText; // e.g., "Damage: Level 1 - 10% increased damage"
+            int currentLevel;   // Current level of the upgrade/weapon
+            bool isWeapon;      // True if it's a weapon upgrade
+            WeaponType weaponType; // Relevant for weapon upgrades
+        };
+        vector<string> availableUpgrades = {
+            "Damage", "Speed", "Health", "FireRate", "AoeSize",
+            "Weapon_Default", "Weapon_Rocket", "Weapon_Laser", "Weapon_Flak"
+        };
+        vector<UpgradeOption> currentUpgradeOptions; // Current choices (3 options)
         void showUpgradeMenu();
         void selectUpgrade(int choice);
+        bool checkMouseClickOnUpgrade(float mouseX, float mouseY); // New: Handle mouse clicks
 
     protected:
 

@@ -1,4 +1,5 @@
 #include "_enemy.h"
+#include<_enemyDrops.h>
 
 _enemy::_enemy()
 {
@@ -80,7 +81,7 @@ void _enemy::placeEnemy(vec3 pos)
     hasExploded = false;
 }
 
-void _enemy::takeDamage(float damage,vector<_xpOrb>& xpOrbs, _textureLoader* xpOrbTexture)
+void _enemy::takeDamage(float damage,vector<_xpOrb>& xpOrbs, _textureLoader* xpOrbTexture, vector<_enemyDrops>& enemyDrops, _textureLoader* enemyDropsMagnetTexture, _textureLoader* enemyDropsHealthTexture)
 {
     currentHp -= damage;
     if (currentHp <= 0 && isAlive)
@@ -91,11 +92,28 @@ void _enemy::takeDamage(float damage,vector<_xpOrb>& xpOrbs, _textureLoader* xpO
             explosionEffect->spawnExplosion(position, 15, 0);
             hasExploded = true;
         }
+
         _xpOrb orb;
         orb.xpTextureLoader = xpOrbTexture;
         orb.placeOrb(position); // Use enemy's position
         orb.initOrb("images/xpOrb.png");
         xpOrbs.push_back(orb);
+
+        if (rand() % 100 == 0)
+        {
+            _enemyDrops magnetDrop;
+            magnetDrop.dropTextureLoader = enemyDropsMagnetTexture;
+            magnetDrop.initDrop(_enemyDrops::MAGNET, "images/magnet.png");
+            magnetDrop.placeDrop(position);
+            enemyDrops.push_back(magnetDrop);
+        }
+        if (rand() % 70 == 0)
+        {
+            _enemyDrops healthDrop;
+            healthDrop.initDrop(_enemyDrops::HEALTH, "images/healthDrop.png");
+            healthDrop.placeDrop(position);
+            enemyDrops.push_back(healthDrop);
+        }
     }
     startFlash = true;
     flashTimer = 0.0f;  // Reset flash timer

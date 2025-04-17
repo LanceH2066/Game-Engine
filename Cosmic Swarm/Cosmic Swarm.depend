@@ -2,7 +2,7 @@
 1742839910 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\main.cpp
 	"_scene.h"
 
-1744865153 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_bullet.cpp
+1744916037 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_bullet.cpp
 	"_Bullet.h"
 
 1744147090 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_collision.cpp
@@ -10,8 +10,9 @@
 
 1742505557 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_common.cpp
 
-1744864851 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_enemy.cpp
+1744918608 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_enemy.cpp
 	"_enemy.h"
+	<_enemyDrops.h>
 
 1742876063 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_inputs.cpp
 	"_inputs.h"
@@ -25,10 +26,10 @@
 1742586228 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_parallax.cpp
 	"_parallax.h"
 
-1744864765 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_player.cpp
+1744924831 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_player.cpp
 	"_player.h"
 
-1744864983 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_scene.cpp
+1744925187 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_scene.cpp
 	"_scene.h"
 
 1742876942 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_sounds.cpp
@@ -81,10 +82,10 @@
 1744157466 source:c:\users\heinr\onedrive\desktop\csci178\cosmic swarm\src\_timer.cpp
 	"_timer.h"
 
-1744492990 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_xporb.cpp
+1744921707 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_xporb.cpp
 	"_xpOrb.h"
 
-1744865982 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_scene.h
+1744925190 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_scene.h
 	<_lightSetting.h>
 	<_model.h>
 	<_inputs.h>
@@ -93,6 +94,7 @@
 	<_sounds.h>
 	<_Bullet.h>
 	<_xporb.h>
+	<_enemyDrops.h>
 
 1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_lightsetting.h
 	<_common.h>
@@ -154,13 +156,12 @@
 1743796061 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_timer.h
 	"_common.h"
 
-1744866067 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_player.h
+1744924252 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_player.h
 	<_common.h>
 	<_Bullet.h>
 	<_sounds.h>
-	<_weapon.h>
 
-1744865026 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_bullet.h
+1744916016 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_bullet.h
 	<_common.h>
 	<_textureLoader.h>
 	<_timer.h>
@@ -269,7 +270,7 @@
 	"ik_IRefCounted.h"
 	"ik_ISoundSource.h"
 
-1744865120 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_enemy.h
+1744918604 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_enemy.h
 	<_common.h>
 	<_timer.h>
 	<_textureLoader.h>
@@ -300,9 +301,16 @@
 	<_particle.h>
 	<_textureLoader.h>
 
-1744859124 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_weapon.h
+1744931121 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_weapon.h
 	"_common.h"
 	"_textureLoader.h"
 	"_timer.h"
 	"_enemy.h"
+
+1744922031 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_enemydrops.h
+	<_common.h>
+	<_textureLoader.h>
+
+1744921833 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_enemydrops.cpp
+	"_enemyDrops.h"
 

@@ -7,9 +7,8 @@ _scene::_scene(){
     collision = new _collision();
     sounds = new _sounds();
     xpOrbTexture = new _textureLoader();
-    if (!input || !prlx1 || !player || !collision || !sounds || !xpOrbTexture) {
-        std::cout << "Failed to allocate scene objects!" << std::endl;
-    }
+    enemyDropsMagnetTexture = new _textureLoader();
+    enemyDropsHealthTexture = new _textureLoader();
 
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&lastTime);
@@ -42,7 +41,8 @@ GLint _scene::initGL(){
     prlx1->initParallax("images/background.png", 0.005, false, false);
     player->initPlayer(1,1,"images/spritesheet.png");
     xpOrbTexture->loadTexture("images/xpOrb.png");
-
+    enemyDropsMagnetTexture->loadTexture("images/magnet.png");
+    enemyDropsHealthTexture->loadTexture("images/healthDrop.png");
     // Convert screen pixels to world space (assumes orthographic units)
     float worldUnitsPerPixel = 10.0f / dim.x; // Adjust based on projection settings
     float screenWidthUnits = dim.x * worldUnitsPerPixel;
@@ -122,7 +122,7 @@ void _scene::drawScene(){
                     {
                         if (collision->isOBBCollision(bullet, enemies[i]))
                         {
-                            enemies[i].takeDamage(bullet.weapon.damage * deltaTime, xpOrbs, xpOrbTexture);
+                            enemies[i].takeDamage(bullet.weapon.damage * deltaTime, xpOrbs, xpOrbTexture, enemyDrops, enemyDropsMagnetTexture, enemyDropsHealthTexture);
                         }
                     }
                 }
@@ -137,7 +137,7 @@ void _scene::drawScene(){
                             {
                                 if(bullet.weapon.type!= ROCKET)
                                 {
-                                    enemies[i].takeDamage(bullet.weapon.damage, xpOrbs, xpOrbTexture);
+                                    enemies[i].takeDamage(bullet.weapon.damage, xpOrbs, xpOrbTexture,enemyDrops, enemyDropsMagnetTexture, enemyDropsHealthTexture);
                                 }
                                 bullet.hitEnemies.push_back(i);
                                 if (bullet.weapon.type != FLAK)
@@ -146,7 +146,7 @@ void _scene::drawScene(){
                                     {
                                         if(!bullet.hasExploded)
                                         {
-                                            bullet.explode(enemies, xpOrbs, xpOrbTexture);
+                                            bullet.explode(enemies, xpOrbs, xpOrbTexture, enemyDrops, enemyDropsMagnetTexture, enemyDropsHealthTexture);
                                         }
                                     }
                                     // Only mark as dead if no explosion is active
@@ -263,7 +263,7 @@ void _scene::drawScene(){
 
     for (auto& orb : xpOrbs)    //draw xp orbs
     {
-        orb.update(deltaTime, player->playerPosition, xpPickupRange);
+        orb.update(deltaTime, player->playerPosition, player->xpPickupRange);
         orb.drawOrb();
     }
 
@@ -283,6 +283,24 @@ void _scene::drawScene(){
     remove_if(xpOrbs.begin(), xpOrbs.end(), [](const _xpOrb& o) { return !o.isActive; }),
     xpOrbs.end()
     );
+
+    //enemy item drops
+    for (auto& drop : enemyDrops)
+    {
+        drop.update(deltaTime, player->playerPosition, player->xpPickupRange, player->magnetActive, player->currentHp, player->maxHp);
+        drop.drawDrop();
+        if(drop.magnetTriggered == false)
+        {
+            player->magnetActive = false;
+            player->xpPickupRange = 5.0f;
+        }
+    }
+    // Remove inactive drops
+    enemyDrops.erase(
+    remove_if(enemyDrops.begin(), enemyDrops.end(), [](const _enemyDrops& d) { return !d.isActive; }),
+    enemyDrops.end()
+    );
+
 
     // Setup orthographic projection for 2D HUD
     glMatrixMode(GL_PROJECTION);
@@ -331,7 +349,7 @@ void _scene::drawScene(){
         glEnd();
 
         // Draw text
-        string text = to_string(i + 1) + ": " + currentUpgradeOptions[i];
+        string text = to_string(i + 1) + ": " + currentUpgradeOptions[i].displayText;
         float textX = startX + 20.0f;
         float textY = y + boxHeight / 2 + 5.0f;
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -361,17 +379,68 @@ void _scene::showUpgradeMenu() {
     currentUpgradeOptions.clear();
     vector<string> tempUpgrades = availableUpgrades;
     random_shuffle(tempUpgrades.begin(), tempUpgrades.end());
-    for (int i = 0; i < min(3, (int)tempUpgrades.size()); ++i) {
-        currentUpgradeOptions.push_back(tempUpgrades[i]);
+
+    for (int i = 0; i < min(3, (int)tempUpgrades.size()); ++i)
+    {
+        UpgradeOption option;
+        option.name = tempUpgrades[i];
+
+        if (option.name.find("Weapon_") == 0)
+        {
+            option.isWeapon = true;
+            string weaponName = option.name.substr(7); // e.g., "Default", "Laser"
+            if (weaponName == "Default") option.weaponType = DEFAULT;
+            else if (weaponName == "Rocket") option.weaponType = ROCKET;
+            else if (weaponName == "Laser") option.weaponType = LASER;
+            else if (weaponName == "Flak") option.weaponType = FLAK;
+            else if (weaponName == "Energy") option.weaponType = ENERGY_FIELD;
+
+            auto it = std::find_if(player->weapons.begin(), player->weapons.end(), [&](const Weapon& w) {
+                return w.type == option.weaponType;
+            });
+
+            if (it != player->weapons.end()) {
+                option.currentLevel = it->level;
+            } else {
+                option.currentLevel = 0;
+            }
+        } else {
+            option.isWeapon = false;
+            if (option.name == "Damage") option.currentLevel = (int)((player->damageMultiplier - 1.0f) / 0.1f);
+            else if (option.name == "Speed") option.currentLevel = (int)((player->speedMultiplier - 1.0f) / 0.1f);
+            else if (option.name == "Health") option.currentLevel = (int)((player->healthMultiplier - 1.0f) / 0.1f);
+            else if (option.name == "FireRate") option.currentLevel = (int)((1.0f - player->fireRateMultiplier) / 0.1f);
+            else if (option.name == "AoeSize") option.currentLevel = (int)((player->aoeSizeMultiplier - 1.0f) / 0.1f);
+        }
+
+        // Clamp max level to 5
+        if (option.currentLevel >= 5) continue;
+
+        // Format display text
+        option.displayText = option.name + ": Level " + std::to_string(option.currentLevel + 1);
+        if (!option.isWeapon) {
+            if (option.name == "Damage") option.displayText += " - 10% increased damage";
+            if (option.name == "Speed") option.displayText += " - 10% faster movement";
+            if (option.name == "Health") option.displayText += " - 10% more max HP";
+            if (option.name == "FireRate") option.displayText += " - 10% faster fire rate";
+            if (option.name == "AoeSize") option.displayText += " - 10% increased AoE";
+        }
+
+        currentUpgradeOptions.push_back(option);
     }
 }
 
 void _scene::selectUpgrade(int choice) {
     if (choice >= 0 && choice < (int)currentUpgradeOptions.size()) {
-        player->applyUpgrade(currentUpgradeOptions[choice]);
+        UpgradeOption& selected = currentUpgradeOptions[choice];
+        if (selected.isWeapon) {
+            player->applyWeaponUpgrade(selected.weaponType);
+        } else {
+            player->applyUpgrade(selected.name);
+        }
     }
     upgradeMenuActive = false;
-    isPaused = false; // Resume game
+    isPaused = false;
     currentUpgradeOptions.clear();
 }
 void _scene::reSize(GLint width, GLint height){

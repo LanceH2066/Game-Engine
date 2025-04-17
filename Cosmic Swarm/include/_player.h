@@ -4,7 +4,6 @@
 #include<_common.h>
 #include<_Bullet.h>
 #include <_sounds.h>
-#include<_weapon.h>
 
 class _player
 {
@@ -60,6 +59,8 @@ class _player
         int xpThresh;       ////////// new
         int playerLevel;    ///////// new
         bool gainXP(int);
+        float xpPickupRange = 5.0f; // Modifiable pickup range (world units)
+        bool magnetActive = false;
 
         void drawXPBar();   /////////// new
 
@@ -79,6 +80,7 @@ class _player
 
         // Upgrade method
         void applyUpgrade(const string& upgradeType);
+        void applyWeaponUpgrade(WeaponType type); // New method for weapon upgrades
 
     protected:
 

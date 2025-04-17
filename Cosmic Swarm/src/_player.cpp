@@ -69,23 +69,8 @@ void _player::initPlayer(int xFrames, int yFrames, char* fileName)
     */
     // Weapons
     Weapon defaultWeapon;
-    defaultWeapon.init(DEFAULT, bulletTextureLoader, 5.0f, 2.0f, 1.0f, 30.0f);
+    defaultWeapon.init(DEFAULT, bulletTextureLoader, 20.0f, 2.0f, 1.0f, 30.0f);
     weapons.push_back(defaultWeapon);
-
-    Weapon rocket;
-    rocket.init(ROCKET, rocketTex, 10.0f, 2.0f, 0.5f,10.0f);
-    rocket.isActive = true;
-    weapons.push_back(rocket);
-
-    Weapon laser;
-    laser.init(LASER, laserTex, 20.0f, 0.1f, 1.0f, 0.0);
-    laser.isActive = true;
-    weapons.push_back(laser);
-
-    Weapon flak;
-    flak.init(FLAK, flakTex, 3.0f, 1.0f, 0.25f, 12.0f);
-    flak.isActive = true;
-    weapons.push_back(flak);
 
     /*
     Weapon energy;
@@ -316,35 +301,87 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
     }
 }
 
-void _player::applyUpgrade(const string& upgradeType) {
-    if (upgradeType == "Damage") {
-        damageMultiplier += 0.10f; // +10% damage
-        for (auto& weapon : weapons) {
-            weapon.damage *= 1.10f; // Apply to existing damage
+void _player::applyUpgrade(const string& upgradeType)
+{
+    if (upgradeType == "Damage" && damageMultiplier < 1.5f)
+        damageMultiplier += 0.1f;
+    else if (upgradeType == "Speed" && speedMultiplier < 1.5f)
+        speedMultiplier += 0.1f;
+    else if (upgradeType == "Health" && healthMultiplier < 1.5f)
+    {
+        healthMultiplier += 0.1f;
+        maxHp *= 1.1f;
+        currentHp = maxHp;
+    }
+    else if (upgradeType == "FireRate" && fireRateMultiplier > 0.5f)
+        fireRateMultiplier -= 0.1f;
+    else if (upgradeType == "AoeSize" && aoeSizeMultiplier < 1.5f)
+        aoeSizeMultiplier += 0.1f;
+
+    for (auto& weapon : weapons)
+    {
+        if (weapon.isActive)
+            weapon.applyMods(damageMultiplier, fireRateMultiplier, aoeSizeMultiplier);
+    }
+}
+
+void _player::applyWeaponUpgrade(WeaponType type)
+{
+    auto it = std::find_if(weapons.begin(), weapons.end(), [&](Weapon& w)
+    {
+        return w.type == type;
+    });
+
+    if (it != weapons.end())
+    {
+        if (it->level < 5)
+        {
+            it->levelUp();
         }
     }
-    else if (upgradeType == "Speed") {
-        speedMultiplier += 0.10f; // +10% speed
-        speed *= 1.10f; // Apply to movement speed
-    }
-    else if (upgradeType == "Health") {
-        healthMultiplier += 0.10f; // +10% max health
-        float oldMaxHp = maxHp;
-        maxHp *= 1.10f;
-        currentHp += (maxHp - oldMaxHp); // Heal proportional to increase
-        if (currentHp > maxHp) currentHp = maxHp; // Cap at max
-    }
-    else if (upgradeType == "FireRate") {
-        fireRateMultiplier += 0.10f; // +10% fire rate (reduce time)
-        for (auto& weapon : weapons) {
-            weapon.fireRate /= 1.10f; // Reduce fire rate (faster shooting)
+    else
+    {
+        switch (type)
+        {
+            case DEFAULT:
+            {
+                break;
+            }
+            case ROCKET:
+            {
+                Weapon rocket;
+                rocket.init(ROCKET, rocketTex, 10.0f, 2.0f, 0.5f,10.0f);
+                rocket.isActive = true;
+                weapons.push_back(rocket);
+                break;
+            }
+            case LASER:
+            {
+                Weapon laser;
+                laser.init(LASER, laserTex, 20.0f, 0.1f, 1.0f, 0.0);
+                laser.isActive = true;
+                weapons.push_back(laser);
+                break;
+            }
+            case FLAK:
+            {
+                Weapon flak;
+                flak.init(FLAK, flakTex, 3.0f, 1.0f, 0.25f, 12.0f);
+                flak.isActive = false;
+                weapons.push_back(flak);
+                break;
+            }
+            case ENERGY_FIELD:
+            {
+                break;
+            }
         }
     }
-    else if (upgradeType == "AoeSize") {
-        aoeSizeMultiplier += 0.10f; // +10% AoE size
-        for (auto& weapon : weapons) {
-            weapon.aoeSize *= 1.10f; // Increase AoE size
-        }
+
+    for (auto& weapon : weapons)
+    {
+        if (weapon.isActive)
+            weapon.applyMods(damageMultiplier, fireRateMultiplier, aoeSizeMultiplier);
     }
 }
 

@@ -18,25 +18,44 @@ struct Weapon
     shared_ptr<_textureLoader> texture;     // Texture for projectiles/effects
     bool isActive = false;       // Whether the weapon is unlocked
 
+    float baseDamage;
+    float baseFireRate;
+    float baseAoeSize;
+    float baseProjSpeed;
+
     // Initialize weapon
     void init(WeaponType t, shared_ptr<_textureLoader> tex, float dmg, float rate, float aoe, float speed) {
         type = t;
         texture = tex;
-        damage = dmg;
-        fireRate = rate;
-        aoeSize = aoe;
+        baseDamage = damage = dmg;
+        baseFireRate = fireRate = rate;
+        baseAoeSize = aoeSize = aoe;
         isActive = true;
-        projSpeed = speed;
+        baseProjSpeed = projSpeed = speed;
         timer.reset();
     }
 
     void levelUp()
     {
         level++;
-        damage += damage*0.25;
-        fireRate -= fireRate*0.1;
-        aoeSize += aoeSize*0.25;
-        projSpeed += projSpeed*0.25;
+        baseDamage += baseDamage*0.25;
+        damage = baseDamage;
+
+        baseFireRate -= baseFireRate*0.1;
+        fireRate = baseFireRate;
+
+        baseAoeSize += baseAoeSize*0.25;
+        aoeSize = baseAoeSize;
+
+        baseProjSpeed += baseProjSpeed*0.1;
+        projSpeed = baseProjSpeed;
+    }
+
+    void applyMods(float damageMultiplier, float fireRateMultiplier, float aoeSizeMultiplier)
+    {
+        damage = baseDamage * damageMultiplier;
+        fireRate = baseFireRate * fireRateMultiplier;
+        aoeSize = baseAoeSize * aoeSizeMultiplier;
     }
 
     // Check if weapon can fire

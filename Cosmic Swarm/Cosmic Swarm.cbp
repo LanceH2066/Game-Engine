@@ -51,9 +51,12 @@
 		<Unit filename="images/background.png" />
 		<Unit filename="images/bugfighter.png" />
 		<Unit filename="images/flak.png" />
+		<Unit filename="images/healthDrop.png" />
 		<Unit filename="images/laser.png" />
+		<Unit filename="images/magnet.png" />
 		<Unit filename="images/particle.png" />
 		<Unit filename="images/rocket.png" />
+		<Unit filename="images/rocketParticle.png" />
 		<Unit filename="images/smallbug.png" />
 		<Unit filename="images/spritesheet.png" />
 		<Unit filename="images/swarmbot.png" />
@@ -62,6 +65,7 @@
 		<Unit filename="include/_collision.h" />
 		<Unit filename="include/_common.h" />
 		<Unit filename="include/_enemy.h" />
+		<Unit filename="include/_enemyDrops.h" />
 		<Unit filename="include/_inputs.h" />
 		<Unit filename="include/_lightSetting.h" />
 		<Unit filename="include/_model.h" />
@@ -84,6 +88,7 @@
 		<Unit filename="src/_collision.cpp" />
 		<Unit filename="src/_common.cpp" />
 		<Unit filename="src/_enemy.cpp" />
+		<Unit filename="src/_enemyDrops.cpp" />
 		<Unit filename="src/_inputs.cpp" />
 		<Unit filename="src/_lightSetting.cpp" />
 		<Unit filename="src/_model.cpp" />
