@@ -1,22 +1,23 @@
 #include "_scene.h"
 
-_inputs *input = new _inputs();
-_parallax *prlx1 = new _parallax();
-_player *player = new _player();
-_collision *collision = new _collision();
-_sounds *sounds = new _sounds();
-_textureLoader* xpOrbTexture = new _textureLoader();
+_scene::_scene(){
+    input = new _inputs();
+    prlx1 = new _parallax();
+    player = new _player();
+    collision = new _collision();
+    sounds = new _sounds();
+    xpOrbTexture = new _textureLoader();
+    if (!input || !prlx1 || !player || !collision || !sounds || !xpOrbTexture) {
+        std::cout << "Failed to allocate scene objects!" << std::endl;
+    }
 
-_scene::_scene()
-{
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&lastTime);
     deltaTime = 0.0f;
     enemies.clear();
 }
 
-_scene::~_scene()
-{
+_scene::~_scene(){
     delete input;
     delete prlx1;
     delete player;
@@ -24,10 +25,8 @@ _scene::~_scene()
     delete sounds;
 }
 
-GLint _scene::initGL()
-{
+GLint _scene::initGL(){
     srand(static_cast<unsigned>(time(nullptr)));
-    for (int i = 0; i < 20; ++i) rand();
     // GL SETTINGS
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClearDepth(1.0);
@@ -42,7 +41,7 @@ GLint _scene::initGL()
     // INITIALIZE OBJECTS IN SCENE
     prlx1->initParallax("images/background.png", 0.005, false, false);
     player->initPlayer(1,1,"images/spritesheet.png");
-    xpOrbTexture->loadTexture("images/scrap.png");
+    xpOrbTexture->loadTexture("images/xpOrb.png");
 
     // Convert screen pixels to world space (assumes orthographic units)
     float worldUnitsPerPixel = 10.0f / dim.x; // Adjust based on projection settings
@@ -57,8 +56,7 @@ GLint _scene::initGL()
     return true;
 }
 
-void _scene::drawScene()
-{
+void _scene::drawScene(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
@@ -75,7 +73,7 @@ void _scene::drawScene()
 
 
     glPushMatrix();
-        player->drawPlayer();
+       player->drawPlayer();
     glPopMatrix();
 
     if (debugMode)
@@ -101,6 +99,7 @@ void _scene::drawScene()
     glPushMatrix();
         if (!isPaused)
         {
+            player->updateWeapons(deltaTime, enemies, worldMousePos, sounds);
             player->bullets.erase
             (
                 remove_if(player->bullets.begin(), player->bullets.end(), [](const _Bullet& b) { return !b.isAlive; }),
@@ -111,35 +110,58 @@ void _scene::drawScene()
         {
             if (bullet.isAlive)
             {
-                if (!isPaused)
-                {
-                    bullet.update(deltaTime);
-                }
-                bullet.drawBullet();
+                bullet.drawBullet(deltaTime);
 
                 vec3 bulletMin = bullet.getCollisionBoxMin();
                 vec3 bulletMax = bullet.getCollisionBoxMax();
 
-                if (!isPaused)
+                if (bullet.weapon.type == LASER)
                 {
+                    // Check laser collision with target enemy
                     for (size_t i = 0; i < enemies.size(); i++)
                     {
-                        // Check if this enemy has already been hit by this bullet
+                        if (collision->isOBBCollision(bullet, enemies[i]))
+                        {
+                            enemies[i].takeDamage(bullet.weapon.damage * deltaTime);
+                        }
+                    }
+                }
+                else if (bullet.weapon.type != ENERGY_FIELD)
+                {
+                // Handle default, rocket, flak collisions
+                    for (size_t i = 0; i < enemies.size(); i++)
+                    {
                         if (find(bullet.hitEnemies.begin(), bullet.hitEnemies.end(), i) == bullet.hitEnemies.end())
                         {
-                            if (collision->isOBBCollision(bullet, enemies[i]))     //bullet hits enemy ---------------------------- xp orb code
+                            if (collision->isOBBCollision(bullet, enemies[i]))
                             {
                                 bool wasAlive = enemies[i].isAlive;
-
-                                enemies[i].takeDamage(bullet.damage);
-                                bullet.hitEnemies.push_back(i);  // Record this enemy as hit
-
+                                if(bullet.weapon.type!= ROCKET)
+                                {
+                                    enemies[i].takeDamage(bullet.weapon.damage);
+                                }
+                                bullet.hitEnemies.push_back(i);
+                                if (bullet.weapon.type != FLAK)
+                                {
+                                    if (bullet.weapon.type == ROCKET)
+                                    {
+                                        if(!bullet.hasExploded)
+                                        {
+                                            bullet.explode(enemies);
+                                        }
+                                    }
+                                    // Only mark as dead if no explosion is active
+                                    if (bullet.weapon.type != ROCKET || !bullet.explosionEffect->isActive())
+                                    {
+                                        bullet.isAlive = false;
+                                    }
+                                }
                                 if (wasAlive && !enemies[i].isAlive)
                                 {
                                     _xpOrb orb;
-                                    orb.xpTextureLoader = xpOrbTexture;        // Assign shared texture loader
+                                    orb.xpTextureLoader = xpOrbTexture;
                                     orb.placeOrb(enemies[i].position);
-                                    orb.initOrb("images/scrap.png");   // This now uses the correct texture loader
+                                    orb.initOrb("images/xpOrb.png");
                                     xpOrbs.push_back(orb);
                                 }
                             }
@@ -199,6 +221,7 @@ void _scene::drawScene()
 
                 if (enemies[i].isAlive && player->currentHp > 0)
                 {
+                    enemies[i].playerPosition = player->playerPosition;
                     enemies[i].enemyActions(deltaTime);
 
                     if (collision->isOBBCollision(*player, enemies[i]))
@@ -248,12 +271,14 @@ void _scene::drawScene()
 
     for (auto& orb : xpOrbs)    //draw xp orbs
     {
+        orb.update(deltaTime, player->playerPosition, xpPickupRange);
         orb.drawOrb();
     }
 
     //check for XP orb pickups
     for (auto& orb : xpOrbs)
     {
+
         if (orb.isActive && collision->isOBBCollision(*player, orb))
         {
             orb.isActive = false;
@@ -266,10 +291,31 @@ void _scene::drawScene()
     remove_if(xpOrbs.begin(), xpOrbs.end(), [](const _xpOrb& o) { return !o.isActive; }),
     xpOrbs.end()
     );
+
+    // Setup orthographic projection for 2D HUD
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, dim.x, 0, dim.y);  // Match window dimensions
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    // Draw XP Bar in screen space
+    player->drawXPBar();
+    player->drawHealthBar();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);  // Return to 3D mode
+
 }
 
-void _scene::reSize(GLint width, GLint height)
-{
+void _scene::reSize(GLint width, GLint height){
     dim.x = GetSystemMetrics(SM_CXSCREEN);
     dim.y = GetSystemMetrics(SM_CYSCREEN);
 
@@ -283,108 +329,81 @@ void _scene::reSize(GLint width, GLint height)
 
 }
 
-void _scene::processKeyboardInput()
-{
+void _scene::processKeyboardInput() {
     updateDeltaTime();
 
+    // Update worldMousePos
     POINT mousePos;
     GetCursorPos(&mousePos);
     ScreenToClient(GetActiveWindow(), &mousePos);
-
-    vec3 worldMousePos;
     worldMousePos.x = (mousePos.x - dim.x / 2) / (float)(dim.x / 2);
     worldMousePos.y = (dim.y / 2 - mousePos.y) / (float)(dim.y / 2);
+    worldMousePos.z = 0.0f; // 2D game, z typically 0
 
-    if (!isPaused && !gameOver)
-    {
+    if (!isPaused && !gameOver) {
         input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);
-        player->bulletTimer.update(deltaTime);  // Update timer with deltaTime
-    }
-
-    if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !isPaused && !gameOver)
-    {
-        player->shoot(worldMousePos, sounds);
     }
 
     // Toggle debug mode with 'F' key
     static bool lastState = false;
-    if (GetAsyncKeyState('F') & 0x8000)
-    {
+    if (GetAsyncKeyState('F') & 0x8000) {
         bool currentState = true;
-        if (!lastState && currentState)
-        {
+        if (!lastState && currentState) {
             debugMode = !debugMode;
         }
         lastState = currentState;
-    }
-    else
-    {
+    } else {
         lastState = false;
     }
 
     // Toggle pause with 'P' key
     static bool lastPauseState = false;
-    if (GetAsyncKeyState('P') & 0x8000)
-    {
+    if (GetAsyncKeyState('P') & 0x8000) {
         bool currentState = true;
-        if (!lastPauseState && currentState)
-        {
+        if (!lastPauseState && currentState) {
             isPaused = !isPaused;
-            if (isPaused)
-            {
-                player->bulletTimer.pause();
-            }
-            else
-            {
-                player->bulletTimer.unPause();
-            }
         }
         lastPauseState = currentState;
-    }
-    else
-    {
+    } else {
         lastPauseState = false;
     }
 
-    if (!isPaused && !gameOver)
-    {
+    if (!isPaused && !gameOver) {
         input->keyPressed(player, sounds, deltaTime);
         input->keyUp(player, sounds);
     }
 }
 
-void _scene::updateEnemySpawning()
-{
-    if (elapsedTime >= 1800.0f || gameOver)  // Stop spawning after 30 minutes or on game over (adjust as needed)
+void _scene::updateEnemySpawning(){
+    if (elapsedTime >= 1800.0f || gameOver) // Stop spawning after 30 minutes
         return;
 
-    // Dynamic spawn interval: decreases exponentially from 2.0 to 0.1 over time
-    float timeFactor = elapsedTime / 600.0f;  // Normalize time over 10 minutes
-    spawnInterval = 2.0f * exp(-timeFactor) + 0.1f;  // Exponential decay + minimum interval
-    spawnInterval = fmax(0.1f, spawnInterval);  // Clamp to minimum 0.1 seconds
+    // Dynamic spawn interval for regular enemies
+    float timeFactor = elapsedTime / 600.0f; // Normalize time over 10 minutes
+    spawnInterval = 2.0f * exp(-timeFactor) + 0.1f;
+    spawnInterval = fmax(0.1f, spawnInterval);
 
-    // Dynamic enemy cap: scales from 50 to 500 over 20 minutes
-    int maxEnemies = 50 + static_cast<int>((elapsedTime / 1200.0f) * 450);  // Linear increase
-    maxEnemies = min(maxEnemies, 500);  // Hard cap at 500 for performance
+    // Dynamic enemy cap
+    int maxEnemies = 200 + static_cast<int>((elapsedTime / 1200.0f) * 450);
+    maxEnemies = min(maxEnemies, 500);
 
+    // Regular enemy spawning
     if (elapsedTime - lastSpawnTime >= spawnInterval)
     {
         if (enemies.size() < static_cast<size_t>(maxEnemies))
         {
-            // Batch spawning: spawn 1–5 enemies at a time, scaling with time
-            int batchSize = 10 + static_cast<int>(timeFactor * 4);  // 1 at start, up to 5 later
-            batchSize = min(batchSize, 30);  // Cap batch size
+            int batchSize = 10 + static_cast<int>(timeFactor * 4);
+            batchSize = min(batchSize, 30);
 
             for (int i = 0; i < batchSize; i++)
             {
                 vec3 randPos;
                 float angle = (rand() % 360) * (M_PI / 180.0f);
-                float distance = 15.0f + (rand() % 11) * 1.0f;  // Random distance 15–25 units
+                float distance = 15.0f + (rand() % 11) * 1.0f;
                 randPos.x = player->playerPosition.x + cos(angle) * distance;
                 randPos.y = player->playerPosition.y + sin(angle) * distance;
                 randPos.z = 48.0f;
 
-                // Reuse dead enemies or add new ones
                 bool reused = false;
                 for (auto& enemy : enemies)
                 {
@@ -392,20 +411,22 @@ void _scene::updateEnemySpawning()
                     {
                         enemy.placeEnemy(randPos);
                         enemy.isAlive = true;
-                        enemy.initEnemy("images/swarmbot.png");
-                        enemy.setPlayerReference(player);
-                        enemy.currentHp = enemy.maxHp;  // Reset health
+                        enemy.initEnemy("images/swarmbot.png", 20.0f, {0.6f, 0.6f, 1.0f}, 2.0f); // Regular enemy stats
+                        enemy.scale = {1.0f, 1.0f};
+                        enemy.playerPosition = player->playerPosition; // Set initial position
+                        enemy.currentHp = enemy.maxHp;
                         reused = true;
                         break;
                     }
                 }
                 if (!reused && enemies.size() < static_cast<size_t>(maxEnemies))
                 {
-                    _enemy newEnemy;
+                    _enemy newEnemy; // Regular enemy stats
                     newEnemy.placeEnemy(randPos);
                     newEnemy.isAlive = true;
-                    newEnemy.initEnemy("images/swarmbot.png");
-                    newEnemy.setPlayerReference(player);
+                    newEnemy.initEnemy("images/swarmbot.png", 20.0f, {0.6f, 0.6f, 1.0f}, 2.0f);
+                    newEnemy.scale = {1.0f, 1.0f};
+                    newEnemy.playerPosition = player->playerPosition; // Set initial position
                     enemies.push_back(newEnemy);
                 }
             }
@@ -413,10 +434,75 @@ void _scene::updateEnemySpawning()
             lastSpawnTime = elapsedTime;
         }
     }
+
+    // Bug swarm spawning
+    if (elapsedTime - lastBugSpawnTime >= bugSpawnInterval)
+    {
+        spawnBugSwarm();
+        lastBugSpawnTime = elapsedTime;
+    }
+
 }
 
-void _scene::updateDeltaTime()
-{
+void _scene::spawnBugSwarm(){
+    int maxEnemies = 100 + static_cast<int>((elapsedTime / 1200.0f) * 450);
+    maxEnemies = min(maxEnemies, 500);
+
+    if (enemies.size() >= static_cast<size_t>(maxEnemies))
+        return;
+
+    // Choose a central spawn point
+    float angle = (rand() % 360) * (M_PI / 180.0f);
+    float distance = 15.0f + (rand() % 11) * 1.0f; // 15–25 units from player
+    vec3 centerPos;
+    centerPos.x = player->playerPosition.x + cos(angle) * distance;
+    centerPos.y = player->playerPosition.y + sin(angle) * distance;
+    centerPos.z = 48.0f;
+
+    // Spawn 20–50 bugs in a small radius (clumped)
+    int batchSize = 50 + (rand() % 51); // Random 20–50 bugs
+    float swarmRadius = 2.0f; // Bugs spawn within 2 units of center
+
+    for (int i = 0; i < batchSize; i++)
+    {
+        // Random offset within swarm radius
+        float offsetAngle = (rand() % 360) * (M_PI / 180.0f);
+        float offsetDist = (rand() % 100) / 100.0f * swarmRadius;
+        vec3 randPos;
+        randPos.x = centerPos.x + cos(offsetAngle) * offsetDist;
+        randPos.y = centerPos.y + sin(offsetAngle) * offsetDist;
+        randPos.z = centerPos.z;
+
+        // Reuse dead enemies or add new ones
+        bool reused = false;
+        for (auto& enemy : enemies)
+        {
+            if (!enemy.isAlive)
+            {
+                enemy.placeEnemy(randPos);
+                enemy.isAlive = true;
+                enemy.initEnemy("images/smallbug.png", 10.0f, {0.3f, 0.3f, 1.0f}, 4.0); // Bug stats
+                enemy.scale = {1.0f, 1.0f}; // Smaller size
+                enemy.playerPosition = player->playerPosition; // Set initial position
+                enemy.currentHp = enemy.maxHp;
+                reused = true;
+                break;
+            }
+        }
+        if (!reused && enemies.size() < static_cast<size_t>(maxEnemies))
+        {
+            _enemy newEnemy; // Bug stats
+            newEnemy.placeEnemy(randPos);
+            newEnemy.isAlive = true;
+            newEnemy.initEnemy("images/smallbug.png", 5.0f, {0.3f, 0.3f, 1.0f}, 4.0);
+            newEnemy.scale = {1.0f, 1.0f}; // Smaller size
+            newEnemy.playerPosition = player->playerPosition; // Set initial position
+            enemies.push_back(newEnemy);
+        }
+    }
+}
+
+void _scene::updateDeltaTime(){
     LARGE_INTEGER currentTime;
     QueryPerformanceCounter(&currentTime);  // Pass pointer to currentTime
 

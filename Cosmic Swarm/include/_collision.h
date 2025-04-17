@@ -5,6 +5,7 @@
 #include<_Bullet.h>
 #include<_enemy.h>
 #include<_xporb.h>
+#include<_player.h>
 
 class _collision
 {

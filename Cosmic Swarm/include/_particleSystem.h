@@ -11,7 +11,7 @@ public:
     ~_particleSystem();
 
     void init(char* textureFile);
-    void spawnExplosion(vec3 position, int particleCount);
+    void spawnExplosion(vec3 position, int particleCount, float particleSpeed);
     void update(float deltaTime);
     void draw();
 

@@ -2,10 +2,9 @@
 #define _PLAYER_H
 
 #include<_common.h>
-#include<_timer.h>
-#include<_textureLoader.h>
 #include<_Bullet.h>
 #include <_sounds.h>
+#include<_weapon.h>
 
 class _player
 {
@@ -13,16 +12,21 @@ class _player
         _player();
         virtual ~_player();
 
-        _textureLoader *bulletTextureLoader = new _textureLoader();
-        _textureLoader * playerTextureLoader = new _textureLoader();
+        shared_ptr<_textureLoader> bulletTextureLoader;
+        shared_ptr<_textureLoader> playerTextureLoader;
+        shared_ptr<_textureLoader> rocketTex;
+        shared_ptr<_textureLoader> laserTex;
+        shared_ptr<_textureLoader> flakTex;
+        shared_ptr<_textureLoader> energyTex;
         _timer * playerTimer = new _timer();
 
         void initPlayer(int,int,char*); // number of x,y frames, filename
         void drawPlayer();              // render sprites
         void playerActions(float deltaTime);
 
+        vector<Weapon> weapons; // List of active weapons
+        void updateWeapons(float deltaTime, vector<_enemy>& enemies, vec3 mousePos, _sounds* sounds);
         vector<_Bullet> bullets;  // Store active bullets
-        _timer bulletTimer;  // Timer to regulate auto-firing
         void shoot(vec3 mousePos,_sounds *sounds);
 
         enum {IDLE,FLYING,SHOOTING}; // Player Actions based on sprite
@@ -49,11 +53,22 @@ class _player
         vec3 getCollisionBoxMin() const { return {playerPosition.x - collisionBoxSize.x, playerPosition.y - collisionBoxSize.y, playerPosition.z - collisionBoxSize.z}; }
         vec3 getCollisionBoxMax() const { return {playerPosition.x + collisionBoxSize.x, playerPosition.y + collisionBoxSize.y, playerPosition.z + collisionBoxSize.z}; }
         vector<vec3> getRotatedCorners() const;
-
+        _enemy* findMostClusteredEnemy(vector<_enemy>& enemies, float clusterRadius);
 
         //xp orbs
         int experiencePoints = 0;
+        int xpThresh;       ////////// new
+        int playerLevel;    ///////// new
         void gainXP(int);
+
+        void drawXPBar();   /////////// new
+
+        //health bar
+        void drawHealthBar();
+
+        bool startFlash = false;
+        float flashDuration = 0.2f;  // Duration of flash in seconds
+        float flashTimer = 0.0f;     // Tracks elapsed flash time
 
     protected:
 

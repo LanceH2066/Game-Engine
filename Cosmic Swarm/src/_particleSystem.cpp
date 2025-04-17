@@ -12,16 +12,15 @@ void _particleSystem::init(char* textureFile) {
     particleTexture->loadTexture(textureFile); // Load particle texture (e.g., a spark or glow)
 }
 
-void _particleSystem::spawnExplosion(vec3 position, int particleCount)
+void _particleSystem::spawnExplosion(vec3 position, int particleCount, float particleSpeed)
 {
     particles.clear();
     for (int i = 0; i < particleCount; ++i)
     {
         Particle p;
         p.position = position;
-
         float angle = (rand() % 360) * (M_PI / 180.0f);
-        float speed = 4.0f + (rand() % 100) / 25.0f; // Speed: 4.0 to 8.0
+        float speed = particleSpeed;
         p.velocity.x = cos(angle) * speed;
         p.velocity.y = sin(angle) * speed;
         p.velocity.z = 0;
@@ -29,14 +28,10 @@ void _particleSystem::spawnExplosion(vec3 position, int particleCount)
         p.lifetime = 1.0f + (rand() % 100) / 100.0f;
         p.maxLifetime = p.lifetime;
 
-        float r = 1.0f;
-        float g = 0.4f + (rand() % 30) / 100.0f;
-        float b = 0.2f;
-        p.color = vec4(r, g, b, 1.0f);
+        p.color = vec4(0.8, 0.8, 0.8, 0.5f);
         p.size = 0.80f + (rand() % 50) / 100.0f;
 
         particles.push_back(p);
-
     }
 }
 
@@ -93,4 +88,6 @@ void _particleSystem::draw()
 
     glDepthMask(GL_TRUE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Restore scene’s blending
+
+    glColor4f(1.0,1.0,1.0,1.0);
 }

@@ -1,8 +1,10 @@
 #include "_Bullet.h"
+const float _Bullet::laserHitboxLengths[5] = {2.3f, 2.9f, 3.5f, 4.3f, 5.1f};
 
 _Bullet::_Bullet()
 {
-    damage = 5.0f;
+    hasExploded = false;
+    explosionEffect = new _particleSystem();
     hitEnemies.clear();
 }
 
@@ -11,18 +13,49 @@ _Bullet::~_Bullet()
 
 }
 
-void _Bullet::init(vec3 spawnPos, vec3 playerRotation, vec3 targetPos, _textureLoader* loader)
-{
+void _Bullet::init(vec3 spawnPos, vec3 playerRotation, vec3 targetPos, shared_ptr<_textureLoader> tex, Weapon wep) {
+    if (!tex) std::cout << "Trying to init bullet with null texture!" << std::endl;
+
+    weapon = wep;
     initialPosition = position = spawnPos;
     position.z = spawnPos.z + 1;
-    float angleRad = (playerRotation.z + 90) * (M_PI / 180.0);
-    direction.x = cos(angleRad);
-    direction.y = sin(angleRad);
+    explosionEffect->init("images/rocketParticle.png");
+
+    if (weapon.type == LASER)
+    {
+        // Lasers are beams attached to the player
+        laserLength = round(10.0*weapon.level);
+        direction = {0, 0, 0}; // Direction handled by player rotation
+        collisionBoxSize = {0.1f, laserHitboxLengths[weapon.level-1], 1.0f}; // Thin, long hitbox
+        isAlive = true;
+    }
+    else if (weapon.type == ENERGY_FIELD)
+    {
+        // Energy field follows player, no direction
+        direction = {0, 0, 0};
+        collisionBoxSize = {weapon.aoeSize, weapon.aoeSize, 1.0f}; // Circular hitbox
+        isAlive = true;
+    }
+    else if(weapon.type == DEFAULT)
+    {
+        float angleRad = (playerRotation.z + 90) * (M_PI / 180.0);
+        direction.x = cos(angleRad);
+        direction.y = sin(angleRad);
+        collisionBoxSize = {baseCollisionBoxSize.x * weapon.aoeSize, baseCollisionBoxSize.y * weapon.aoeSize, 1.0f}; // Circular hitbox
+    }
+    else
+    {
+        // Default, Rocket, Flak: Calculate direction
+        float angleRad = (playerRotation.z + 90) * (M_PI / 180.0);
+        direction.x = cos(angleRad);
+        direction.y = sin(angleRad);
+        collisionBoxSize = {weapon.aoeSize, weapon.aoeSize, 1.0f}; // Circular hitbox
+    }
     scale = {1, 1, 1};
     rotation = playerRotation;
     xMin = yMin = 0;
     xMax = yMax = 1.0;
-    textureLoader = loader;  // Use shared loader
+    textureLoader = tex;
     hitEnemies.clear();
 }
 
@@ -33,19 +66,50 @@ void _Bullet::reset(vec3 playerPos)
     hitEnemies.clear();
 }
 
-void _Bullet::update(float deltaTime)
+void _Bullet::update(float deltaTime, vector<_enemy>& enemies)
 {
-    float bulletSpeed = 30.0f; // Adjusted for frame-rate independence
-    position.x += direction.x * bulletSpeed * deltaTime;
-    position.y += direction.y * bulletSpeed * deltaTime;
+    if (!isAlive || hasExploded) return;
 
-    float maxTravelDistance = 100.0f;  // Set a maximum range for bullets
-    float distanceSq = (position.x - initialPosition.x) * (position.x - initialPosition.x) +
-                       (position.y - initialPosition.y) * (position.y - initialPosition.y);
-
-    if (distanceSq > maxTravelDistance * maxTravelDistance)
+    if (weapon.type == DEFAULT || weapon.type == ROCKET || weapon.type == FLAK)
     {
-        isAlive = false;
+        position.x += direction.x * weapon.projSpeed * deltaTime;
+        position.y += direction.y * weapon.projSpeed * deltaTime;
+
+        float maxTravelDistance = 100.0f;
+        float distanceSq = (position.x - initialPosition.x) * (position.x - initialPosition.x) +
+                           (position.y - initialPosition.y) * (position.y - initialPosition.y);
+        if (distanceSq > maxTravelDistance * maxTravelDistance)
+        {
+            isAlive = false;
+        }
+    }
+    else if (weapon.type == ENERGY_FIELD)
+    {
+        // Energy field weapon.damages enemies in radius
+        for (auto& enemy : enemies)
+        {
+            float dx = enemy.position.x - position.x;
+            float dy = enemy.position.y - position.y;
+            if (sqrt(dx * dx + dy * dy) <= weapon.aoeSize)
+            {
+                enemy.takeDamage(weapon.damage * deltaTime); // weapon.damage over time
+            }
+        }
+    }
+}
+
+void _Bullet::explode(vector<_enemy>& enemies)
+{
+    hasExploded = true;
+    explosionEffect->spawnExplosion(position, weapon.level*50, weapon.level*2);
+    for (auto& enemy : enemies)
+    {
+        float dx = enemy.position.x - position.x;
+        float dy = enemy.position.y - position.y;
+        if (sqrt(dx * dx + dy * dy) <= 2.0 + (1.5*weapon.level))
+        {
+            enemy.takeDamage(weapon.damage);
+        }
     }
 }
 
@@ -71,59 +135,147 @@ void _Bullet::actions()
     }
 }
 
-void _Bullet::drawBullet()
+void _Bullet::drawBullet(float deltaTime)
 {
-        glPushMatrix();
-            if(isAlive)
-            {
-                glTranslatef(position.x,position.y,position.z);
-                glScalef(scale.x,scale.y,scale.z);
-                glRotatef(rotation.x,1,0,0);
-                glRotatef(rotation.y,0,1,0);
-                glRotatef(rotation.z,0,0,1);
+    glPushMatrix();
+    if (isAlive && !hasExploded)
+    {
+        if (weapon.type == LASER)
+        {
+            collisionBoxSize = {0.1f, laserHitboxLengths[weapon.level-1], 1.0f};
 
-                textureLoader->textureBinder();
+            glTranslatef(position.x, position.y, position.z);
+            glRotatef(rotation.z, 0, 0, 1);
+
+            laserLength = round(10.0*weapon.aoeSize);
+            int numTiles = laserLength;
+            float tileHeight = 0.4f;
+            for (int i = 0; i < numTiles; ++i)
+            {
+                glPushMatrix();
+                glTranslatef(0.0, i * tileHeight, 0.0); // Offset each tile upward
+                glScalef(1.0f, 1.0f, 1.0f); // Consistent scale per tile
+
+                if (textureLoader && isAlive)
+                {
+                    textureLoader->textureBinder();
+                }
 
                 glBegin(GL_QUADS);
-                    glTexCoord2f(xMin,yMax);
-                    glVertex3f(-1,-1,0);
-
-                    glTexCoord2f(xMax,yMax);
-                    glVertex3f(1,-1,0);
-
-                    glTexCoord2f(xMax,yMin);
-                    glVertex3f(1,1,0);
-
-                    glTexCoord2f(xMin,yMin);
-                    glVertex3f(-1,1,0);
+                    glTexCoord2f(xMin, yMax); glVertex3f(-1, -1, 0);
+                    glTexCoord2f(xMax, yMax); glVertex3f( 1, -1, 0);
+                    glTexCoord2f(xMax, yMin); glVertex3f( 1,  1, 0);
+                    glTexCoord2f(xMin, yMin); glVertex3f(-1,  1, 0);
                 glEnd();
+                glPopMatrix();
             }
-        glPopMatrix();
+        }
+        else
+        {
+            scale.x = scale.y = weapon.aoeSize;
+
+            glTranslatef(position.x, position.y, position.z);
+            glRotatef(rotation.z, 0, 0, 1);
+            glScalef(scale.x, scale.y, scale.z);
+
+            if (textureLoader && isAlive)
+            {
+                textureLoader->textureBinder();
+            }
+
+
+            glBegin(GL_QUADS);
+                glTexCoord2f(xMin, yMax);
+                glVertex3f(-1, -1, 0);
+                glTexCoord2f(xMax, yMax);
+                glVertex3f(1, -1, 0);
+                glTexCoord2f(xMax, yMin);
+                glVertex3f(1, 1, 0);
+                glTexCoord2f(xMin, yMin);
+                glVertex3f(-1, 1, 0);
+            glEnd();
+        }
+
+    }
+    glPopMatrix();
+    if (explosionEffect->isActive())
+    {
+        explosionEffect->update(deltaTime);
+        explosionEffect->draw();
+    }
+}
+
+vec3 _Bullet::getCollisionBoxMin() const
+{
+    if (weapon.type == LASER)
+    {
+        // Hitbox starts at position (ship's front)
+        return {position.x - collisionBoxSize.x,
+                position.y,
+                position.z - collisionBoxSize.z};
+    }
+    return {position.x - collisionBoxSize.x,
+            position.y - collisionBoxSize.y,
+            position.z - collisionBoxSize.z};
+}
+
+vec3 _Bullet::getCollisionBoxMax() const
+{
+    if (weapon.type == LASER)
+    {
+        // Extend forward by full laserLength
+        return {position.x + collisionBoxSize.x,
+                position.y + collisionBoxSize.y * 2.0f,
+                position.z + collisionBoxSize.z};
+    }
+    return {position.x + collisionBoxSize.x,
+            position.y + collisionBoxSize.y,
+            position.z + collisionBoxSize.z};
 }
 
 vector<vec3> _Bullet::getRotatedCorners() const
 {
     vector<vec3> corners(4);
-    vec3 min = getCollisionBoxMin();
-    vec3 max = getCollisionBoxMax();
-
-    // Define corners in local space (relative to bullet position)
-    corners[0] = {min.x - position.x, min.y - position.y, 0};  // Bottom-left
-    corners[1] = {max.x - position.x, min.y - position.y, 0};  // Bottom-right
-    corners[2] = {max.x - position.x, max.y - position.y, 0};  // Top-right
-    corners[3] = {min.x - position.x, max.y - position.y, 0};  // Top-left
-
-    // Rotate corners around the bullet's center
     float angleRad = rotation.z * (M_PI / 180.0);
     float cosA = cos(angleRad);
     float sinA = sin(angleRad);
 
-    for (auto& corner : corners)
+    if (weapon.type == LASER)
     {
-        float x = corner.x * cosA - corner.y * sinA;
-        float y = corner.x * sinA + corner.y * cosA;
-        corner.x = x + position.x;  // Translate back to world space
-        corner.y = y + position.y;
+        float halfWidth = collisionBoxSize.x;
+        float halfHeight = collisionBoxSize.y;
+
+        // Define corners: laser extends forward from position
+        corners[0] = {-halfWidth, 0, 0};           // Bottom-left (at position)
+        corners[1] = {halfWidth, 0, 0};           // Bottom-right
+        corners[2] = {halfWidth, halfHeight * 2.0f, 0}; // Top-right (full length)
+        corners[3] = {-halfWidth, halfHeight * 2.0f, 0}; // Top-left
+
+        for (auto& corner : corners)
+        {
+            float x = corner.x * cosA - corner.y * sinA;
+            float y = corner.x * sinA + corner.y * cosA;
+            corner.x = x + position.x;
+            corner.y = y + position.y;
+        }
+    }
+    else
+    {
+        vec3 min = getCollisionBoxMin();
+        vec3 max = getCollisionBoxMax();
+
+        corners[0] = {min.x - position.x, min.y - position.y, 0}; // Bottom-left
+        corners[1] = {max.x - position.x, min.y - position.y, 0}; // Bottom-right
+        corners[2] = {max.x - position.x, max.y - position.y, 0}; // Top-right
+        corners[3] = {min.x - position.x, max.y - position.y, 0}; // Top-left
+
+        for (auto& corner : corners)
+        {
+            float x = corner.x * cosA - corner.y * sinA;
+            float y = corner.x * sinA + corner.y * cosA;
+            corner.x = x + position.x;
+            corner.y = y + position.y;
+        }
     }
 
     return corners;

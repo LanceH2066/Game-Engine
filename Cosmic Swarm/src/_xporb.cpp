@@ -4,7 +4,7 @@ _xpOrb::_xpOrb()
 {
     //ctor
     position = vec3(0.0f, 0.0f, 0.0f);
-    scale = vec3(0.5f, 0.5f, 1.0f);
+    scale = vec3(0.25f, 0.25f, 1.0f);
     isActive = true;
 
     xMin = 0.0f;
@@ -43,6 +43,27 @@ void _xpOrb::drawOrb()
         glEnd();
 
     glPopMatrix();
+}
+
+void _xpOrb::update(float deltaTime, vec3 playerPos, float pickupRange)
+{
+    if (!isActive) return;
+
+    // Calculate distance to player
+    vec3 diff = {playerPos.x - position.x, playerPos.y - position.y, 0.0f};
+    float distance = sqrt(diff.x * diff.x + diff.y * diff.y);
+
+    // Move toward player if within pickup range
+    if (distance <= pickupRange && distance > 0.0f)
+    {
+        // Normalize direction
+        diff.x /= distance;
+        diff.y /= distance;
+
+        // Update position
+        position.x += diff.x * speed * deltaTime;
+        position.y += diff.y * speed * deltaTime;
+    }
 }
 
 void _xpOrb::placeOrb(vec3 pos)

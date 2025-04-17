@@ -48,17 +48,16 @@
 			<Add directory="../common/lib" />
 		</Linker>
 		<Unit filename="images/Greenlasercannon.png" />
-		<Unit filename="images/Large flame_ship.png" />
-		<Unit filename="images/Small flame_ship.png" />
 		<Unit filename="images/background.png" />
 		<Unit filename="images/bugfighter.png" />
-		<Unit filename="images/experienceOrb.png" />
+		<Unit filename="images/flak.png" />
+		<Unit filename="images/laser.png" />
 		<Unit filename="images/particle.png" />
-		<Unit filename="images/player.png" />
-		<Unit filename="images/scrap.png" />
+		<Unit filename="images/rocket.png" />
 		<Unit filename="images/smallbug.png" />
 		<Unit filename="images/spritesheet.png" />
 		<Unit filename="images/swarmbot.png" />
+		<Unit filename="images/xpOrb.png" />
 		<Unit filename="include/_Bullet.h" />
 		<Unit filename="include/_collision.h" />
 		<Unit filename="include/_common.h" />
@@ -74,6 +73,7 @@
 		<Unit filename="include/_sounds.h" />
 		<Unit filename="include/_textureLoader.h" />
 		<Unit filename="include/_timer.h" />
+		<Unit filename="include/_weapon.h" />
 		<Unit filename="include/_xporb.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="sounds/blast.mp3" />
@@ -88,7 +88,6 @@
 		<Unit filename="src/_lightSetting.cpp" />
 		<Unit filename="src/_model.cpp" />
 		<Unit filename="src/_parallax.cpp" />
-		<Unit filename="src/_particle.cpp" />
 		<Unit filename="src/_particleSystem.cpp" />
 		<Unit filename="src/_player.cpp" />
 		<Unit filename="src/_scene.cpp" />

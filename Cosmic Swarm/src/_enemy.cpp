@@ -14,7 +14,9 @@ _enemy::_enemy()
     yMin = 0;
     currentHp = maxHp = 20.0f;
     explosionEffect = new _particleSystem();
+    enemyTextureLoader = new _textureLoader(); // Initialize texture loader
     hasExploded = false;
+    playerPosition = {0.0f, 0.0f, 0.0f}; // Initialize
 }
 
 _enemy::~_enemy()
@@ -22,10 +24,13 @@ _enemy::~_enemy()
 
 }
 
-void _enemy::initEnemy(char* fileName)
+void _enemy::initEnemy(char* fileName, float hp, vec3 hitboxSize, float mSpeed)
 {
     enemyTextureLoader->loadTexture(fileName);
     explosionEffect->init("images/particle.png");
+    maxHp = currentHp = hp; // Update HP
+    collisionBoxSize = hitboxSize; // Update hitbox
+    speed = mSpeed; // Update speed
 }
 
 void _enemy::drawEnemy(GLuint tex, float deltaTime)
@@ -75,11 +80,6 @@ void _enemy::placeEnemy(vec3 pos)
     hasExploded = false;
 }
 
-void _enemy::setPlayerReference(_player* player)
-{
-    targetPlayer = player;
-}
-
 void _enemy::takeDamage(float damage)
 {
     currentHp -= damage;
@@ -88,7 +88,7 @@ void _enemy::takeDamage(float damage)
         isAlive = false;
         if (!hasExploded)
         {
-            explosionEffect->spawnExplosion(position, 50);
+            explosionEffect->spawnExplosion(position, 15, 0);
             hasExploded = true;
         }
     }
@@ -121,8 +121,8 @@ void _enemy::enemyActions(float deltaTime)
     }
 
     // Compute direction vector from enemy to player
-    float deltaX = targetPlayer->playerPosition.x - position.x;
-    float deltaY = targetPlayer->playerPosition.y - position.y;
+    float deltaX = playerPosition.x - position.x;
+    float deltaY = playerPosition.y - position.y;
 
     // Compute the angle in degrees
     float angle = atan2(deltaY, deltaX) * (180.0f / M_PI);

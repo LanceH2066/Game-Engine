@@ -30,8 +30,8 @@ class _xpOrb
         vec3 getCollisionBoxMax() const;
         vec3 collisionBoxSize = {0.4f, 0.4f, 1.0f}; // pickup radius
 
-
-
+        float speed = 2.0f; // Speed toward player when in range (adjustable)
+        void update(float deltaTime, vec3 playerPos, float pickupRange);
 
 
 

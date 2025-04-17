@@ -13,11 +13,13 @@
 #include<time.h>
 #include<math.h>
 #include<string>
+#include <memory>
 #include<time.h>
 #include<map>
 #define PI 3.14159
 #define GRAVITY 9.81
 using namespace std;
+enum WeaponType { DEFAULT, ROCKET, LASER, FLAK, ENERGY_FIELD };
 
 struct vec3
 {

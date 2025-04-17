@@ -5,8 +5,6 @@
 #include<_model.h>
 #include<_inputs.h>
 #include<_parallax.h>
-#include<_player.h>
-#include<_enemy.h>
 #include<_collision.h>
 #include<_sounds.h>
 #include<_Bullet.h>
@@ -19,6 +17,13 @@ class _scene
         _scene();                               // Constructor
         virtual ~_scene();                      // Destructor
 
+        _inputs *input;
+        _parallax *prlx1;
+        _player *player;
+        _collision *collision;
+        _sounds *sounds;
+        _textureLoader* xpOrbTexture;
+
         GLint initGL();                         // Initialize Game Objects
         void drawScene();                       // Render The Final Scene
         void reSize(GLint width, GLint height); // Resize Window
@@ -30,6 +35,14 @@ class _scene
         vector<_enemy> enemies;
         //xpOrbs
         vector<_xpOrb> xpOrbs;
+
+        float xpPickupRange = 5.0f; // Modifiable pickup range (world units)
+
+        float bugSpawnInterval = 10.0f; // Spawn bugs every 10 seconds
+        float lastBugSpawnTime = 0.0f; // Track last bug spawn
+        void spawnBugSwarm(); // New method for bug spawning
+        vec3 worldMousePos; // Mouse position in world coordinates
+
     protected:
 
     private:
