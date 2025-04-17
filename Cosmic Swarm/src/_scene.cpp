@@ -122,7 +122,7 @@ void _scene::drawScene(){
                     {
                         if (collision->isOBBCollision(bullet, enemies[i]))
                         {
-                            enemies[i].takeDamage(bullet.weapon.damage * deltaTime);
+                            enemies[i].takeDamage(bullet.weapon.damage * deltaTime, xpOrbs, xpOrbTexture);
                         }
                     }
                 }
@@ -135,10 +135,9 @@ void _scene::drawScene(){
                         {
                             if (collision->isOBBCollision(bullet, enemies[i]))
                             {
-                                bool wasAlive = enemies[i].isAlive;
                                 if(bullet.weapon.type!= ROCKET)
                                 {
-                                    enemies[i].takeDamage(bullet.weapon.damage);
+                                    enemies[i].takeDamage(bullet.weapon.damage, xpOrbs, xpOrbTexture);
                                 }
                                 bullet.hitEnemies.push_back(i);
                                 if (bullet.weapon.type != FLAK)
@@ -147,7 +146,7 @@ void _scene::drawScene(){
                                     {
                                         if(!bullet.hasExploded)
                                         {
-                                            bullet.explode(enemies);
+                                            bullet.explode(enemies, xpOrbs, xpOrbTexture);
                                         }
                                     }
                                     // Only mark as dead if no explosion is active
@@ -156,14 +155,7 @@ void _scene::drawScene(){
                                         bullet.isAlive = false;
                                     }
                                 }
-                                if (wasAlive && !enemies[i].isAlive)
-                                {
-                                    _xpOrb orb;
-                                    orb.xpTextureLoader = xpOrbTexture;
-                                    orb.placeOrb(enemies[i].position);
-                                    orb.initOrb("images/xpOrb.png");
-                                    xpOrbs.push_back(orb);
-                                }
+
                             }
                         }
                     }

@@ -83,6 +83,7 @@ void _Bullet::update(float deltaTime, vector<_enemy>& enemies)
             isAlive = false;
         }
     }
+    /*
     else if (weapon.type == ENERGY_FIELD)
     {
         // Energy field weapon.damages enemies in radius
@@ -96,9 +97,10 @@ void _Bullet::update(float deltaTime, vector<_enemy>& enemies)
             }
         }
     }
+    */
 }
 
-void _Bullet::explode(vector<_enemy>& enemies)
+void _Bullet::explode(vector<_enemy>& enemies,vector<_xpOrb>& xpOrbs, _textureLoader* xpOrbTexture)
 {
     hasExploded = true;
     explosionEffect->spawnExplosion(position, weapon.level*50, weapon.level*2);
@@ -108,7 +110,7 @@ void _Bullet::explode(vector<_enemy>& enemies)
         float dy = enemy.position.y - position.y;
         if (sqrt(dx * dx + dy * dy) <= 2.0 + (1.5*weapon.level))
         {
-            enemy.takeDamage(weapon.damage);
+            enemy.takeDamage(weapon.damage, xpOrbs, xpOrbTexture);
         }
     }
 }

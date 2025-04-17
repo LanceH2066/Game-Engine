@@ -32,7 +32,7 @@ class _Bullet
     void drawBullet(float deltaTime);
     vec3 getCollisionBoxMin() const;
     vec3 getCollisionBoxMax() const;
-    void explode(vector<_enemy>& enemies);
+    void explode(vector<_enemy>& enemies,vector<_xpOrb>& xpOrbs, _textureLoader* xpOrbTexture);
     static const float laserHitboxLengths[5];
     vector<vec3> getRotatedCorners() const;
     vector<int> hitEnemies;

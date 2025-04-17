@@ -80,7 +80,7 @@ void _enemy::placeEnemy(vec3 pos)
     hasExploded = false;
 }
 
-void _enemy::takeDamage(float damage)
+void _enemy::takeDamage(float damage,vector<_xpOrb>& xpOrbs, _textureLoader* xpOrbTexture)
 {
     currentHp -= damage;
     if (currentHp <= 0 && isAlive)
@@ -91,6 +91,11 @@ void _enemy::takeDamage(float damage)
             explosionEffect->spawnExplosion(position, 15, 0);
             hasExploded = true;
         }
+        _xpOrb orb;
+        orb.xpTextureLoader = xpOrbTexture;
+        orb.placeOrb(position); // Use enemy's position
+        orb.initOrb("images/xpOrb.png");
+        xpOrbs.push_back(orb);
     }
     startFlash = true;
     flashTimer = 0.0f;  // Reset flash timer

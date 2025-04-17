@@ -4,6 +4,8 @@
 #include <_timer.h>
 #include <_textureLoader.h>
 #include <_particleSystem.h>
+#include <_xporb.h>
+
 class _enemy
 {
     public:
@@ -29,7 +31,7 @@ class _enemy
         void drawEnemy(GLuint, float);
         void placeEnemy(vec3);
         void enemyActions(float deltaTime);
-        void takeDamage(float damage);
+        void takeDamage(float damage,vector<_xpOrb>& xpOrbs, _textureLoader* xpOrbTexture);
 
         float maxHp, currentHp;
         float stoppingDistance = 0.35f;
