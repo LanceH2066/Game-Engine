@@ -84,7 +84,7 @@
 1744492990 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_xporb.cpp
 	"_xpOrb.h"
 
-1744833176 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_scene.h
+1744865982 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_scene.h
 	<_lightSetting.h>
 	<_model.h>
 	<_inputs.h>
@@ -154,7 +154,7 @@
 1743796061 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_timer.h
 	"_common.h"
 
-1744854194 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_player.h
+1744866067 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_player.h
 	<_common.h>
 	<_Bullet.h>
 	<_sounds.h>

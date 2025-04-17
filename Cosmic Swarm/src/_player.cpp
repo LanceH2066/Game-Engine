@@ -316,6 +316,38 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
     }
 }
 
+void _player::applyUpgrade(const string& upgradeType) {
+    if (upgradeType == "Damage") {
+        damageMultiplier += 0.10f; // +10% damage
+        for (auto& weapon : weapons) {
+            weapon.damage *= 1.10f; // Apply to existing damage
+        }
+    }
+    else if (upgradeType == "Speed") {
+        speedMultiplier += 0.10f; // +10% speed
+        speed *= 1.10f; // Apply to movement speed
+    }
+    else if (upgradeType == "Health") {
+        healthMultiplier += 0.10f; // +10% max health
+        float oldMaxHp = maxHp;
+        maxHp *= 1.10f;
+        currentHp += (maxHp - oldMaxHp); // Heal proportional to increase
+        if (currentHp > maxHp) currentHp = maxHp; // Cap at max
+    }
+    else if (upgradeType == "FireRate") {
+        fireRateMultiplier += 0.10f; // +10% fire rate (reduce time)
+        for (auto& weapon : weapons) {
+            weapon.fireRate /= 1.10f; // Reduce fire rate (faster shooting)
+        }
+    }
+    else if (upgradeType == "AoeSize") {
+        aoeSizeMultiplier += 0.10f; // +10% AoE size
+        for (auto& weapon : weapons) {
+            weapon.aoeSize *= 1.10f; // Increase AoE size
+        }
+    }
+}
+
 void _player::playerActions(float deltaTime)
 {
     playerTimer->update(deltaTime);
@@ -432,16 +464,18 @@ vector<vec3> _player::getRotatedCorners() const
     return corners;
 }
 
-void _player::gainXP(int amount)
+bool _player::gainXP(int amount)
 {
     experiencePoints += amount;
+    bool leveledUp = false;
 
-    if(experiencePoints >= xpThresh)
-    {
+    if (experiencePoints >= xpThresh) {
         experiencePoints -= xpThresh;
         playerLevel++;
-        xpThresh += 20;     //change this for xp increase per level
+        xpThresh += 20; // Increase XP needed for next level
+        leveledUp = true;
     }
+    return leveledUp;
 }
 
 void _player::drawXPBar()

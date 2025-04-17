@@ -270,11 +270,11 @@ void _scene::drawScene(){
     //check for XP orb pickups
     for (auto& orb : xpOrbs)
     {
-
-        if (orb.isActive && collision->isOBBCollision(*player, orb))
-        {
+        if (orb.isActive && collision->isOBBCollision(*player, orb)) {
             orb.isActive = false;
-            player->gainXP(1);  // player gain 1 XP
+            if (player->gainXP(1)) { // Check if player leveled up
+                showUpgradeMenu();
+            }
         }
     }
 
@@ -298,6 +298,52 @@ void _scene::drawScene(){
     player->drawXPBar();
     player->drawHealthBar();
 
+    if (upgradeMenuActive)
+    {
+    glPushMatrix();
+    glDisable(GL_TEXTURE_2D);
+
+    // Draw semi-transparent background
+    glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
+    glBegin(GL_QUADS);
+        glVertex2f(0, 0);
+        glVertex2f(dim.x, 0);
+        glVertex2f(dim.x, dim.y);
+        glVertex2f(0, dim.y);
+    glEnd();
+
+    // Draw upgrade options
+    float boxWidth = 300.0f;
+    float boxHeight = 100.0f;
+    float startY = dim.y / 2 - (currentUpgradeOptions.size() * boxHeight) / 2;
+    float startX = dim.x / 2 - boxWidth / 2;
+
+    for (size_t i = 0; i < currentUpgradeOptions.size(); ++i) {
+        float y = startY + i * (boxHeight + 10.0f);
+
+        // Draw box
+        glColor3f(0.3f, 0.3f, 0.3f);
+        glBegin(GL_QUADS);
+            glVertex2f(startX, y);
+            glVertex2f(startX + boxWidth, y);
+            glVertex2f(startX + boxWidth, y + boxHeight);
+            glVertex2f(startX, y + boxHeight);
+        glEnd();
+
+        // Draw text
+        string text = to_string(i + 1) + ": " + currentUpgradeOptions[i];
+        float textX = startX + 20.0f;
+        float textY = y + boxHeight / 2 + 5.0f;
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glRasterPos2f(textX, textY);
+        for (char c : text) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+        }
+    }
+
+    glEnable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
@@ -307,6 +353,27 @@ void _scene::drawScene(){
 
 }
 
+void _scene::showUpgradeMenu() {
+    upgradeMenuActive = true;
+    isPaused = true; // Pause game during upgrade selection
+
+    // Select 3 random upgrades
+    currentUpgradeOptions.clear();
+    vector<string> tempUpgrades = availableUpgrades;
+    random_shuffle(tempUpgrades.begin(), tempUpgrades.end());
+    for (int i = 0; i < min(3, (int)tempUpgrades.size()); ++i) {
+        currentUpgradeOptions.push_back(tempUpgrades[i]);
+    }
+}
+
+void _scene::selectUpgrade(int choice) {
+    if (choice >= 0 && choice < (int)currentUpgradeOptions.size()) {
+        player->applyUpgrade(currentUpgradeOptions[choice]);
+    }
+    upgradeMenuActive = false;
+    isPaused = false; // Resume game
+    currentUpgradeOptions.clear();
+}
 void _scene::reSize(GLint width, GLint height){
     dim.x = GetSystemMetrics(SM_CXSCREEN);
     dim.y = GetSystemMetrics(SM_CYSCREEN);
@@ -331,6 +398,20 @@ void _scene::processKeyboardInput() {
     worldMousePos.x = (mousePos.x - dim.x / 2) / (float)(dim.x / 2);
     worldMousePos.y = (dim.y / 2 - mousePos.y) / (float)(dim.y / 2);
     worldMousePos.z = 0.0f; // 2D game, z typically 0
+
+    if (upgradeMenuActive) {
+        // Handle upgrade selection (keys 1–3)
+        if (GetAsyncKeyState('1') & 0x8000) {
+            selectUpgrade(0);
+        }
+        else if (GetAsyncKeyState('2') & 0x8000) {
+            selectUpgrade(1);
+        }
+        else if (GetAsyncKeyState('3') & 0x8000) {
+            selectUpgrade(2);
+        }
+        return; // Skip other inputs while menu is active
+    }
 
     if (!isPaused && !gameOver) {
         input->updateMouseRotation(player, mousePos.x, mousePos.y, dim.x, dim.y);

@@ -59,7 +59,7 @@ class _player
         int experiencePoints = 0;
         int xpThresh;       ////////// new
         int playerLevel;    ///////// new
-        void gainXP(int);
+        bool gainXP(int);
 
         void drawXPBar();   /////////// new
 
@@ -69,6 +69,16 @@ class _player
         bool startFlash = false;
         float flashDuration = 0.2f;  // Duration of flash in seconds
         float flashTimer = 0.0f;     // Tracks elapsed flash time
+
+        // Upgrade modifiers
+        float damageMultiplier = 1.0f;  // Multiplies weapon.damage
+        float speedMultiplier = 1.0f;   // Multiplies player.speed
+        float healthMultiplier = 1.0f;  // Multiplies maxHp
+        float fireRateMultiplier = 1.0f; // Multiplies (reduces) fireRate
+        float aoeSizeMultiplier = 1.0f; // Multiplies aoeSize
+
+        // Upgrade method
+        void applyUpgrade(const string& upgradeType);
 
     protected:
 

@@ -42,6 +42,12 @@ class _scene
         float lastBugSpawnTime = 0.0f; // Track last bug spawn
         void spawnBugSwarm(); // New method for bug spawning
         vec3 worldMousePos; // Mouse position in world coordinates
+        bool upgradeMenuActive = false; // Track upgrade menu state
+        // Upgrade selection
+        vector<string> availableUpgrades = {"Damage", "Speed", "Health", "FireRate", "AoeSize"};
+        vector<string> currentUpgradeOptions; // Current choices (e.g., 3 random upgrades)
+        void showUpgradeMenu();
+        void selectUpgrade(int choice);
 
     protected:
 
