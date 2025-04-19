@@ -147,9 +147,9 @@ void _Bullet::drawBullet(float deltaTime)
             collisionBoxSize = {0.1f, laserHitboxLengths[weapon.level-1], 1.0f};
 
             glTranslatef(position.x, position.y, position.z);
-            glRotatef(rotation.z, 0, 0, 1);
+            glRotatef(rotation.z, 0.0f, 0.0f, 1.0f); // Counter-rotate by 90 degrees
 
-            laserLength = round(10.0*weapon.aoeSize);
+            laserLength = round(5.0*weapon.level+weapon.aoeSize);
             int numTiles = laserLength;
             float tileHeight = 0.4f;
             for (int i = 0; i < numTiles; ++i)
@@ -157,6 +157,7 @@ void _Bullet::drawBullet(float deltaTime)
                 glPushMatrix();
                 glTranslatef(0.0, i * tileHeight, 0.0); // Offset each tile upward
                 glScalef(1.0f, 1.0f, 1.0f); // Consistent scale per tile
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f); // Counter-rotate by 90 degrees
 
                 if (textureLoader && isAlive)
                 {
@@ -177,7 +178,7 @@ void _Bullet::drawBullet(float deltaTime)
             scale.x = scale.y = weapon.aoeSize;
 
             glTranslatef(position.x, position.y, position.z);
-            glRotatef(rotation.z, 0, 0, 1);
+            glRotatef(rotation.z - 90.0f, 0.0f, 0.0f, 1.0f); // Counter-rotate by 90 degrees
             glScalef(scale.x, scale.y, scale.z);
 
             if (textureLoader && isAlive)

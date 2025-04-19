@@ -62,11 +62,6 @@ class _player
         float xpPickupRange = 5.0f; // Modifiable pickup range (world units)
         bool magnetActive = false;
 
-        void drawXPBar();   /////////// new
-
-        //health bar
-        void drawHealthBar();
-
         bool startFlash = false;
         float flashDuration = 0.2f;  // Duration of flash in seconds
         float flashTimer = 0.0f;     // Tracks elapsed flash time

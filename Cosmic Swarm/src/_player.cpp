@@ -39,7 +39,7 @@ void _player::initPlayer(int xFrames, int yFrames, char* fileName)
 
     //xp
     playerLevel = 1;
-    xpThresh = 5;      //initial xp to level up
+    xpThresh = 1;      //initial xp to level up
 
     actionTrigger = IDLE;
 
@@ -154,6 +154,7 @@ void _player::updateWeapons(float deltaTime, vector<_enemy>& enemies, vec3 mouse
             // Update laser position and rotation every frame
             laserBeam.position = playerPosition;
             laserBeam.rotation = playerRotation;
+            laserBeam.weapon = weapon; // Sync weapon properties (level, aoeSize, etc.)
             laserBeam.isAlive = true; // Ensure laser remains active
             for (auto& bullet : bullets)
             {
@@ -213,7 +214,7 @@ void _player::updateWeapons(float deltaTime, vector<_enemy>& enemies, vec3 mouse
                     {
                         // Calculate spread angle
                         float spreadAngle = angle - (totalSpread / 2.0f) + (i * spreadPerBullet);
-                        // Add slight random offset (±3 degrees)
+                        // Add slight random offset (ï¿½3 degrees)
                         float randomOffset = (rand() % 600 - 300) / 100.0f; // -3.0 to 3.0
                         _Bullet bullet;
                         bullet.init(playerPosition, {0, 0, spreadAngle + randomOffset}, targetPos, weapon.texture, weapon);
@@ -301,87 +302,113 @@ void _player::shoot(vec3 mousePos, _sounds *sounds)
     }
 }
 
-void _player::applyUpgrade(const string& upgradeType)
-{
-    if (upgradeType == "Damage" && damageMultiplier < 1.5f)
-        damageMultiplier += 0.1f;
-    else if (upgradeType == "Speed" && speedMultiplier < 1.5f)
-        speedMultiplier += 0.1f;
-    else if (upgradeType == "Health" && healthMultiplier < 1.5f)
-    {
-        healthMultiplier += 0.1f;
-        maxHp *= 1.1f;
-        currentHp = maxHp;
-    }
-    else if (upgradeType == "FireRate" && fireRateMultiplier > 0.5f)
-        fireRateMultiplier -= 0.1f;
-    else if (upgradeType == "AoeSize" && aoeSizeMultiplier < 1.5f)
-        aoeSizeMultiplier += 0.1f;
+void _player::applyUpgrade(const string& upgradeType) {
+    int currentLevel = 0;
+    if (upgradeType == "Damage") currentLevel = (int)((damageMultiplier - 1.0f) / 0.1f);
+    else if (upgradeType == "Speed") currentLevel = (int)((speedMultiplier - 1.0f) / 0.1f);
+    else if (upgradeType == "Health") currentLevel = (int)((healthMultiplier - 1.0f) / 0.1f);
+    else if (upgradeType == "FireRate") currentLevel = (int)((1.0f - fireRateMultiplier) / 0.1f);
+    else if (upgradeType == "AoeSize") currentLevel = (int)((aoeSizeMultiplier - 1.0f) / 0.1f);
 
-    for (auto& weapon : weapons)
-    {
-        if (weapon.isActive)
+    if (currentLevel >= 5) {
+        return; // Prevent upgrading beyond level 5
+    }
+
+    if (upgradeType == "Damage") {
+        damageMultiplier += 0.1f;
+    } else if (upgradeType == "Speed") {
+        speedMultiplier += 0.1f;
+    } else if (upgradeType == "Health") {
+        // Store old maxHp
+        float oldMaxHp = maxHp;
+        // Apply upgrade
+        healthMultiplier += 0.1f;
+        maxHp = 100.0f*healthMultiplier;
+        // Increase currentHp by the maxHp gained
+        float maxHpIncrease = maxHp - oldMaxHp;
+        currentHp += maxHpIncrease;
+        // Clamp currentHp to new maxHp
+        if (currentHp > maxHp)
+        {
+            currentHp = maxHp;
+        }
+    } else if (upgradeType == "FireRate") {
+        fireRateMultiplier -= 0.1f;
+    } else if (upgradeType == "AoeSize") {
+        aoeSizeMultiplier += 0.1f;
+    }
+
+    // Apply modifiers to all active weapons
+    for (auto& weapon : weapons) {
+        if (weapon.isActive) {
             weapon.applyMods(damageMultiplier, fireRateMultiplier, aoeSizeMultiplier);
+        }
     }
 }
 
-void _player::applyWeaponUpgrade(WeaponType type)
-{
-    auto it = std::find_if(weapons.begin(), weapons.end(), [&](Weapon& w)
-    {
-        return w.type == type;
-    });
+void _player::applyWeaponUpgrade(WeaponType type) {
+    auto it = std::find_if(weapons.begin(), weapons.end(),
+        [&](Weapon& w) { return w.type == type; });
 
-    if (it != weapons.end())
-    {
-        if (it->level < 5)
-        {
+    if (it != weapons.end()) {
+        if (it->level < 5) {
             it->levelUp();
         }
-    }
-    else
-    {
-        switch (type)
-        {
-            case DEFAULT:
-            {
-                break;
+    } else {
+        // Only add a new weapon if we have fewer than MAX_WEAPONS (excluding Default if others exist)
+        int activeWeaponCount = 0;
+        bool hasNonDefault = false;
+        for (const auto& w : weapons) {
+            if (w.isActive) {
+                activeWeaponCount++;
+                if (w.type != DEFAULT) hasNonDefault = true;
             }
-            case ROCKET:
-            {
-                Weapon rocket;
-                rocket.init(ROCKET, rocketTex, 10.0f, 2.0f, 0.5f,10.0f);
-                rocket.isActive = true;
-                weapons.push_back(rocket);
-                break;
-            }
-            case LASER:
-            {
-                Weapon laser;
-                laser.init(LASER, laserTex, 20.0f, 0.1f, 1.0f, 0.0);
-                laser.isActive = true;
-                weapons.push_back(laser);
-                break;
-            }
-            case FLAK:
-            {
-                Weapon flak;
-                flak.init(FLAK, flakTex, 3.0f, 1.0f, 0.25f, 12.0f);
-                flak.isActive = false;
-                weapons.push_back(flak);
-                break;
-            }
-            case ENERGY_FIELD:
-            {
-                break;
+        }
+
+        // Allow adding a new weapon only if under the limit and not adding Default when other weapons exist
+        if (activeWeaponCount < 4 && !(type == DEFAULT && hasNonDefault)) {
+            switch (type) {
+                case DEFAULT:
+                {
+                    break; // Default is already initialized
+                }
+                case ROCKET:
+                {
+                    Weapon rocket;
+                    rocket.init(ROCKET, rocketTex, 10.0f, 2.0f, 0.5f, 10.0f);
+                    rocket.isActive = true;
+                    weapons.push_back(rocket);
+                    break;
+                }
+                case LASER:
+                {
+                    Weapon laser;
+                    laser.init(LASER, laserTex, 20.0f, 0.1f, 1.0f, 0.0);
+                    laser.isActive = true;
+                    weapons.push_back(laser);
+                    break;
+                }
+                case FLAK:
+                {
+                    Weapon flak;
+                    flak.init(FLAK, flakTex, 3.0f, 1.0f, 0.25f, 12.0f);
+                    flak.isActive = true;
+                    weapons.push_back(flak);
+                    break;
+                }
+                case ENERGY_FIELD:
+                {
+                    break; // Not implemented
+                }
             }
         }
     }
 
-    for (auto& weapon : weapons)
-    {
-        if (weapon.isActive)
+    // Apply modifiers to all active weapons
+    for (auto& weapon : weapons) {
+        if (weapon.isActive) {
             weapon.applyMods(damageMultiplier, fireRateMultiplier, aoeSizeMultiplier);
+        }
     }
 }
 
@@ -509,107 +536,10 @@ bool _player::gainXP(int amount)
     if (experiencePoints >= xpThresh) {
         experiencePoints -= xpThresh;
         playerLevel++;
-        xpThresh += 20; // Increase XP needed for next level
+        xpThresh += 2; // Increase XP needed for next level
         leveledUp = true;
     }
     return leveledUp;
-}
-
-void _player::drawXPBar()
-{
-    float barWidth = 300.0f;
-    float barHeight = 20.0f;
-    float margin = 20.0f;
-    float filledWidth = (float)experiencePoints / xpThresh * barWidth;
-
-    float x = margin;
-    float y = margin;
-
-    glPushMatrix();
-    glDisable(GL_TEXTURE_2D);
-
-    // Background
-    glColor3f(0.3f, 0.3f, 0.3f);
-    glBegin(GL_QUADS);
-        glVertex2f(x, y);
-        glVertex2f(x + barWidth, y);
-        glVertex2f(x + barWidth, y + barHeight);
-        glVertex2f(x, y + barHeight);
-    glEnd();
-
-    // Fill
-    glColor3f(0.573f, 0.878f, 0.914f);
-    glBegin(GL_QUADS);
-        glVertex2f(x, y);
-        glVertex2f(x + filledWidth, y);
-        glVertex2f(x + filledWidth, y + barHeight);
-        glVertex2f(x, y + barHeight);
-    glEnd();
-
-    // Draw Level Text
-    string levelText = "Level " + to_string(playerLevel);
-    float estimatedWidth = levelText.length() * 10.0f;
-    float textX = x + (barWidth / 2.0f) - (estimatedWidth / 2.0f);
-    float textY = y + 4;
-
-    glColor3f(1.0f, 1.0f, 1.0f);  // White text
-    glRasterPos2f(textX, textY);
-    for (char c : levelText)
-    {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
-    }
-
-    glEnable(GL_TEXTURE_2D);
-    glPopMatrix();
-}
-
-void _player::drawHealthBar()
-{
-    float barWidth = 300.0f;
-    float barHeight = 20.0f;
-    float margin = 20.0f;
-    float gapAboveXP = 15.0f;
-
-    float filledWidth = (currentHp / maxHp) * barWidth;
-
-    float x = margin;
-    float y = margin + barHeight + gapAboveXP;  // Positioned above XP bar
-
-    glPushMatrix();
-    glDisable(GL_TEXTURE_2D);
-
-    // Background (gray)
-    glColor3f(0.3f, 0.3f, 0.3f);
-    glBegin(GL_QUADS);
-        glVertex2f(x, y);
-        glVertex2f(x + barWidth, y);
-        glVertex2f(x + barWidth, y + barHeight);
-        glVertex2f(x, y + barHeight);
-    glEnd();
-
-    // Health fill (red)
-    glColor3f(0.937f, 0.541f, 0.196f);
-    glBegin(GL_QUADS);
-        glVertex2f(x, y);
-        glVertex2f(x + filledWidth, y);
-        glVertex2f(x + filledWidth, y + barHeight);
-        glVertex2f(x, y + barHeight);
-    glEnd();
-
-    //Draw HP label above the bar
-    string hpText = "HP: " + to_string((int)currentHp) + " / " + to_string((int)maxHp);
-    float textWidth = hpText.length() * 10.0f;
-    float textX = x + (barWidth - textWidth) / 2.0f;
-    float textY = y + barHeight + 15.0f;
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glRasterPos2f(textX, textY);
-    for (char c : hpText) {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
-    }
-
-    glEnable(GL_TEXTURE_2D);
-    glPopMatrix();
 }
 
 _enemy* _player::findMostClusteredEnemy(vector<_enemy>& enemies, float clusterRadius)

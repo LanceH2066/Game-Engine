@@ -26,6 +26,15 @@ class _scene
         _textureLoader* xpOrbTexture;
         _textureLoader* enemyDropsMagnetTexture;
         _textureLoader* enemyDropsHealthTexture;
+        _textureLoader* hudTexture; // New: HUD texture
+        _textureLoader* fontTexture;
+
+        _textureLoader* damageIconTexture;
+        _textureLoader* fireRateIconTexture;
+        _textureLoader* aoeSizeIconTexture;
+        _textureLoader* speedIconTexture;
+        _textureLoader* healthIconTexture;
+
 
         GLint initGL();                         // Initialize Game Objects
         void drawScene();                       // Render The Final Scene
@@ -47,6 +56,12 @@ class _scene
         void spawnBugSwarm(); // New method for bug spawning
         vec3 worldMousePos; // Mouse position in world coordinates
         bool upgradeMenuActive = false; // Track upgrade menu state
+
+        // Constants for maximum upgrades and weapons
+        static const int MAX_NON_WEAPON_UPGRADES = 4; // Max 4 non-weapon upgrades
+        static const int MAX_WEAPONS = 4; // Max 4 weapons
+        static const int MAX_UPGRADE_LEVEL = 5; // Max level for any upgrade or weapon
+
        // Upgrade selection
         struct UpgradeOption {
             string name;        // e.g., "Damage", "Weapon_Laser"
@@ -63,6 +78,28 @@ class _scene
         void showUpgradeMenu();
         void selectUpgrade(int choice);
         bool checkMouseClickOnUpgrade(float mouseX, float mouseY); // New: Handle mouse clicks
+        void renderText(string text, float x, float y, float scale, float spacing);
+        void loadFontData(const string& path);
+
+    struct FontChar {
+        int id;
+        int x, y;
+        int width, height;
+        int xoffset, yoffset;
+        int xadvance;
+        float u0, v0, u1, v1;
+    };
+    map<int, FontChar> bitmapFont;
+    int fontTexWidth = 256;
+    int fontTexHeight = 256;
+
+
+    struct ActiveUpgrade {
+        string name; // e.g., "Damage", "Speed"
+        int level;   // Current level (1-5)
+        bool isWeapon; // True if it's a weapon
+    };
+    vector<ActiveUpgrade> activeUpgrades; // List of applied upgrades
 
     protected:
 

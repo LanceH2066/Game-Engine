@@ -9,7 +9,13 @@ _scene::_scene(){
     xpOrbTexture = new _textureLoader();
     enemyDropsMagnetTexture = new _textureLoader();
     enemyDropsHealthTexture = new _textureLoader();
-
+    hudTexture = new _textureLoader();
+    fontTexture = new _textureLoader();
+    damageIconTexture = new _textureLoader();
+    fireRateIconTexture = new _textureLoader();
+    aoeSizeIconTexture = new _textureLoader();
+    speedIconTexture = new _textureLoader();
+    healthIconTexture = new _textureLoader();
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&lastTime);
     deltaTime = 0.0f;
@@ -27,6 +33,7 @@ _scene::~_scene(){
 GLint _scene::initGL(){
     srand(static_cast<unsigned>(time(nullptr)));
     // GL SETTINGS
+
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClearDepth(1.0);
     glEnable(GL_TEXTURE_2D);
@@ -43,6 +50,15 @@ GLint _scene::initGL(){
     xpOrbTexture->loadTexture("images/xpOrb.png");
     enemyDropsMagnetTexture->loadTexture("images/magnet.png");
     enemyDropsHealthTexture->loadTexture("images/healthDrop.png");
+    hudTexture->loadTexture("images/hud.png");
+    fontTexture->loadTexture("images/font.png");
+    loadFontData("images/font.fnt");
+    damageIconTexture->loadTexture("images/damage.png");
+    fireRateIconTexture->loadTexture("images/fireRate.png");
+    aoeSizeIconTexture->loadTexture("images/aoeSize.png");
+    speedIconTexture->loadTexture("images/speed.png");
+    healthIconTexture->loadTexture("images/healthDrop.png");
+
     // Convert screen pixels to world space (assumes orthographic units)
     float worldUnitsPerPixel = 10.0f / dim.x; // Adjust based on projection settings
     float screenWidthUnits = dim.x * worldUnitsPerPixel;
@@ -301,120 +317,416 @@ void _scene::drawScene(){
     enemyDrops.end()
     );
 
-
     // Setup orthographic projection for 2D HUD
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluOrtho2D(0, dim.x, 0, dim.y);  // Match window dimensions
+    gluOrtho2D(0, dim.x, 0, dim.y); // Pixel coordinates
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
 
-    // Draw XP Bar in screen space
-    player->drawXPBar();
-    player->drawHealthBar();
+    // Reference resolution
+    const float refWidth = 1920.0f;
+    const float refHeight = 1080.0f;
 
-    if (upgradeMenuActive)
-    {
+    // Scaling factors
+    float scaleX = dim.x / refWidth;
+    float scaleY = dim.y / refHeight;
+
+    // Time Display
+    int minutes = static_cast<int>(elapsedTime) / 60;
+    int seconds = static_cast<int>(elapsedTime) % 60;
+
+    string timeText = (minutes < 10 ? "0" : "") + std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
+    float fontScale = scaleY * 2.0f;  // Adjust as needed
+    float textX = (dim.x / 2.0f) - (timeText.length() * 20.0f * fontScale / 2.0f);
+    float textY = dim.y - (90.0f * scaleY);  // Near top
+
+    renderText(timeText, textX, textY, fontScale, 0.0f);
+
+    // HP Bar (bottom left, 50px from left, 50px from bottom)
+    float healthBarWidth = 425.0f * scaleX;
+    float healthBarHeight = 80.0f * scaleY;
+    float healthBarX = 0.0f;
+    float healthBarY = 40.0f * scaleY;
+    float healthFilledWidth = (player->currentHp / player->maxHp) * healthBarWidth;
+
     glPushMatrix();
     glDisable(GL_TEXTURE_2D);
-
-    // Draw semi-transparent background
-    glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
+    // Health fill (red)
+    glColor3f(0.937f, 0.541f, 0.196f);
     glBegin(GL_QUADS);
-        glVertex2f(0, 0);
-        glVertex2f(dim.x, 0);
-        glVertex2f(dim.x, dim.y);
-        glVertex2f(0, dim.y);
+        glVertex2f(healthBarX, healthBarY);
+        glVertex2f(healthBarX + healthFilledWidth, healthBarY);
+        glVertex2f(healthBarX + healthFilledWidth, healthBarY + healthBarHeight);
+        glVertex2f(healthBarX, healthBarY + healthBarHeight);
     glEnd();
-
-    // Draw upgrade options
-    float boxWidth = 300.0f;
-    float boxHeight = 100.0f;
-    float startY = dim.y / 2 - (currentUpgradeOptions.size() * boxHeight) / 2;
-    float startX = dim.x / 2 - boxWidth / 2;
-
-    for (size_t i = 0; i < currentUpgradeOptions.size(); ++i) {
-        float y = startY + i * (boxHeight + 10.0f);
-
-        // Draw box
-        glColor3f(0.3f, 0.3f, 0.3f);
-        glBegin(GL_QUADS);
-            glVertex2f(startX, y);
-            glVertex2f(startX + boxWidth, y);
-            glVertex2f(startX + boxWidth, y + boxHeight);
-            glVertex2f(startX, y + boxHeight);
-        glEnd();
-
-        // Draw text
-        string text = to_string(i + 1) + ": " + currentUpgradeOptions[i].displayText;
-        float textX = startX + 20.0f;
-        float textY = y + boxHeight / 2 + 5.0f;
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glRasterPos2f(textX, textY);
-        for (char c : text) {
-            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
-        }
-    }
-
+    glColor3f(1.0f, 1.0f, 1.0f);
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();
-}
+
+    // XP Bar (bottom right, 50px from right, 50px from bottom)
+    float xpBarWidth = 425.0f * scaleX;
+    float xpBarHeight = 80.0f * scaleY;
+    float xpBarX = dim.x - xpBarWidth;
+    float xpBarY = 40.0f * scaleY;
+    float xpFilledWidth = ((float)player->experiencePoints / player->xpThresh) * xpBarWidth;
+
+    glPushMatrix();
+    glDisable(GL_TEXTURE_2D);
+    // Background (gray)
+    glColor3f(0.3f, 0.3f, 0.3f);
+    glBegin(GL_QUADS);
+        glVertex2f(xpBarX, xpBarY);
+        glVertex2f(xpBarX + xpBarWidth, xpBarY);
+        glVertex2f(xpBarX + xpBarWidth, xpBarY + xpBarHeight);
+        glVertex2f(xpBarX, xpBarY + xpBarHeight);
+    glEnd();
+    // XP fill (blue)
+    glColor3f(0.573f, 0.878f, 0.914f);
+    glBegin(GL_QUADS);
+        glVertex2f(xpBarX, xpBarY);
+        glVertex2f(xpBarX + xpFilledWidth, xpBarY);
+        glVertex2f(xpBarX + xpFilledWidth, xpBarY + xpBarHeight);
+        glVertex2f(xpBarX, xpBarY + xpBarHeight);
+    glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glEnable(GL_TEXTURE_2D);
+    glPopMatrix();
+
+    float baseWeaponIconSize = 200.0f * scaleX; // Base size for DEFAULT and LASER
+    float weaponStartX = dim.x - (150.0f * scaleX); // Right-aligned starting X
+    float weaponStartY = dim.y - (300.0f * scaleY); // Starting Y (top of stack)
+
+    int slot = 0;
+
+    const float rocketPositions[] = { dim.y - (200.0f * scaleY), dim.y - (355.0f * scaleY), dim.y - (470.0f * scaleY), dim.y - (585.0f * scaleY)};
+    const float laserPositions[] = { dim.y - (200.0f * scaleY), dim.y - (410.0f * scaleY), dim.y - (520.0f * scaleY), dim.y - (630.0f * scaleY)};
+    const float flakPositions[] = { dim.y - (200.0f * scaleY), dim.y - (345.0f * scaleY), dim.y - (457.0f * scaleY), dim.y - (568.0f * scaleY)};
+
+    for (const auto& weapon : player->weapons)
+    {
+        if (!weapon.isActive) continue;
+
+        shared_ptr<_textureLoader> weaponTex;
+        float iconSize = baseWeaponIconSize; // Default size
+        float currentY = weaponStartY;
+        float currentX = weaponStartX;
+        float textOffsetX = 0.0f;
+        float textOffsetY = 0.0f;
+
+        switch (weapon.type)
+        {
+            case DEFAULT:
+                weaponTex = player->bulletTextureLoader;
+                currentY = weaponStartY;
+                currentX = weaponStartX;
+                textOffsetX = -25.0f * scaleX;
+                textOffsetY = -5.0f * scaleY;
+                break;
+            case ROCKET:
+                weaponTex = player->rocketTex;
+                iconSize = baseWeaponIconSize / 2.0f;
+                currentY = rocketPositions[slot];
+                currentX += 50.0f*scaleX;
+                textOffsetX = -75.0f * scaleX;
+                textOffsetY = -10.0f;
+                break;
+            case LASER:
+                weaponTex = player->laserTex;
+                currentY = laserPositions[slot];
+                currentX -= 75.0f*scaleX;
+                textOffsetX = 50.0f * scaleX;
+                textOffsetY = -5.0f * scaleY;
+                break;
+            case FLAK:
+                weaponTex = player->flakTex;
+                iconSize = baseWeaponIconSize / 3.0f;
+                currentY = flakPositions[slot];
+                 currentX += 60.0f*scaleX;
+                textOffsetX = -85.0f * scaleX;
+                textOffsetY = -5.0f;
+                break;
+            default:
+                continue;
+        }
+
+        float weaponX = currentX;
+        float weaponY = currentY;
+
+        if (weaponTex)
+        {
+            glPushMatrix();
+            weaponTex->textureBinder();
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 1.0f); glVertex2f(weaponX, weaponY);
+                glTexCoord2f(1.0f, 1.0f); glVertex2f(weaponX + iconSize, weaponY);
+                glTexCoord2f(1.0f, 0.0f); glVertex2f(weaponX + iconSize, weaponY + iconSize);
+                glTexCoord2f(0.0f, 0.0f); glVertex2f(weaponX, weaponY + iconSize);
+            glEnd();
+            glPopMatrix();
+        }
+
+        // Render level text to the left of the icon
+        string levelText = "LV" + std::to_string(weapon.level);
+        float textX = weaponX + textOffsetX - (12.0f * scaleX); // Adjust left of icon
+        float textY = weaponY + (iconSize / 2.0f) + textOffsetY; // Center vertically
+        renderText(levelText, textX, textY, scaleY * 0.8f, 0.0f);
+
+        slot++;
+    }
+
+    // Upgrade Icons (left side, stacked vertically)
+    float baseUpgradeIconSize = 150.0f * scaleX; // Base size (adjust as needed)
+    float upgradeStartX = 0; // 50px from left edge
+    float upgradeStartY = dim.y - (150.0f * scaleY); // Start near top
+    int upgradeSlot = 0;
+
+    const float damagePositions[] = { dim.y - (280.0f * scaleY), dim.y - (395.0f * scaleY), dim.y - (505.0f * scaleY), dim.y - (620.0f * scaleY)};
+    const float fireRatePositions[] = { dim.y - (260.0f * scaleY), dim.y - (375.0f * scaleY), dim.y - (485.0f * scaleY), dim.y - (595.0f * scaleY)};
+    const float aoeSizePositions[] = { dim.y - (250.0f * scaleY), dim.y - (365.0f * scaleY), dim.y - (475.0f * scaleY), dim.y - (585.0f * scaleY)};
+    const float speedPositions[] = { dim.y - (290.0f * scaleY), dim.y - (400.0f * scaleY), dim.y - (510.0f * scaleY), dim.y - (620.0f * scaleY)};
+    const float healthPositions[] = { dim.y - (255.0f * scaleY), dim.y - (365.0f * scaleY), dim.y - (480.0f * scaleY), dim.y - (590.0f * scaleY)};
+
+    float textOffsetX = 0;
+    float textOffsetY = 0;
+
+    // Map upgrade names to textures
+    std::map<std::string, _textureLoader*> upgradeTextures = {
+        {"Damage", damageIconTexture},
+        {"FireRate", fireRateIconTexture},
+        {"AoeSize", aoeSizeIconTexture},
+        {"Speed", speedIconTexture},
+        {"Health", healthIconTexture}
+    };
+
+    // Render active upgrade icons
+    for (const auto& upgrade : activeUpgrades)
+    {
+        auto texIt = upgradeTextures.find(upgrade.name);
+        if (texIt == upgradeTextures.end()) continue; // Skip if no texture
+
+        _textureLoader* tex = texIt->second;
+        float iconSize = baseUpgradeIconSize; // Default size
+
+        float currentY = upgradeStartY;
+        float currentX = upgradeStartX;
+
+        // Adjust size per upgrade type (example values, tweak based on PNG sizes)
+        if (upgrade.name == "Damage")
+        {
+            iconSize = baseUpgradeIconSize * 1.0f;
+            currentX = -30.0f * scaleX;
+            currentY = damagePositions[upgradeSlot];
+            textOffsetX = 0;
+            textOffsetY = 0;
+        }
+        else if (upgrade.name == "FireRate")
+        {
+            iconSize = baseUpgradeIconSize * 0.8f;
+            currentX = -5.0f * scaleX;
+            currentY = fireRatePositions[upgradeSlot];
+            textOffsetX = 5.0f;
+            textOffsetY = -3.0f;
+        }
+        else if (upgrade.name == "AoeSize")
+        {
+            iconSize = baseUpgradeIconSize * 0.7f;
+            currentX = -5.0f * scaleX;
+            currentY = aoeSizePositions[upgradeSlot];
+            textOffsetX = 25.0f;
+            textOffsetY = -3.0;
+        }
+        else if (upgrade.name == "Speed")
+        {
+            iconSize = baseUpgradeIconSize * 1.25f;
+            currentX = -50.0f * scaleX;
+            currentY = speedPositions[upgradeSlot];
+            textOffsetX = -25.0f;
+            textOffsetY = -10.0f;
+        }
+        else if (upgrade.name == "Health")
+        {
+            iconSize = baseUpgradeIconSize * 0.8f;
+            currentX = -12.0f * scaleX;
+            currentY = healthPositions[upgradeSlot];
+            textOffsetX = 12.0f;
+            textOffsetY = -10.0f;
+        }
+
+        glPushMatrix();
+        if (tex) {
+            tex->textureBinder();
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 1.0f); glVertex2f(currentX, currentY);
+                glTexCoord2f(1.0f, 1.0f); glVertex2f(currentX + iconSize, currentY);
+                glTexCoord2f(1.0f, 0.0f); glVertex2f(currentX + iconSize, currentY + iconSize);
+                glTexCoord2f(0.0f, 0.0f); glVertex2f(currentX, currentY + iconSize);
+            glEnd();
+        }
+        glPopMatrix();
+
+        // Optionally, render level text next to the icon
+        string levelText = "LV" + std::to_string(upgrade.level);
+        float textX = textOffsetX + currentX + iconSize + (12.0f * scaleX); // 10px right of icon
+        float textY = textOffsetY + currentY + (iconSize / 2.0f); // Center vertically
+        renderText(levelText, textX, textY, scaleY * 0.8f, 0.0f);
+
+        upgradeSlot++;
+        if (upgradeSlot >= 5) break; // Limit to 5 slots
+    }
+
+    // Upgrade Menu (unchanged, but ensure text is visible)
+    if (upgradeMenuActive) {
+        glPushMatrix();
+        glDisable(GL_TEXTURE_2D);
+        glColor4f(0.0f, 0.0f, 0.0f, 0.7f); // Semi-transparent background
+        glBegin(GL_QUADS);
+            glVertex2f(0, 0);
+            glVertex2f(dim.x, 0);
+            glVertex2f(dim.x, dim.y);
+            glVertex2f(0, dim.y);
+        glEnd();
+
+        float boxWidth = 300.0f * scaleX;
+        float boxHeight = 500.0f * scaleY;
+        float spacing = 50.0f * scaleX;
+        float totalWidth = (3 * boxWidth) + (2 * spacing);
+        float startX = (dim.x - totalWidth) / 2.0f;
+        float startY = dim.y / 2.0f - (boxHeight / 2.0f);
+
+        for (size_t i = 0; i < currentUpgradeOptions.size() && i < 3; ++i) {
+            float x = startX + i * (boxWidth + spacing);
+            glColor3f(0.3f, 0.3f, 0.3f); // Gray box
+            glBegin(GL_QUADS);
+                glVertex2f(x, startY);
+                glVertex2f(x + boxWidth, startY);
+                glVertex2f(x + boxWidth, startY + boxHeight);
+                glVertex2f(x, startY + boxHeight);
+            glEnd();
+            string text = to_string(i + 1) + ": " + currentUpgradeOptions[i].displayText;
+            float textX = x + (20.0f * scaleX);
+            float textY = startY + (boxHeight / 2.0f) + (5.0f * scaleY);
+            glColor3f(1.0f, 1.0f, 1.0f);
+            glRasterPos2f(textX, textY);
+            for (char c : text) {
+                glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+            }
+        }
+        glEnable(GL_TEXTURE_2D);
+        glPopMatrix();
+    }
+
+    // Draw HUD Texture (full screen)
+    float hudWidth = dim.x;
+    float hudHeight = dim.y;
+    glPushMatrix();
+    if (hudTexture) {
+        hudTexture->textureBinder();
+    }
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 1.0f); glVertex2f(0.0f, 0.0f); // Bottom-left
+        glTexCoord2f(1.0f, 1.0f); glVertex2f(hudWidth, 0.0f); // Bottom-right
+        glTexCoord2f(1.0f, 0.0f); glVertex2f(hudWidth, hudHeight); // Top-right
+        glTexCoord2f(0.0f, 0.0f); glVertex2f(0.0f, hudHeight); // Top-left
+    glEnd();
+    glPopMatrix();
+
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);  // Return to 3D mode
-
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void _scene::showUpgradeMenu() {
+    // Count current non-weapon upgrades and weapons
+    int nonWeaponUpgradeCount = 0;
+    int weaponCount = 0;
+    for (const auto& upgrade : activeUpgrades) {
+        if (upgrade.isWeapon) {
+            weaponCount++;
+        } else {
+            nonWeaponUpgradeCount++;
+        }
+    }
+
+    // Filter available upgrades
+    vector<string> validUpgrades;
+    for (const auto& upgrade : availableUpgrades) {
+        bool isWeapon = (upgrade.find("Weapon_") == 0);
+        string baseName = isWeapon ? upgrade.substr(7) : upgrade; // e.g., "Laser" or "Damage"
+
+        // Find current level of this upgrade/weapon
+        auto it = std::find_if(activeUpgrades.begin(), activeUpgrades.end(),
+            [&upgrade](const ActiveUpgrade& up) { return up.name == upgrade; });
+        int currentLevel = (it != activeUpgrades.end()) ? it->level : 0;
+
+        // Skip if already at max level
+        if (currentLevel >= MAX_UPGRADE_LEVEL) {
+            continue;
+        }
+
+        // Non-weapon upgrades: include if under the limit or already active
+        if (!isWeapon) {
+            if (nonWeaponUpgradeCount < MAX_NON_WEAPON_UPGRADES || currentLevel > 0) {
+                validUpgrades.push_back(upgrade);
+            }
+        }
+        // Weapon upgrades: include if under the limit or already active
+        else {
+            // Allow Weapon_Default to be leveled up if active and below max level
+            if (baseName == "Default" && currentLevel > 0 && currentLevel < MAX_UPGRADE_LEVEL) {
+                validUpgrades.push_back(upgrade);
+                continue;
+            }
+            // For other weapons, check if we can add a new weapon or level up an existing one
+            if (weaponCount < MAX_WEAPONS || currentLevel > 0) {
+                validUpgrades.push_back(upgrade);
+            }
+        }
+    }
+
+    // If no valid upgrades, skip the menu and resume gameplay
+    if (validUpgrades.empty()) {
+        upgradeMenuActive = false;
+        isPaused = false;
+        currentUpgradeOptions.clear();
+        return;
+    }
+
+    // Select up to 3 random valid upgrades
     upgradeMenuActive = true;
-    isPaused = true; // Pause game during upgrade selection
-
-    // Select 3 random upgrades
+    isPaused = true;
     currentUpgradeOptions.clear();
-    vector<string> tempUpgrades = availableUpgrades;
-    random_shuffle(tempUpgrades.begin(), tempUpgrades.end());
+    random_shuffle(validUpgrades.begin(), validUpgrades.end());
+    int optionsToSelect = min(3, (int)validUpgrades.size());
 
-    for (int i = 0; i < min(3, (int)tempUpgrades.size()); ++i)
-    {
+    for (int i = 0; i < optionsToSelect; ++i) {
         UpgradeOption option;
-        option.name = tempUpgrades[i];
+        option.name = validUpgrades[i];
+        option.isWeapon = (option.name.find("Weapon_") == 0);
 
-        if (option.name.find("Weapon_") == 0)
-        {
-            option.isWeapon = true;
-            string weaponName = option.name.substr(7); // e.g., "Default", "Laser"
+        if (option.isWeapon) {
+            string weaponName = option.name.substr(7);
             if (weaponName == "Default") option.weaponType = DEFAULT;
             else if (weaponName == "Rocket") option.weaponType = ROCKET;
             else if (weaponName == "Laser") option.weaponType = LASER;
             else if (weaponName == "Flak") option.weaponType = FLAK;
-            else if (weaponName == "Energy") option.weaponType = ENERGY_FIELD;
 
-            auto it = std::find_if(player->weapons.begin(), player->weapons.end(), [&](const Weapon& w) {
-                return w.type == option.weaponType;
-            });
-
-            if (it != player->weapons.end()) {
-                option.currentLevel = it->level;
-            } else {
-                option.currentLevel = 0;
-            }
+            auto it = std::find_if(player->weapons.begin(), player->weapons.end(),
+                [&](const Weapon& w) { return w.type == option.weaponType; });
+            option.currentLevel = (it != player->weapons.end()) ? it->level : 0;
         } else {
-            option.isWeapon = false;
             if (option.name == "Damage") option.currentLevel = (int)((player->damageMultiplier - 1.0f) / 0.1f);
             else if (option.name == "Speed") option.currentLevel = (int)((player->speedMultiplier - 1.0f) / 0.1f);
             else if (option.name == "Health") option.currentLevel = (int)((player->healthMultiplier - 1.0f) / 0.1f);
             else if (option.name == "FireRate") option.currentLevel = (int)((1.0f - player->fireRateMultiplier) / 0.1f);
             else if (option.name == "AoeSize") option.currentLevel = (int)((player->aoeSizeMultiplier - 1.0f) / 0.1f);
         }
-
-        // Clamp max level to 5
-        if (option.currentLevel >= 5) continue;
 
         // Format display text
         option.displayText = option.name + ": Level " + std::to_string(option.currentLevel + 1);
@@ -433,16 +745,30 @@ void _scene::showUpgradeMenu() {
 void _scene::selectUpgrade(int choice) {
     if (choice >= 0 && choice < (int)currentUpgradeOptions.size()) {
         UpgradeOption& selected = currentUpgradeOptions[choice];
+
+        // Apply the upgrade
         if (selected.isWeapon) {
             player->applyWeaponUpgrade(selected.weaponType);
         } else {
             player->applyUpgrade(selected.name);
+        }
+
+        // Update activeUpgrades
+        auto it = std::find_if(activeUpgrades.begin(), activeUpgrades.end(),
+            [&selected](const ActiveUpgrade& up) { return up.name == selected.name; });
+        if (it != activeUpgrades.end()) {
+            if (it->level < MAX_UPGRADE_LEVEL) {
+                it->level = selected.currentLevel + 1;
+            }
+        } else {
+            activeUpgrades.push_back({selected.name, selected.currentLevel + 1, selected.isWeapon});
         }
     }
     upgradeMenuActive = false;
     isPaused = false;
     currentUpgradeOptions.clear();
 }
+
 void _scene::reSize(GLint width, GLint height){
     dim.x = GetSystemMetrics(SM_CXSCREEN);
     dim.y = GetSystemMetrics(SM_CYSCREEN);
@@ -469,7 +795,7 @@ void _scene::processKeyboardInput() {
     worldMousePos.z = 0.0f; // 2D game, z typically 0
 
     if (upgradeMenuActive) {
-        // Handle upgrade selection (keys 1–3)
+        // Handle upgrade selection (keys 1ï¿½3)
         if (GetAsyncKeyState('1') & 0x8000) {
             selectUpgrade(0);
         }
@@ -595,14 +921,14 @@ void _scene::spawnBugSwarm(){
 
     // Choose a central spawn point
     float angle = (rand() % 360) * (M_PI / 180.0f);
-    float distance = 15.0f + (rand() % 11) * 1.0f; // 15–25 units from player
+    float distance = 15.0f + (rand() % 11) * 1.0f; // 15ï¿½25 units from player
     vec3 centerPos;
     centerPos.x = player->playerPosition.x + cos(angle) * distance;
     centerPos.y = player->playerPosition.y + sin(angle) * distance;
     centerPos.z = 48.0f;
 
-    // Spawn 20–50 bugs in a small radius (clumped)
-    int batchSize = 50 + (rand() % 51); // Random 20–50 bugs
+    // Spawn 20ï¿½50 bugs in a small radius (clumped)
+    int batchSize = 50 + (rand() % 51); // Random 20ï¿½50 bugs
     float swarmRadius = 2.0f; // Bugs spawn within 2 units of center
 
     for (int i = 0; i < batchSize; i++)
@@ -653,7 +979,7 @@ void _scene::updateDeltaTime(){
     {
         if (wasPausedLastFrame)
         {
-            // First frame after unpause: reset lastTime but don’t calculate deltaTime yet
+            // First frame after unpause: reset lastTime but donï¿½t calculate deltaTime yet
             lastTime = currentTime;
             deltaTime = 0.0f;
             wasPausedLastFrame = false;
@@ -668,6 +994,82 @@ void _scene::updateDeltaTime(){
     else
     {
         deltaTime = 0.0f;
-        wasPausedLastFrame = true;  // Track that we’re paused
+        wasPausedLastFrame = true;  // Track that weï¿½re paused
     }
+}
+
+void _scene::renderText(string text, float x, float y, float scale, float spacing) {
+if (!fontTexture || fontTexture->tex == 0) {
+        std::cerr << "Font texture is null or invalid!" << std::endl;
+        return;
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    fontTexture->textureBinder();
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    float currentX = x;
+    for (char c : text) {
+        int ascii = static_cast<unsigned char>(c);
+        if (bitmapFont.find(ascii) == bitmapFont.end()) {
+            std::cerr << "Character '" << c << "' (ASCII " << ascii << ") not found in font!" << std::endl;
+            continue;
+        }
+
+        FontChar& fc = bitmapFont[ascii];
+
+        float w = fc.width * scale;
+        float h = fc.height * scale;
+        float xoff = fc.xoffset * scale;
+        float yoff = fc.yoffset * scale;
+
+        float u0 = fc.u0;
+        float v0 = fc.v0; // Try without flipping for testing
+        float u1 = fc.u1;
+        float v1 = fc.v1;
+
+        glBegin(GL_QUADS);
+            glTexCoord2f(u0, v1); glVertex2f(currentX + xoff,     y + yoff);
+            glTexCoord2f(u1, v1); glVertex2f(currentX + xoff + w, y + yoff);
+            glTexCoord2f(u1, v0); glVertex2f(currentX + xoff + w, y + yoff + h);
+            glTexCoord2f(u0, v0); glVertex2f(currentX + xoff,     y + yoff + h);
+        glEnd();
+
+        currentX += fc.xadvance * scale + spacing;
+    }
+
+}
+
+void _scene::loadFontData(const string& path) {
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open font file: " << path << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        if (line.find("char id=") == std::string::npos) continue;
+
+        FontChar fc;
+
+        sscanf(line.c_str(),
+            "char id=%d x=%d y=%d width=%d height=%d xoffset=%d yoffset=%d xadvance=%d",
+            &fc.id, &fc.x, &fc.y, &fc.width, &fc.height,
+            &fc.xoffset, &fc.yoffset, &fc.xadvance);
+
+        float texWidth = 256.0f;
+        float texHeight = 256.0f;
+
+        fc.u0 = fc.x / texWidth;
+        fc.v0 = fc.y / texHeight;
+        fc.u1 = (fc.x + fc.width) / texWidth;
+        fc.v1 = (fc.y + fc.height) / texHeight;
+
+        bitmapFont[fc.id] = fc;
+    }
+
 }

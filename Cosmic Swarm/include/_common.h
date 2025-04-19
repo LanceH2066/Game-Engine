@@ -15,6 +15,7 @@
 #include<string>
 #include <memory>
 #include<time.h>
+#include<fstream>
 #include<map>
 #define PI 3.14159
 #define GRAVITY 9.81

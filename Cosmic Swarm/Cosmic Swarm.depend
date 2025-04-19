@@ -2,7 +2,7 @@
 1742839910 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\main.cpp
 	"_scene.h"
 
-1744916037 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_bullet.cpp
+1745082715 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_bullet.cpp
 	"_Bullet.h"
 
 1744147090 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_collision.cpp
@@ -14,7 +14,7 @@
 	"_enemy.h"
 	<_enemyDrops.h>
 
-1742876063 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_inputs.cpp
+1745095594 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_inputs.cpp
 	"_inputs.h"
 
 1742450570 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_lightsetting.cpp
@@ -26,10 +26,10 @@
 1742586228 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_parallax.cpp
 	"_parallax.h"
 
-1744924831 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_player.cpp
+1745094946 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_player.cpp
 	"_player.h"
 
-1744925187 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_scene.cpp
+1745095621 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_scene.cpp
 	"_scene.h"
 
 1742876942 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_sounds.cpp
@@ -85,7 +85,7 @@
 1744921707 source:c:\users\lance heinrich\desktop\csci 178\cosmic swarm\src\_xporb.cpp
 	"_xpOrb.h"
 
-1744925190 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_scene.h
+1745089700 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_scene.h
 	<_lightSetting.h>
 	<_model.h>
 	<_inputs.h>
@@ -99,7 +99,7 @@
 1742450569 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_lightsetting.h
 	<_common.h>
 
-1744830892 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_common.h
+1745037870 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_common.h
 	<GL/glew.h>
 	<windows.h>
 	<Winuser.h>
@@ -114,6 +114,7 @@
 	<string>
 	<memory>
 	<time.h>
+	<fstream>
 	<map>
 
 1744316019 c:\users\lance heinrich\desktop\csci 178\common\include\gl\glew.h
@@ -156,7 +157,7 @@
 1743796061 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_timer.h
 	"_common.h"
 
-1744924252 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_player.h
+1745003433 c:\users\lance heinrich\desktop\csci 178\cosmic swarm\include\_player.h
 	<_common.h>
 	<_Bullet.h>
 	<_sounds.h>
